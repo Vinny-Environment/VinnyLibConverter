@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard20</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj" />
+    <ProjectReference Include="..\VinnyLibConverter_DotBIM\VinnyLibConverter_DotBIM.csproj" />
+  </ItemGroup>
+
+
+</Project>
