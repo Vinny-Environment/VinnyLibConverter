@@ -2,38 +2,39 @@ using System;
 using VinnyLibConverterCommon;
 using VinnyLibConverterCommon.VinnyLibDataStructure;
 
-using VinnyLibConverter_DotBIM;
-
 namespace VinnyLibConverterKernel
 {
     public class VinnyLibConverter
     {
-        public VinnyLibDataStructureModel ImportModel(CdeVariant ModelType, VinnyLibDataStructureIOParameters openParameters)
+        private VinnyLibConverter() { }
+        public VinnyLibConverter(string libPath)
+        {
+            //TODO: Load assemblies
+        }
+        public VinnyLibDataStructureModel ImportModel(CdeVariant ModelType, IEParameters openParameters)
         {
             switch(ModelType)
             {
-                case CdeVariant.DotBIM: return new DotBimFormatProcessing().Import(openParameters);
+                case CdeVariant.DotBIM: return new VinnyLibConverter_DotBIM.DotBimFormatProcessing().Import(openParameters);
             }
             return null;
         }
 
-        public void ExportModel(CdeVariant ModelType, VinnyLibDataStructureModel ModelData, VinnyLibDataStructureIOParameters outputParameters)
+        public void ExportModel(CdeVariant ModelType, VinnyLibDataStructureModel ModelData, IEParameters outputParameters)
         {
             if (ModelData == null) return;
             switch (ModelType)
             {
                 case CdeVariant.DotBIM:
-                    new DotBimFormatProcessing().Export(ModelData, outputParameters);
+                    new VinnyLibConverter_DotBIM.DotBimFormatProcessing().Export(ModelData, outputParameters);
                     break;
             }
         }
 
-        public void Convert(CdeVariant inputType, VinnyLibDataStructureIOParameters openParameters, CdeVariant outputType, VinnyLibDataStructureIOParameters outputParameters)
+        public void Convert(CdeVariant inputType, IEParameters openParameters, CdeVariant outputType, IEParameters outputParameters)
         {
             VinnyLibDataStructureModel data = ImportModel(inputType, openParameters);
             ExportModel(outputType, data, outputParameters);
         }
-
-
     }
 }

@@ -4,67 +4,109 @@ using System.Text;
 
 namespace VinnyLibConverterCommon.VinnyLibDataStructure
 {
-    public class QuaternionInfo
-    {
-        public QuaternionInfo()
-        {
-            qx = 0;
-            qy = 0;
-            qz = 0;
-            qw = 1;
-        }
+    
 
-        public QuaternionInfo(float qx, float qy, float qz, float qw)
-        {
-            this.qx = qx;
-            this.qy = qy;
-            this.qz = qz;
-            this.qw = qw;
-        }
-
-        public float qx { get; set; }
-        public float qy { get; set; }
-        public float qz { get; set; }
-        public float qw { get; set; }
-    }
     public sealed class VinnyLibDataStructureGeometryPlacementInfo
     {
         public VinnyLibDataStructureGeometryPlacementInfo(int id, int geometryId)
         {
             this.Id = id;
             this.IdGeometry = geometryId;
+            SetDefaultValues();
+        }
+        internal VinnyLibDataStructureGeometryPlacementInfo() { SetDefaultValues(); }
+
+        private void SetDefaultValues()
+        {
+            Id = -1;
+            ResetGeometry();
         }
 
-        internal VinnyLibDataStructureGeometryPlacementInfo() { }
-
-        public int Id { get; internal set; } = -1;
-        public int IdGeometry { get; internal set; }
-        public float[] Position { get; set; } = new float[3] { 0, 0, 0 };
-
-        public float[] Scale { get; set; } = new float[3] { 1, 1, 1 };
-
-        public float[] AngleX { get; set; } = new float[] { 1, 0, 0 };
-        public float[] AngleY { get; set; } = new float[] { 0, 1, 0 };
-        public float[] AngleZ { get; set; } = new float[] { 0, 0, 1 };
-
-        public double[] CreateMatrix()
+        public void ResetGeometry()
         {
-            return new double[0];
+            Position = new float[] { 0, 0, 0 };
+            Scale = new float[] { 1, 1, 1 };
+            VectorOX = 0;
+            VectorOY = 0;
+            VectorOZ = 0;
+
+            TransformationMatrixInfo = TransformationMatrix.CreateEmptyTransformationMatrix();
+        }
+
+        public int Id { get; internal set; }
+        public int IdGeometry { get; internal set; }
+
+        public float[] Position {
+            get
+            {
+                return TransformationMatrixInfo.GetPosition();
+            }
+            set
+            {
+                TransformationMatrixInfo.SetPosition(Position[0], Position[1], Position[2]);
+            }
+        } 
+        public float[] Scale
+        {
+            get
+            {
+                return Scale;
+            }
+            set
+            {
+                TransformationMatrixInfo.SetScale(Scale[0], Scale[1], Scale[2]);
+            }
+        } 
+        //public float[] VectorOX { get; set; } = new float[] { 1, 0, 0 };
+        //public float[] VectorOY { get; set; } = new float[] { 0, 1, 0 };
+        //public float[] VectorOZ { get; set; } = new float[] { 0, 0, 1 };
+
+        public float VectorOX
+        {
+            get
+            {
+                return TransformationMatrixInfo.GetRotation_OX();
+            }
+            set
+            {
+                TransformationMatrixInfo.SetRotation_OX(value);
+            }
+        }
+
+        public float VectorOY
+        {
+            get
+            {
+                return TransformationMatrixInfo.GetRotation_OY();
+            }
+            set
+            {
+                TransformationMatrixInfo.SetRotation_OY(value);
+            }
+        }
+
+        public float VectorOZ
+        {
+            get
+            {
+                return TransformationMatrixInfo.GetRotation_OZ();
+            }
+            set
+            {
+                TransformationMatrixInfo.SetRotation_OZ(value);
+            }
         }
 
         public void SetRotationFromQuaternion(QuaternionInfo quaternion)
         {
-            //TODO: реализовать преобразование кватерниона в мои AngleX, AngleY, AngleZ
+            TransformationMatrixInfo.SetRotationFromQuaternion(quaternion);
         }
 
-        /// <summary>
-        /// Преобразует AngleX, AngleY, AngleZ в кватернион
-        /// </summary>
-        /// <returns></returns>
-        public QuaternionInfo ToQuaternion()
+        public QuaternionInfo RotationToQuaternion()
         {
-            //TODO
-            return new QuaternionInfo();
+            return TransformationMatrixInfo.ToQuaternion();
         }
+
+        public TransformationMatrix TransformationMatrixInfo { get; private set; }
     }
 }

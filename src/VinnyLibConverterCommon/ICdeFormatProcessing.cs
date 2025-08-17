@@ -44,14 +44,24 @@ namespace VinnyLibConverterCommon
         /// </summary>
         /// <param name="openParameters"></param>
         /// <returns></returns>
-        VinnyLibDataStructureModel Import(VinnyLibDataStructureIOParameters openParameters);
+        VinnyLibDataStructureModel Import(IEParameters openParameters);
 
         /// <summary>
         /// Сохраняет данные модели (data) в данный CDE-формат
         /// </summary>
         /// <param name="data"></param>
         /// <param name="outputParameters"></param>
-        void Export(VinnyLibDataStructureModel data, VinnyLibDataStructureIOParameters outputParameters);
+        void Export(VinnyLibDataStructureModel data, IEParameters outputParameters);
+
+        /// <summary>
+        /// Загрузить в AppDomain вспомогательные библиотеки, используемые данной
+        /// </summary>
+        void LoadAuxiliaryAssemblies();
+
+        /// <summary>
+        /// Выгрузить из AppDomain вспомогательные библиотеки, используемые данной
+        /// </summary>
+        void UnloadAuxiliaryAssemblies();
     }
 
     /// <summary>
@@ -60,7 +70,7 @@ namespace VinnyLibConverterCommon
     public interface ICadExportProcessing
     {
         VinnyLibDataStructureModel CreateData();
-        void ExportTo(CdeVariant outputType, VinnyLibDataStructureModel data, VinnyLibDataStructureIOParameters outputParameters);
+        void ExportTo(CdeVariant outputType, VinnyLibDataStructureModel data, IEParameters outputParameters);
     }
 
     /// <summary>
@@ -68,6 +78,6 @@ namespace VinnyLibConverterCommon
     /// </summary>
     public interface ICadImportProcessing
     {
-        VinnyLibDataStructureModel ImportFrom(CdeVariant outputType, VinnyLibDataStructureIOParameters openParameters);
+        VinnyLibDataStructureModel ImportFrom(CdeVariant outputType, IEParameters openParameters);
     }
 }

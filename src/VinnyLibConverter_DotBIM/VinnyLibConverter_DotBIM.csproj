@@ -1,11 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+        <OutDir>$(SolutionDir)bin\$(Configuration)\CdeFormats\dotbim</OutDir>
 		<TargetFramework>netstandard20</TargetFramework>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj" />
+        <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">
+            <Private>False</Private>
+        </ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>

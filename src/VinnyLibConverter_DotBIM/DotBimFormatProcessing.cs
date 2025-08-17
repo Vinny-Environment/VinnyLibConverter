@@ -5,13 +5,16 @@ using System.Text;
 using VinnyLibConverterCommon;
 using VinnyLibConverterCommon.VinnyLibDataStructure;
 
-using dotbim;
 using System.Linq;
 
 namespace VinnyLibConverter_DotBIM
 {
     public class DotBimFormatProcessing : ICdeFormatProcessing
     {
+        public DotBimFormatProcessing()
+        {
+            this.LoadAuxiliaryAssemblies();
+        }
         public CdeVariant GetCdeType()
         {
             return CdeVariant.DotBIM;
@@ -27,11 +30,11 @@ namespace VinnyLibConverter_DotBIM
             return true;
         }
 
-        public VinnyLibDataStructureModel Import(VinnyLibDataStructureIOParameters openParameters)
+        public VinnyLibDataStructureModel Import(IEParameters openParameters)
         {
             VinnyLibDataStructureModel dotbimFileDef = new VinnyLibDataStructureModel();
-            VinnyLibDataStructureIOParameters.mActiveConfig = openParameters;
-            VinnyLibDataStructureIOParameters.mActiveConfig.CheckGeometryDubles = false;//потому что читаем формат
+            IEParameters.mActiveConfig = openParameters;
+            IEParameters.mActiveConfig.CheckGeometryDubles = false;//потому что читаем формат
 
             dotbim.File dotbimFile = dotbim.File.Read(openParameters.Path);
             //header
@@ -114,10 +117,10 @@ namespace VinnyLibConverter_DotBIM
                 VinnyLibDataStructureGeometryPlacementInfo placementInfo = dotbimFileDef.GeometrtyManager.GetGeometryPlacementInfoById(geomPlacementInfoId);
                 placementInfo.Position = new float[] { (float)elem.Vector.X, (float)elem.Vector.Y, (float)elem.Vector.Z };
                 placementInfo.SetRotationFromQuaternion(new QuaternionInfo() {
-                    qx = (float)elem.Rotation.Qx,
-                    qy = (float)elem.Rotation.Qy,
-                    qz = (float)elem.Rotation.Qz,
-                    qw = (float)elem.Rotation.Qw
+                    X = (float)elem.Rotation.Qx,
+                    Y = (float)elem.Rotation.Qy,
+                    Z = (float)elem.Rotation.Qz,
+                    W = (float)elem.Rotation.Qw
                 });
                 dotbimFileDef.GeometrtyManager.SetGeometryPlacementInfo(geomPlacementInfoId, placementInfo);
 
@@ -127,9 +130,9 @@ namespace VinnyLibConverter_DotBIM
             return dotbimFileDef;
         }
 
-        public void Export(VinnyLibDataStructureModel data, VinnyLibDataStructureIOParameters outputParameters)
+        public void Export(VinnyLibDataStructureModel data, IEParameters outputParameters)
         {
-            dotbim.File dotbimFile = new File();
+            dotbim.File dotbimFile = new dotbim.File();
             dotbimFile.SchemaVersion = "1.2.0";
 
             //метаданные
@@ -140,18 +143,18 @@ namespace VinnyLibConverter_DotBIM
             }
 
             //элементы + геометрия
-            dotbimFile.Elements = new List<Element>();
-            dotbimFile.Meshes = new List<Mesh>();
+            dotbimFile.Elements = new List<dotbim.Element>();
+            dotbimFile.Meshes = new List<dotbim.Mesh>();
             foreach (var objectDefRaw in data.ObjectsManager.Objects)
             {
                 VinnyLibDataStructureObject objectDef = objectDefRaw.Value;
 
-                dotbim.Element dotbimElement = new Element();
+                dotbim.Element dotbimElement = new dotbim.Element();
                 dotbimElement.Guid = objectDef.UniqueId;
 
                 //материал объекта
                 var objectDefMaterial = data.MaterialsManager.GetMaterialById(objectDef.MaterialId);
-                dotbimElement.Color = new Color() { R = objectDefMaterial.ColorR, G = objectDefMaterial.ColorG, B = objectDefMaterial.ColorB, A = objectDefMaterial.ColorAlpha };
+                dotbimElement.Color = new dotbim.Color() { R = objectDefMaterial.ColorR, G = objectDefMaterial.ColorG, B = objectDefMaterial.ColorB, A = objectDefMaterial.ColorAlpha };
 
                 //метаданные объекта
                 dotbimElement.Info = new Dictionary<string, string>();
@@ -169,17 +172,17 @@ namespace VinnyLibConverter_DotBIM
                 //задается по первому GeometryPlacementInfo, остальные выравниваются по данному
                 var placementFirst = objectDef.GeometryPlacementInfos.First();
 
-                dotbimElement.Vector = new Vector() {
+                dotbimElement.Vector = new dotbim.Vector() {
                     X = placementFirst.Position[0], Y = placementFirst.Position[1], Z = placementFirst.Position[2] };
-                var quaternionInfo = placementFirst.ToQuaternion();
-                dotbimElement.Rotation = new Rotation() { Qx = quaternionInfo.qx, Qy = quaternionInfo.qy, Qz = quaternionInfo.qz, Qw = quaternionInfo.qw };
+                var quaternionInfo = placementFirst.TransformationMatrixInfo.ToQuaternion();
+                dotbimElement.Rotation = new dotbim.Rotation() { Qx = quaternionInfo.X, Qy = quaternionInfo.Y, Qz = quaternionInfo.Z, Qw = quaternionInfo.W };
 
 
                 dotbimElement.MeshId = placementFirst.IdGeometry;
                 VinnyLibDataStructureGeometry geometryDef = data.GeometrtyManager.GetGeometryById(placementFirst.IdGeometry);
                 VinnyLibDataStructureGeometryMesh geometryMeshDef = VinnyLibDataStructureGeometryMesh.asType(geometryDef);
 
-                dotbim.Mesh dotbimMesh = new Mesh();
+                dotbim.Mesh dotbimMesh = new dotbim.Mesh();
                 dotbimMesh.MeshId = placementFirst.IdGeometry;
                 dotbimMesh.Coordinates = new List<double>();
                 dotbimMesh.Indices = new List<int>();
@@ -215,6 +218,21 @@ namespace VinnyLibConverter_DotBIM
 
             dotbimFile.Save(outputParameters.Path);
 
+        }
+
+        public void LoadAuxiliaryAssemblies()
+        {
+            //TODO:
+        }
+
+        public void UnloadAuxiliaryAssemblies()
+        {
+            //TODO:
+        }
+
+        ~DotBimFormatProcessing()
+        {
+            this.UnloadAuxiliaryAssemblies();
         }
     }
 }
