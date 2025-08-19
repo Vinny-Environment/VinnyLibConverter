@@ -24,7 +24,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             materialNew.ColorB = RGBA[2];
             if (RGBA.Length == 4) materialNew.ColorAlpha = RGBA[3];
 
-            if (IEParameters.mActiveConfig.CheckMaterialsDubles)
+            if (ImportExportParameters.mActiveConfig.CheckMaterialsDubles)
             {
                 foreach (var materialInfo in mMaterials)
                 {

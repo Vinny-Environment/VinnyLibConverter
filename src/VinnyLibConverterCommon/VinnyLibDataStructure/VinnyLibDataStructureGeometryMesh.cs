@@ -37,7 +37,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             int p3 = GetPointIndex(point3);
             int[] checkArrayTmp = new int[] { p1, p2, p3 };
 
-            if (IEParameters.mActiveConfig.CheckGeometryDubles)
+            if (ImportExportParameters.mActiveConfig.CheckGeometryDubles)
             {
                 for (int faceCounter = 0; faceCounter < Faces.Count; faceCounter++)
                 {
@@ -83,7 +83,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             float yNew = Convert.ToSingle(Math.Round(y, 5));
             float zNew = Convert.ToSingle(Math.Round(z, 5));
 
-            if (IEParameters.mActiveConfig.CheckGeometryDubles)
+            if (ImportExportParameters.mActiveConfig.CheckGeometryDubles)
             {
                 for (int vertexCounter = 0; vertexCounter < Points.Count; vertexCounter++)
                 {

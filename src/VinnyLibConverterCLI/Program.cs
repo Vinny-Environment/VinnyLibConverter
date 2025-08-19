@@ -16,8 +16,8 @@ namespace VinnyLibConverterCLI
             
             VinnyLibConverter converterSession = VinnyLibConverter.CreateInstance(execution_directory_path);
 
-            var fotbimData = converterSession.ImportModel(CdeVariant.DotBIM, new IEParameters() { Path = @"C:\Users\user\Documents\GitHub\dotbim\test\ExampleFiles\TestFilesFromC#\Pyramid.bim" });
-            converterSession.ExportModel(CdeVariant.DotBIM, fotbimData, new IEParameters() { Path = @"C:\Users\user\Documents\GitHub\dotbim\test\ExampleFiles\TestFilesFromC#\Pyramid_Export.bim" });
+            var fotbimData = converterSession.ImportModel(CdeVariant.DotBIM, new ImportExportParameters() { Path = @"C:\Users\user\Documents\GitHub\dotbim\test\ExampleFiles\TestFilesFromC#\Pyramid.bim" });
+            converterSession.ExportModel(CdeVariant.DotBIM, fotbimData, new ImportExportParameters() { Path = @"C:\Users\user\Documents\GitHub\dotbim\test\ExampleFiles\TestFilesFromC#\Pyramid_Export.bim" });
             
 
             Console.WriteLine("\nEnd!");

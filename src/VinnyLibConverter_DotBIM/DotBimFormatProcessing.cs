@@ -31,11 +31,11 @@ namespace VinnyLibConverter_DotBIM
             return true;
         }
 
-        public VinnyLibDataStructureModel Import(IEParameters openParameters)
+        public VinnyLibDataStructureModel Import(ImportExportParameters openParameters)
         {
             VinnyLibDataStructureModel dotbimFileDef = new VinnyLibDataStructureModel();
-            IEParameters.mActiveConfig = openParameters;
-            IEParameters.mActiveConfig.CheckGeometryDubles = false;//потому что читаем формат
+            ImportExportParameters.mActiveConfig = openParameters;
+            ImportExportParameters.mActiveConfig.CheckGeometryDubles = false;//потому что читаем формат
 
             dotbim.File dotbimFile = dotbim.File.Read(openParameters.Path);
             //header
@@ -135,7 +135,7 @@ namespace VinnyLibConverter_DotBIM
             return dotbimFileDef;
         }
 
-        public void Export(VinnyLibDataStructureModel data, IEParameters outputParameters)
+        public void Export(VinnyLibDataStructureModel data, ImportExportParameters outputParameters)
         {
             dotbim.File dotbimFile = new dotbim.File();
             dotbimFile.SchemaVersion = "1.2.0";

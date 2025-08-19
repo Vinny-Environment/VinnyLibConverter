@@ -22,7 +22,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public int CreateParameterDefinition(string paramName, VinnyLibDataStructureParameterDefinitionType paramType = VinnyLibDataStructureParameterDefinitionType.ParamString)
         {
             VinnyLibDataStructureParameterDefinition paramDef = new VinnyLibDataStructureParameterDefinition(mParamDefCounter, paramName, paramType);
-            if (IEParameters.mActiveConfig.CheckParameterDefsDubles)
+            if (ImportExportParameters.mActiveConfig.CheckParameterDefsDubles)
             {
                 foreach (var paramDefInfo in Parameters)
                 {

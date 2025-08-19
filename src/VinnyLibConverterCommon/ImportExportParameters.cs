@@ -1,26 +1,36 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VinnyLibConverterCommon.Transformation;
 
 namespace VinnyLibConverterCommon
 {
     /// <summary>
     /// Вспомогательный класс для задания параметров чтения/записи сцены
     /// </summary>
-    public sealed class IEParameters
+    public sealed class ImportExportParameters
     {
-        public IEParameters()
+        public ImportExportParameters()
         {
-            TransformationMatrixInfo = TransformationMatrix.CreateEmptyTransformationMatrix();
             CheckGeometryDubles = true;
             CheckMaterialsDubles = true;
             CheckParameterDefsDubles = true;
+            TransformationInfo = new List<ICoordinatesTransformation>
+            {
+                TransformationMatrix4x4.CreateEmptyTransformationMatrix()
+            };
         }
 
+        #region Для локальных CDE (файлы)
         /// <summary>
         /// Абсолютный файловый путь к данным (для чтения и записи)
         /// </summary>
         public string Path { get; set; }
+        #endregion
+
+        #region Для локальных CDE (БД)
+        public string DbConnectionString { get; set; }
+        #endregion
 
         #region Для WEB CDE
         public string Token { get; set; }
@@ -32,7 +42,10 @@ namespace VinnyLibConverterCommon
         public bool CheckMaterialsDubles { get; set; }
         public bool CheckParameterDefsDubles { get; set; }
 
-        public TransformationMatrix TransformationMatrixInfo { get; set; }
-        public static IEParameters mActiveConfig { get; set; } = new IEParameters();
+        /// <summary>
+        /// Набор последовательных преобразований координат
+        /// </summary>
+        public List<ICoordinatesTransformation> TransformationInfo { get; set; }
+        public static ImportExportParameters mActiveConfig { get; set; } = new ImportExportParameters();
     }
 }

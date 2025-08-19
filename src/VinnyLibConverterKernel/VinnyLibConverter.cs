@@ -36,7 +36,7 @@ namespace VinnyLibConverterKernel
             return mInstance;
         }
 
-        public VinnyLibDataStructureModel ImportModel(CdeVariant ModelType, IEParameters openParameters)
+        public VinnyLibDataStructureModel ImportModel(CdeVariant ModelType, ImportExportParameters openParameters)
         {
             switch(ModelType)
             {
@@ -45,7 +45,7 @@ namespace VinnyLibConverterKernel
             return null;
         }
 
-        public void ExportModel(CdeVariant ModelType, VinnyLibDataStructureModel ModelData, IEParameters outputParameters)
+        public void ExportModel(CdeVariant ModelType, VinnyLibDataStructureModel ModelData, ImportExportParameters outputParameters)
         {
             if (ModelData == null) return;
             if (File.Exists(outputParameters.Path)) File.Delete(outputParameters.Path);
@@ -57,7 +57,7 @@ namespace VinnyLibConverterKernel
             }
         }
 
-        public void Convert(CdeVariant inputType, IEParameters openParameters, CdeVariant outputType, IEParameters outputParameters)
+        public void Convert(CdeVariant inputType, ImportExportParameters openParameters, CdeVariant outputType, ImportExportParameters outputParameters)
         {
             VinnyLibDataStructureModel data = ImportModel(inputType, openParameters);
             ExportModel(outputType, data, outputParameters);
