@@ -17,6 +17,52 @@ namespace VinnyLibConverterCommon
     }
 
     /// <summary>
+    /// Имена папок для каждого из CdeVariant
+    /// </summary>
+    public class CdeFrmtNames
+    {
+        public const string CdeFrmt_SMDX = "smdx";
+        public const string CdeFrmt_MLT = "mlt";
+        public const string CdeFrmt_IMC = "imc";
+        public const string CdeFrmt_DotBim = "dotbim";
+        public const string CdeFrmt_NWC = "nwcreate";
+        public const string CdeFrmt_FBX = "fbx";
+        public const string CdeFrmt_GLTF = "gltf";
+
+        public static string GetCdeFrmtName(CdeVariant cdeType)
+        {
+            string res = "";
+            switch(cdeType)
+            {
+                case CdeVariant.SMDX:
+                    res = CdeFrmt_SMDX;
+                    break;
+                case CdeVariant.MLT:
+                    res = CdeFrmt_MLT;
+                    break;
+                case CdeVariant.IMC:
+                    res = CdeFrmt_IMC;
+                    break;
+                case CdeVariant.DotBIM:
+                    res = CdeFrmt_DotBim;
+                    break;
+                case CdeVariant.NWC:
+                    res = CdeFrmt_NWC;
+                    break;
+                case CdeVariant.FBX:
+                    res = CdeFrmt_FBX;
+                    break;
+                case CdeVariant.GLTF:
+                    res = CdeFrmt_GLTF;
+                    break;
+            }
+            return res;
+        }
+    }
+
+    
+
+    /// <summary>
     /// Шаблон класса, описывающий отдельный CDE-формат
     /// </summary>
     public interface ICdeFormatProcessing

@@ -1,15 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Reflection;
 
 using VinnyLibConverterCommon;
 using VinnyLibConverterCommon.VinnyLibDataStructure;
 
 using System.Linq;
+using System.Collections.Generic;
 
 namespace VinnyLibConverter_DotBIM
 {
-    public class DotBimFormatProcessing : ICdeFormatProcessing
+    public class DotBimFormatProcessing :  ICdeFormatProcessing
     {
         public DotBimFormatProcessing()
         {
@@ -84,13 +85,17 @@ namespace VinnyLibConverter_DotBIM
                 VinnyLibDataStructureObject objectDef = dotbimFileDef.ObjectsManager.GetObjectById(objectId);
 
                 //задаем информацию о цветах граней для геометрии
-                for (int colorCounter = 0; colorCounter < elem.FaceColors.Count - 2; colorCounter += 3)
+                if (elem.FaceColors != null)
                 {
-                    int[] RGBcolor = new int[]{
+                    for (int colorCounter = 0; colorCounter < elem.FaceColors.Count - 2; colorCounter += 3)
+                    {
+                        int[] RGBcolor = new int[]{
                     elem.FaceColors[colorCounter], elem.FaceColors[colorCounter + 1], elem.FaceColors[colorCounter + 2]};
-                    int materialId = dotbimFileDef.MaterialsManager.CreateMaterial(RGBcolor);
-                    meshGeom.AssignMaterialToFace(colorCounter / 3, materialId);
+                        int materialId = dotbimFileDef.MaterialsManager.CreateMaterial(RGBcolor);
+                        meshGeom.AssignMaterialToFace(colorCounter / 3, materialId);
+                    }
                 }
+                
 
                 dotbimFileDef.GeometrtyManager.SetGeometry(elem.MeshId, meshGeom);
 

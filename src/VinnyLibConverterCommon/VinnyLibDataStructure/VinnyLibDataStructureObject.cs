@@ -10,10 +10,16 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
     /// </summary>
     public class VinnyLibDataStructureObject
     {
-        internal VinnyLibDataStructureObject() { }
+        internal VinnyLibDataStructureObject()
+        {
+            Parameters = new List<VinnyLibDataStructureParameterValue>();
+            GeometryPlacementInfos = new List<VinnyLibDataStructureGeometryPlacementInfo>();
+        }
         internal VinnyLibDataStructureObject(int id)
         {
             this.Id = id;
+            Parameters = new List<VinnyLibDataStructureParameterValue>();
+            GeometryPlacementInfos = new List<VinnyLibDataStructureGeometryPlacementInfo>();
         }
         public int Id { get; private set; }
         public int ParentId { get; set; } = -1;

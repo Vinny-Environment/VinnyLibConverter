@@ -1,14 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutDir>$(SolutionDir)bin\$(Configuration)</OutDir>
     <TargetFramework>netstandard20</TargetFramework>
-      <LangVersion>8.0</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj" />
-    <ProjectReference Include="..\VinnyLibConverter_DotBIM\VinnyLibConverter_DotBIM.csproj" />
+    <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\VinnyLibConverter_DotBIM\VinnyLibConverter_DotBIM.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
   </ItemGroup>
 
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="del $(TargetDir)VinnyLibConverter_DotBIM.*" />
+    </Target>
 
 </Project>

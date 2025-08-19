@@ -24,13 +24,13 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
         public void ResetGeometry()
         {
+            TransformationMatrixInfo = TransformationMatrix.CreateEmptyTransformationMatrix();
+
             Position = new float[] { 0, 0, 0 };
             Scale = new float[] { 1, 1, 1 };
             VectorOX = 0;
             VectorOY = 0;
             VectorOZ = 0;
-
-            TransformationMatrixInfo = TransformationMatrix.CreateEmptyTransformationMatrix();
         }
 
         public int Id { get; internal set; }
@@ -43,7 +43,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             }
             set
             {
-                TransformationMatrixInfo.SetPosition(Position[0], Position[1], Position[2]);
+                TransformationMatrixInfo.SetPosition(value[0], value[1], value[2]);
             }
         } 
         public float[] Scale
@@ -54,7 +54,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             }
             set
             {
-                TransformationMatrixInfo.SetScale(Scale[0], Scale[1], Scale[2]);
+                TransformationMatrixInfo.SetScale(value[0], value[1], value[2]);
             }
         } 
         //public float[] VectorOX { get; set; } = new float[] { 1, 0, 0 };

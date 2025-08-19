@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <OutDir>$(SolutionDir)bin\$(Configuration)</OutDir>
+    <TargetFramework>net6.0</TargetFramework>
+    <CopyLocalLockFileAssemblies>False</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">
+      <Private></Private>
+      <CopyLocalSatelliteAssemblies></CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\VinnyLibConverterKernel\VinnyLibConverterKernel.csproj" />
+  </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="del $(TargetDir)VinnyLibConverter_DotBIM.*" />
+    </Target>
+
+</Project>

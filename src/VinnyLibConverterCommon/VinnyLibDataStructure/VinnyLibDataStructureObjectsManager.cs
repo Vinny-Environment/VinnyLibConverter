@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,6 +9,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public VinnyLibDataStructureObjectsManager()
         {
             mObjectIdCounter = 0;
+            Objects = new Dictionary<int, VinnyLibDataStructureObject>();
         }
 
         public int CreateObject()

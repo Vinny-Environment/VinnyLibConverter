@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-        <OutDir>$(SolutionDir)bin\$(Configuration)\CdeFormats\dotbim</OutDir>
+        <OutDir>$(SolutionDir)bin\$(Configuration)\dependencies\dotbim</OutDir>
 		<TargetFramework>netstandard20</TargetFramework>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
@@ -9,6 +9,7 @@
 	<ItemGroup>
         <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">
             <Private>False</Private>
+            <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
         </ProjectReference>
 	</ItemGroup>
 

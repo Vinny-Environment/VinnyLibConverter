@@ -55,8 +55,10 @@ namespace VinnyLibConverterCommon
             Matrix = new float[rows, columns];
         }
 
-        public TransformationMatrix(float[,] matrix)
+        public TransformationMatrix(float[,] matrix, int rows, int columns)
         {
+            Rows = rows;
+            Columns = columns;
             Matrix = matrix;
         }
 
@@ -390,7 +392,7 @@ namespace VinnyLibConverterCommon
 
         private void MultiplyMatrix(float[,] OtherMatrix)
         {
-            Matrix = TransformationMatrix.Multiply(this, new TransformationMatrix(OtherMatrix)).Matrix;
+            Matrix = TransformationMatrix.Multiply(this, new TransformationMatrix(OtherMatrix, 4, 4)).Matrix;
         }
 
         private float this[int row, int col]

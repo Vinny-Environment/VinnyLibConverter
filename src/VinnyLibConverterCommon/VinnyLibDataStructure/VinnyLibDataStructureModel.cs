@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,6 +16,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             ObjectsManager = new VinnyLibDataStructureObjectsManager();
             ParametersManager = new VinnyLibDataStructureParametersManager();
             GeometrtyManager = new VinnyLibDataStructureGeometryManager();
+            MaterialsManager = new VinnyLibDataStructureMaterialsManager();
         }
         public VinnyLibDataStructureHeader Header { get; private set; }
 

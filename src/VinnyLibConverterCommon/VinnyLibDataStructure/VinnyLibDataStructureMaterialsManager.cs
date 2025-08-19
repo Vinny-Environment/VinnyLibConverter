@@ -11,6 +11,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
     {
         public VinnyLibDataStructureMaterialsManager()
         {
+            pMaterialCounter = 0;
             mMaterials = new Dictionary<int, VinnyLibDataStructureMaterial>();
         }
 
