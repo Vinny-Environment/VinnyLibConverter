@@ -88,7 +88,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                 for (int vertexCounter = 0; vertexCounter < Points.Count; vertexCounter++)
                 {
                     float[] pointCoords = Points[vertexCounter];
-                    if (pointCoords[0] == xNew && pointCoords[1] == yNew && pointCoords[1] == zNew) return vertexCounter;
+                    if (pointCoords[0] == xNew && pointCoords[1] == yNew && pointCoords[2] == zNew) return vertexCounter;
                 }
                
             }

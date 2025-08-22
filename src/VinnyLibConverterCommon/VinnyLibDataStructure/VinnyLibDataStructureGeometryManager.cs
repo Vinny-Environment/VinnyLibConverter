@@ -83,7 +83,38 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             return outputPlacementInfo;
         }
 
-        
+        /// <summary>
+        /// Пересчитывает координаты VinnyLibDataStructureGeometry для заданных трансформаций и информации о положении VinnyLibDataStructureGeometryPlacementInfo
+        /// </summary>
+        /// <param name="transformations"></param>
+        /// <param name="geometryPlacementInfo"></param>
+        /// <returns></returns>
+        public VinnyLibDataStructureGeometry TransformGeometry(List<ICoordinatesTransformation> transformations, VinnyLibDataStructureGeometryPlacementInfo geometryPlacementInfo)
+        {
+            List<ICoordinatesTransformation> transformations2 = new List<ICoordinatesTransformation>()
+            {
+                geometryPlacementInfo.TransformationMatrixInfo
+            }.Concat(transformations).ToList();
+
+            VinnyLibDataStructureGeometry targetGeometry = mGeometries[geometryPlacementInfo.IdGeometry];
+
+            foreach (ICoordinatesTransformation transformation in transformations)
+            {
+                //Для каждого transformation необходимо заново инициализировать mGeometries и mGeometriesPlacementInfo (?)
+                if (targetGeometry.GetGeometryType() == VinnyLibDataStructureGeometryType.Mesh)
+                {
+                    VinnyLibDataStructureGeometryMesh targetGeometry_Mesh = VinnyLibDataStructureGeometryMesh.asType(targetGeometry);
+                    foreach (int PointKey in targetGeometry_Mesh.Points.Keys)
+                    {
+                        float[] XYZ_Converted = transformation.TransformPoint3d(targetGeometry_Mesh.Points[PointKey]);
+                        targetGeometry_Mesh.Points[PointKey] = XYZ_Converted;
+                    }
+                }
+            }
+            return targetGeometry;
+        }
+
+
 
         public Dictionary<int, VinnyLibDataStructureGeometryPlacementInfo> mGeometriesPlacementInfo { get; private set; }
         public Dictionary<int, VinnyLibDataStructureGeometry> mGeometries { get; private set; }

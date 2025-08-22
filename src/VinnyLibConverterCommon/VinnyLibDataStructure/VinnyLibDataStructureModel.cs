@@ -35,6 +35,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         /// <param name="transformations"></param>
         public void SetCoordinatesTransformation(List<ICoordinatesTransformation> transformations)
         {
+            if (!transformations.Any()) return;
             //Если среди transformations только matrix4x4, то можно только обновить mGeometriesPlacementInfo
             //В противном случае придется пересчитывать каждую VinnyLibDataStructureGeometry, формируя для него новый VinnyLibDataStructureGeometryPlacementInfo и обновляя об этом информацию у VinnyLibDataStructureObject
             bool isOnlyMatrix4x4 = !transformations.Where(t => t.GetTransformationType() == CoordinatesTransformationVariant.Affine || t.GetTransformationType() == CoordinatesTransformationVariant.Geodetic).Any();
@@ -65,7 +66,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                 foreach (int geometryPlInfoId in GeometrtyManager.mGeometriesPlacementInfo.Keys)
                 {
                     VinnyLibDataStructureGeometryPlacementInfo onePlInfo = GeometrtyManager.mGeometriesPlacementInfo[geometryPlInfoId];
-                    VinnyLibDataStructureGeometry transformedGeometry = TransformGeometry(transformations, onePlInfo);
+                    VinnyLibDataStructureGeometry transformedGeometry = GeometrtyManager.TransformGeometry(transformations, onePlInfo);
                     int transformedGeometryId = GeometrtyManager.CreateGeometry(transformedGeometry);
 
                     int transformedGeometryPlacementInfoId = GeometrtyManager.CreateGeometryPlacementInfo(transformedGeometryId);
@@ -102,36 +103,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             }
         }
 
-        /// <summary>
-        /// Пересчитывает координаты VinnyLibDataStructureGeometry для заданных трансформаций и информации о положении VinnyLibDataStructureGeometryPlacementInfo
-        /// </summary>
-        /// <param name="transformations"></param>
-        /// <param name="geometryPlacementInfo"></param>
-        /// <returns></returns>
-        public VinnyLibDataStructureGeometry TransformGeometry(List<ICoordinatesTransformation> transformations, VinnyLibDataStructureGeometryPlacementInfo geometryPlacementInfo)
-        {
-            List<ICoordinatesTransformation> transformations2 = new List<ICoordinatesTransformation>()
-            {
-                geometryPlacementInfo.TransformationMatrixInfo
-            }.Concat(transformations).ToList();
-
-            VinnyLibDataStructureGeometry targetGeometry = GeometrtyManager.mGeometries[geometryPlacementInfo.IdGeometry];
-
-            foreach (ICoordinatesTransformation transformation in transformations)
-            {
-                //Для каждого transformation необходимо заново инициализировать mGeometries и mGeometriesPlacementInfo (?)
-                if (targetGeometry.GetGeometryType() == VinnyLibDataStructureGeometryType.Mesh)
-                {
-                    VinnyLibDataStructureGeometryMesh targetGeometry_Mesh = VinnyLibDataStructureGeometryMesh.asType(targetGeometry);
-                    foreach (int PointKey in targetGeometry_Mesh.Points.Keys)
-                    {
-                        float[] XYZ_Converted = transformation.TransformPoint3d(targetGeometry_Mesh.Points[PointKey]);
-                        targetGeometry_Mesh.Points[PointKey] = XYZ_Converted;
-                    }
-                }
-            }
-            return targetGeometry;
-        }
+        
         #endregion
     }
 }

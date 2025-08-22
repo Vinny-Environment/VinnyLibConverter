@@ -36,7 +36,7 @@ namespace VinnyLibConverter_DotBIM
         {
             VinnyLibDataStructureModel dotbimFileDef = new VinnyLibDataStructureModel();
             ImportExportParameters.mActiveConfig = openParameters;
-            ImportExportParameters.mActiveConfig.CheckGeometryDubles = false;//потому что читаем формат
+            //ImportExportParameters.mActiveConfig.CheckGeometryDubles = false;//потому что читаем формат
 
             dotbim.File dotbimFile = dotbim.File.Read(openParameters.Path);
             //header
@@ -108,6 +108,7 @@ namespace VinnyLibConverter_DotBIM
                 //задаем свойства
                 VinnyLibDataStructureParameterValue paramTypeValue = new VinnyLibDataStructureParameterValue() { ParamDefId = paramDefTypeId, ParamCategoryId = defaulParamsCateroryId };
                 paramTypeValue.SetValue(elem.Type);
+                objectDef.AddParameterValue(paramTypeValue);
 
                 foreach (var paramInfo in elem.Info)
                 {
