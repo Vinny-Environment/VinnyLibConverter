@@ -10,26 +10,47 @@ namespace VinnyLibConverterCommon
     /// </summary>
     public sealed class ImportExportParameters
     {
-        public ImportExportParameters()
+        internal ImportExportParameters()
         {
             CheckGeometryDubles = true;
             CheckMaterialsDubles = true;
             CheckParameterDefsDubles = true;
-            TransformationInfo = new List<ICoordinatesTransformation>
-            {
-                TransformationMatrix4x4.CreateEmptyTransformationMatrix()
-            };
+            TransformationInfo = new List<ICoordinatesTransformation>();
+            //TransformationInfo.Add(TransformationMatrix4x4.CreateEmptyTransformationMatrix());
         }
 
-        #region Для локальных CDE (файлы)
+        public static ImportExportParameters CreateForLocalCDE(string path)
+        {
+            ImportExportParameters p = new ImportExportParameters();
+            p.Path = path;
+            return p;
+        }
+
+        public static ImportExportParameters CreateForDatabaseCDE(string dbPath, string login, string password)
+        {
+            ImportExportParameters p = new ImportExportParameters();
+            p.Path = dbPath;
+            p.Login = login;
+            p.Password = password;
+            return p;
+        }
+
+        public static ImportExportParameters CreateForWebCDE(string token, string login, string password)
+        {
+            ImportExportParameters p = new ImportExportParameters();
+            p.Token = token;
+            p.Login = login;
+            p.Password = password;
+            return p;
+        }
+
+
+
+        #region Для локальных CDE (файлы, БД)
         /// <summary>
         /// Абсолютный файловый путь к данным (для чтения и записи)
         /// </summary>
         public string Path { get; set; }
-        #endregion
-
-        #region Для локальных CDE (БД)
-        public string DbConnectionString { get; set; }
         #endregion
 
         #region Для WEB CDE

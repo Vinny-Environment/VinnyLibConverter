@@ -24,8 +24,8 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         {
             mId = id;
 
-            Points = new List<float[]>();
-            Faces = new List<int[]>();
+            Points = new Dictionary<int, float[]>();
+            Faces = new Dictionary<int, int[]>();
             Faces2Materials = new Dictionary<int, int>();
         }
         private VinnyLibDataStructureGeometryMesh() { }
@@ -45,7 +45,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                     if (faceVertices.SequenceEqual(checkArrayTmp)) return;
                 }
             }
-            Faces.Add(checkArrayTmp);
+            Faces.Add(Faces.Count(), checkArrayTmp);
         }
 
         public int[] GetFaceVertices(int faceIndex)
@@ -92,15 +92,16 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                 }
                
             }
-            Points.Add(new float[3] { xNew, yNew, zNew });
+            Points.Add(Points.Count(), new float[3] { xNew, yNew, zNew });
             return Points.Count;            
         }
 
 
         //Округление координат для сравнения точек
         private int mAccuracy = 5;
-        public List<float[]> Points { get; internal set; }
-        public List<int[]> Faces { get; internal set; }
+
+        public Dictionary<int, float[]> Points { get; internal set; }
+        public Dictionary<int, int[]> Faces { get; internal set; }
 
         public Dictionary<int, int> Faces2Materials { get; internal set; }
     }

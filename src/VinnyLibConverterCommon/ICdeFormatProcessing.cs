@@ -8,16 +8,19 @@ namespace VinnyLibConverterCommon
     public enum CdeVariant
     {
         SMDX,
-        MLT,
+        MLT,//? Мёртвый проприетарный формат, уж лучше мб на кадлиб сразу
         IMC,
         DotBIM,
         NWC,
         FBX,
-        GLTF
+        GLTF,
+        IFC,
+        DXF,
+        LandXML
     }
 
     /// <summary>
-    /// Имена папок для каждого из CdeVariant
+    /// Строковые сокращения из CdeVariant
     /// </summary>
     public class CdeFrmtNames
     {
@@ -29,6 +32,11 @@ namespace VinnyLibConverterCommon
         public const string CdeFrmt_FBX = "fbx";
         public const string CdeFrmt_GLTF = "gltf";
 
+        /// <summary>
+        /// Вспомогательный метод для получения строки-идентификатора CDE. Используется пока только в путях к библиотекам. 
+        /// </summary>
+        /// <param name="cdeType"></param>
+        /// <returns></returns>
         public static string GetCdeFrmtName(CdeVariant cdeType)
         {
             string res = "";

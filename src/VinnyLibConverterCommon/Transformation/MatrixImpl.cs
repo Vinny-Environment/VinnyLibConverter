@@ -19,6 +19,15 @@ namespace VinnyLibConverterCommon.Transformation
             Rows = rows;
             Columns = columns;
             Matrix = new float[rows, columns];
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    Matrix[i, i] = 1;
+                }
+                    
+            }
         }
 
         public MatrixImpl(float[,] matrix, int rows, int columns)

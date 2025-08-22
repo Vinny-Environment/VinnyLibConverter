@@ -11,7 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CdeFormats", "CdeFormats", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VinnyLibConverter_DotBIM", "src\VinnyLibConverter_DotBIM\VinnyLibConverter_DotBIM.csproj", "{6E390798-A874-4E07-B79F-5E9DED0CE0C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinnyLibConverterCLI", "src\VinnyLibConverterCLI\VinnyLibConverterCLI.csproj", "{780AB9C5-ED6F-4B11-A49A-5FF6F8AF7B37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VinnyLibConverterCLI", "src\VinnyLibConverterCLI\VinnyLibConverterCLI.csproj", "{780AB9C5-ED6F-4B11-A49A-5FF6F8AF7B37}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8152DFA0-677A-4F8C-8625-2ACF924E2CB1}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

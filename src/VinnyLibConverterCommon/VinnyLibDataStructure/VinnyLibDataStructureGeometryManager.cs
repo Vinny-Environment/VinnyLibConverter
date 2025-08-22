@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
+using VinnyLibConverterCommon.Transformation;
 
 namespace VinnyLibConverterCommon.VinnyLibDataStructure
 {
@@ -40,6 +42,13 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             return -1;
         }
 
+        public int CreateGeometry(VinnyLibDataStructureGeometry otherGeometry)
+        {
+            otherGeometry.mId = mGeometryCounter;
+            mGeometries.Add(mGeometryCounter, otherGeometry);
+            return otherGeometry.mId;
+        }
+
         public void SetGeometry(int id, VinnyLibDataStructureGeometry geometry)
         {
             this.mGeometries[id] = geometry;
@@ -55,6 +64,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public int CreateGeometryPlacementInfo(int geometryId)
         {
             VinnyLibDataStructureGeometryPlacementInfo placementInfo = new VinnyLibDataStructureGeometryPlacementInfo(mGeometryPlacementInfoCounter, geometryId);
+            placementInfo.Id = mGeometryPlacementInfoCounter;
             this.mGeometriesPlacementInfo[mGeometryPlacementInfoCounter] = placementInfo;
             mGeometryPlacementInfoCounter++;
             return mGeometryPlacementInfoCounter-1;
@@ -72,6 +82,8 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             if (outputPlacementInfo.Id == -1) return null;
             return outputPlacementInfo;
         }
+
+        
 
         public Dictionary<int, VinnyLibDataStructureGeometryPlacementInfo> mGeometriesPlacementInfo { get; private set; }
         public Dictionary<int, VinnyLibDataStructureGeometry> mGeometries { get; private set; }

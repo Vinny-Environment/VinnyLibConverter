@@ -6,19 +6,27 @@ using VinnyLibConverterCommon.Transformation;
 
 namespace VinnyLibConverterCommon.Transformation
 {
-
+    /// <summary>
+    /// Задание трансформции координат через матрицу 4x4.
+    /// Используйте методы в СТРОГОЙ последовательности: SetPosition() -> SetRotation() -> SetScale()
+    /// </summary>
     public class TransformationMatrix4x4 : ICoordinatesTransformation
     {
+        public CoordinatesTransformationVariant GetTransformationType()
+        {
+            return CoordinatesTransformationVariant.Matrix4x4;
+        }
         private TransformationMatrix4x4() { }
         public static TransformationMatrix4x4 CreateEmptyTransformationMatrix()
         {
             TransformationMatrix4x4 transformMatrix = new TransformationMatrix4x4();
-            var matrix = new MatrixImpl(4, 4);
-            matrix[0, 0] = 1; matrix[0, 1] = 0; matrix[0, 2] = 0; matrix[0, 3] = 0;
-            matrix[1, 0] = 0; matrix[1, 1] = 1; matrix[1, 2] = 0; matrix[1, 3] = 0;
-            matrix[2, 0] = 0; matrix[2, 1] = 0; matrix[2, 2] = 1; matrix[2, 3] = 0;
-            matrix[3, 0] = 0; matrix[3, 1] = 0; matrix[3, 2] = 1; matrix[3, 3] = 0;
-            transformMatrix.Matrix = matrix;
+            transformMatrix.Matrix = new MatrixImpl(4, 4);
+
+            //transformMatrix.Matrix[0, 0] = 1; transformMatrix.Matrix[0, 1] = 0; transformMatrix.Matrix[0, 2] = 0; transformMatrix.Matrix[0, 3] = 0;
+            //transformMatrix.Matrix[1, 0] = 0; transformMatrix.Matrix[1, 1] = 1; transformMatrix.Matrix[1, 2] = 0; transformMatrix.Matrix[1, 3] = 0;
+            //transformMatrix.Matrix[2, 0] = 0; transformMatrix.Matrix[2, 1] = 0; transformMatrix.Matrix[2, 2] = 1; transformMatrix.Matrix[2, 3] = 0;
+            //transformMatrix.Matrix[3, 0] = 0; transformMatrix.Matrix[3, 1] = 0; transformMatrix.Matrix[3, 2] = 1; transformMatrix.Matrix[3, 3] = 0;
+
             return transformMatrix;
         }
 
@@ -46,11 +54,7 @@ namespace VinnyLibConverterCommon.Transformation
             MultiplyMatrix(ScaleMatrix);
         }
 
-        public float[] GetPosition()
-        {
-            return new float[] { Matrix[0, 3], Matrix[1, 3], Matrix[2, 3] };
-        }
-
+        /*
         public void SetRotation_OX(float angle)
         {
             float[,] ScaleMatrix = new float[,]
@@ -61,11 +65,6 @@ namespace VinnyLibConverterCommon.Transformation
                  { 0, 0, 0, 1 }
             };
             MultiplyMatrix(ScaleMatrix);
-        }
-
-        public float GetRotation_OX()
-        {
-            return Convert.ToSingle(Math.Acos(Matrix[1, 1]));
         }
 
         public void SetRotation_OY(float angle)
@@ -80,11 +79,6 @@ namespace VinnyLibConverterCommon.Transformation
             MultiplyMatrix(ScaleMatrix);
         }
 
-        public float GetRotation_OY()
-        {
-            return Convert.ToSingle(Math.Acos(Matrix[0, 0]));
-        }
-
         public void SetRotation_OZ(float angle)
         {
             float[,] ScaleMatrix = new float[,]
@@ -96,11 +90,7 @@ namespace VinnyLibConverterCommon.Transformation
             };
             MultiplyMatrix(ScaleMatrix);
         }
-
-        public float GetRotation_OZ()
-        {
-            return Convert.ToSingle(Math.Acos(Matrix[0, 0]));
-        }
+        */
 
         public void SetRotationFromQuaternion(QuaternionInfo quaternion)
         {
@@ -108,18 +98,17 @@ namespace VinnyLibConverterCommon.Transformation
             Matrix = MatrixImpl.Multiply(this.Matrix, matrix);
         }
 
-        /// <summary>
-        /// Извлекает информацию из Matrix об угле поворота в виде кватерниона
-        /// </summary>
-        /// <returns></returns>
-        public QuaternionInfo ToQuaternion()
+        public void SetRotationFromEulerAngles(float x, float y, float z)
         {
-            return this.Matrix.ExtractRotationQuaternion();
+            QuaternionInfo q = new QuaternionInfo(x, y, z);
+            SetRotationFromQuaternion(q);
         }
 
-        
-
-
+        public QuaternionInfo GetRotationInfo()
+        {
+            QuaternionInfo q = this.Matrix.ExtractRotationQuaternion();
+            return q;
+        }
 
         /// <summary>
         /// Производит пересчет точки с тремя координатами для заданной матрицы
@@ -152,7 +141,7 @@ namespace VinnyLibConverterCommon.Transformation
             //return new float[] { x, y, z };
         }
 
-        public MatrixImpl Matrix { get; private set; }
+        public MatrixImpl Matrix { get; internal set; }
 
         private void MultiplyMatrix(float[,] OtherMatrix)
         {

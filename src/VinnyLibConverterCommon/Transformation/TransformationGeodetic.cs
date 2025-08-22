@@ -6,6 +6,10 @@ namespace VinnyLibConverterCommon.Transformation
 {
     public class TransformationGeodetic : ICoordinatesTransformation
     {
+        public CoordinatesTransformationVariant GetTransformationType()
+        {
+            return CoordinatesTransformationVariant.Geodetic;
+        }
         private TransformationGeodetic() { }
         public TransformationGeodetic(string wktStartCs, string WktTargetCs)
         {
@@ -16,7 +20,8 @@ namespace VinnyLibConverterCommon.Transformation
 
         public float[] TransformPoint3d(float[] xyz)
         {
-            //TODO: подтянуть GDAL и реализовать пересчет
+            //TODO: подтянуть GDAL и реализовать пересчет (не хочется сюда тащить огромный GDAL OSR со своими абстракциями)
+            //TODO (2): создать SWIG-обёртку над маленькой C библиотекой на основе PROJ (указание пути к proj.db, пересчет точки, пересчет точек)
 
             throw new NotImplementedException();
         }
