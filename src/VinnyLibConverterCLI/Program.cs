@@ -14,8 +14,10 @@ namespace VinnyLibConverterCLI
             string executingAssemblyFile = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
             string execution_directory_path = Path.GetDirectoryName(executingAssemblyFile);
 
-            VinnyTests tests = new VinnyTests(execution_directory_path);
-            tests.cde_dotbim_1();
+            VinnyTests tests = new VinnyTests(execution_directory_path, @"E:\DataTest\VinnyLibConverterSamples");
+            //tests.cde_dotbim_1();
+            //tests.cde_smdx_1();
+            tests.cde_smdx_2();
 #endif
             Console.WriteLine("\nEnd!");
 
@@ -25,25 +27,45 @@ namespace VinnyLibConverterCLI
 #if DEBUG
     class VinnyTests
     {
-        public VinnyTests(string ExecDir)
+        public VinnyTests(string ExecDir, string samplesPath)
         {
             this.pExecDir = ExecDir;
+            this.pSamplesDirPath = samplesPath;
             mConverter = VinnyLibConverter.CreateInstance(ExecDir);
         }
 
         #region DOTBIM
         public void cde_dotbim_1()
         {
-            string path1 = @"C:\Users\Georg\Documents\GitHub\dotbim\test\ExampleFiles\TestFilesFromC#\Pyramid.bim";
-            string path2 = @"C:\Users\Georg\Documents\GitHub\dotbim\test\ExampleFiles\TestFilesFromC#\Pyramid_Export.bim";
+            string path1 = Path.Combine(pSamplesDirPath, "dotbim", "Pyramid.bim");
+            string path2 = Path.Combine(pSamplesDirPath, "dotbim", "Pyramid_Export.bim");
 
             var fotbimData = mConverter.ImportModel(CdeVariant.DotBIM, ImportExportParameters.CreateForLocalCDE(path1));
             mConverter.ExportModel(CdeVariant.DotBIM, fotbimData, ImportExportParameters.CreateForLocalCDE(path2));
         }
         #endregion
 
+        #region SMDX
+        public void cde_smdx_1()
+        {
+            string path1 = Path.Combine(pSamplesDirPath, "smdx", "MAF1.smdx");
+
+            var fotbimData = mConverter.ImportModel(CdeVariant.SMDX, ImportExportParameters.CreateForLocalCDE(path1));
+            //mConverter.ExportModel(CdeVariant.DotBIM, fotbimData, ImportExportParameters.CreateForLocalCDE(path2));
+        }
+
+        public void cde_smdx_2()
+        {
+            string path1 = Path.Combine(pSamplesDirPath, "smdx", "5ZD.smdx");
+
+            var fotbimData = mConverter.ImportModel(CdeVariant.SMDX, ImportExportParameters.CreateForLocalCDE(path1));
+            //mConverter.ExportModel(CdeVariant.DotBIM, fotbimData, ImportExportParameters.CreateForLocalCDE(path2));
+        }
+        #endregion
+
         private VinnyLibConverter mConverter;
         private string pExecDir;
+        private string pSamplesDirPath;
     }
 #endif
 }

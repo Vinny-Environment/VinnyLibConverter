@@ -41,6 +41,7 @@ namespace VinnyLibConverterKernel
             switch(ModelType)
             {
                 case CdeVariant.DotBIM: return new VinnyLibConverter_DotBIM.DotBimFormatProcessing().Import(openParameters);
+                case CdeVariant.SMDX: return new VinnyLibConverter_SMDX.SMDX_FormatProcessing().Import(openParameters);
             }
             return null;
         }
@@ -53,6 +54,9 @@ namespace VinnyLibConverterKernel
             {
                 case CdeVariant.DotBIM:
                     new VinnyLibConverter_DotBIM.DotBimFormatProcessing().Export(ModelData, outputParameters);
+                    break;
+                case CdeVariant.SMDX:
+                    new VinnyLibConverter_SMDX.SMDX_FormatProcessing().Export(ModelData, outputParameters);
                     break;
             }
         }

@@ -12,11 +12,10 @@ namespace VinnyLibConverterCommon
     {
         internal ImportExportParameters()
         {
-            CheckGeometryDubles = true;
+            CheckGeometryDubles = false;
             CheckMaterialsDubles = true;
             CheckParameterDefsDubles = true;
             TransformationInfo = new List<ICoordinatesTransformation>();
-            //TransformationInfo.Add(TransformationMatrix4x4.CreateEmptyTransformationMatrix());
         }
 
         public static ImportExportParameters CreateForLocalCDE(string path)
@@ -59,6 +58,10 @@ namespace VinnyLibConverterCommon
         public string Password { get; set; }
         #endregion
 
+        /// <summary>
+        /// Точность округления чисел кооординат. Если CheckGeometryDubles = true, будут искаться дубли с данным округлением
+        /// </summary>
+        public int VertexAccuracy { get; set; } = 5;
         public bool CheckGeometryDubles { get; set; }
         public bool CheckMaterialsDubles { get; set; }
         public bool CheckParameterDefsDubles { get; set; }

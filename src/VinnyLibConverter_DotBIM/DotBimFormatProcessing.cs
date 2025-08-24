@@ -96,12 +96,13 @@ namespace VinnyLibConverter_DotBIM
                         meshGeom.AssignMaterialToFace(colorCounter / 3, materialId);
                     }
                 }
-                
+
+                //задаем цвет
+                meshGeom.MaterialId = dotbimFileDef.MaterialsManager.CreateMaterial(new int[] { elem.Color.R, elem.Color.G, elem.Color.B, elem.Color.A });
 
                 dotbimFileDef.GeometrtyManager.SetGeometry(elem.MeshId, meshGeom);
 
-                //задаем цвет
-                objectDef.MaterialId = dotbimFileDef.MaterialsManager.CreateMaterial(new int[] { elem.Color.R, elem.Color.G, elem.Color.B, elem.Color.A });
+                
 
                 objectDef.UniqueId = elem.Guid;
 
@@ -170,9 +171,7 @@ namespace VinnyLibConverter_DotBIM
                 dotbim.Element dotbimElement = new dotbim.Element();
                 dotbimElement.Guid = objectDef.UniqueId;
 
-                //материал объекта
-                var objectDefMaterial = data.MaterialsManager.GetMaterialById(objectDef.MaterialId);
-                dotbimElement.Color = new dotbim.Color() { R = objectDefMaterial.ColorR, G = objectDefMaterial.ColorG, B = objectDefMaterial.ColorB, A = objectDefMaterial.ColorAlpha };
+                
 
                 //метаданные объекта
                 dotbimElement.Info = new Dictionary<string, string>();
@@ -192,6 +191,10 @@ namespace VinnyLibConverter_DotBIM
                 VinnyLibDataStructureGeometryPlacementInfo placementFirst = data.GeometrtyManager.GetGeometryPlacementInfoById(placementIdFirst);
                 VinnyLibDataStructureGeometry geometryDef = data.GeometrtyManager.GetGeometryById(placementFirst.IdGeometry);
                 VinnyLibDataStructureGeometryMesh geometryMeshDef = VinnyLibDataStructureGeometryMesh.asType(geometryDef);
+
+                //материал объекта
+                var objectDefMaterial = data.MaterialsManager.GetMaterialById(geometryDef.MaterialId);
+                dotbimElement.Color = new dotbim.Color() { R = objectDefMaterial.ColorR, G = objectDefMaterial.ColorG, B = objectDefMaterial.ColorB, A = objectDefMaterial.ColorAlpha };
 
                 dotbimElement.Vector = new dotbim.Vector() {
                     X = placementFirst.Position[0], Y = placementFirst.Position[1], Z = placementFirst.Position[2] };

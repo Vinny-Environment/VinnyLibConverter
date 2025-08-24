@@ -105,17 +105,17 @@ namespace VinnyLibConverterCommon
         /// </summary>
         /// <param name="data"></param>
         /// <param name="outputParameters"></param>
-        void Export(VinnyLibDataStructureModel data, ImportExportParameters outputParameters);
+        void Export(VinnyLibDataStructureModel vinnyData, ImportExportParameters outputParameters);
 
         /// <summary>
         /// Загрузить в AppDomain вспомогательные библиотеки, используемые данной
         /// </summary>
-        void LoadAuxiliaryAssemblies();
+        //void LoadAuxiliaryAssemblies();
 
         /// <summary>
         /// Выгрузить из AppDomain вспомогательные библиотеки, используемые данной
         /// </summary>
-        void UnloadAuxiliaryAssemblies();
+        //void UnloadAuxiliaryAssemblies();
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ namespace VinnyLibConverterCommon
     public interface ICadExportProcessing
     {
         VinnyLibDataStructureModel CreateData();
-        void ExportTo(CdeVariant outputType, VinnyLibDataStructureModel data, ImportExportParameters outputParameters);
+        void ExportTo(CdeVariant outputType, VinnyLibDataStructureModel vinnyData, ImportExportParameters outputParameters);
     }
 
     /// <summary>

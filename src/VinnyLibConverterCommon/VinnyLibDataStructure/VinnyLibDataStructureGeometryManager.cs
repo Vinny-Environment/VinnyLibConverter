@@ -44,11 +44,16 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
         public int CreateGeometry(VinnyLibDataStructureGeometry otherGeometry)
         {
-            otherGeometry.mId = mGeometryCounter;
+            otherGeometry.Id = mGeometryCounter;
             mGeometries.Add(mGeometryCounter, otherGeometry);
-            return otherGeometry.mId;
+            return otherGeometry.Id;
         }
 
+        /// <summary>
+        /// Вспомогательный метод, используется для обновления информации о геометрии
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="geometry"></param>
         public void SetGeometry(int id, VinnyLibDataStructureGeometry geometry)
         {
             this.mGeometries[id] = geometry;
@@ -64,7 +69,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public int CreateGeometryPlacementInfo(int geometryId)
         {
             VinnyLibDataStructureGeometryPlacementInfo placementInfo = new VinnyLibDataStructureGeometryPlacementInfo(mGeometryPlacementInfoCounter, geometryId);
-            placementInfo.Id = mGeometryPlacementInfoCounter;
+            //placementInfo.Id = mGeometryPlacementInfoCounter;
             this.mGeometriesPlacementInfo[mGeometryPlacementInfoCounter] = placementInfo;
             mGeometryPlacementInfoCounter++;
             return mGeometryPlacementInfoCounter-1;
@@ -78,9 +83,8 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public VinnyLibDataStructureGeometryPlacementInfo GetGeometryPlacementInfoById(int id)
         {
             VinnyLibDataStructureGeometryPlacementInfo outputPlacementInfo = new VinnyLibDataStructureGeometryPlacementInfo();
-            mGeometriesPlacementInfo.TryGetValue(id, out outputPlacementInfo);
-            if (outputPlacementInfo.Id == -1) return null;
-            return outputPlacementInfo;
+            if (mGeometriesPlacementInfo.TryGetValue(id, out outputPlacementInfo)) return outputPlacementInfo;
+            return null;
         }
 
         /// <summary>
@@ -112,6 +116,27 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                 }
             }
             return targetGeometry;
+        }
+
+        public float[] ComputeBoundsForGeometries(VinnyLibDataStructureGeometryPlacementInfo[] geoms)
+        {
+            float[] x = new float[geoms.Length * 2];
+            float[] y = new float[geoms.Length * 2];
+            float[] z = new float[geoms.Length * 2];
+
+            int counter = 0;
+            foreach (VinnyLibDataStructureGeometryPlacementInfo geom in geoms)
+            {
+                var bounds = this.GetGeometryById(geom.IdGeometry).ComputeBounds();
+                x[counter * 2] = bounds[0];
+                x[counter * 2 + 1] = bounds[3];
+                y[counter * 2] = bounds[1];
+                y[counter * 2 + 1] = bounds[4];
+                z[counter * 2] = bounds[2];
+                z[counter * 2 + 1] = bounds[5];
+                counter++;
+            }
+            return new float[] { x.Min(), y.Min(), z.Min(), x.Max(), y.Max(), z.Max() };
         }
 
 

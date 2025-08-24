@@ -22,6 +22,16 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             this.Id = id;
         }
 
+        public int[] GetRGB()
+        {
+            return new int[] { ColorR, ColorG, ColorB };
+        }
+
+        public int[] GetRGBA()
+        {
+            return new int[] { ColorR, ColorG, ColorB, ColorAlpha };
+        }
+
         public override bool Equals(object obj)
         {
             return

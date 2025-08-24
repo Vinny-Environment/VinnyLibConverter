@@ -22,6 +22,11 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             GeometryPlacementInfoIds = new List<int>();
         }
         public int Id { get; private set; }
+
+        /// <summary>
+        /// Вспомогательный идентификатор, заполняется при чтении файла. Указывает на идентификатор объекта внутри данного файла
+        /// </summary>
+        //public int IdCDE { get; set; }
         public int ParentId { get; set; } = -1;
 
         public string Name { get; set; } = "";
@@ -29,7 +34,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public string UniqueId { get; set; }
         public string ModifiedDate { get; set; }
 
-        public int MaterialId { get; set; }
+        
 
         public void AddGeometryPlacementInfo(VinnyLibDataStructureGeometryPlacementInfo geometryPlacementInfo)
         {

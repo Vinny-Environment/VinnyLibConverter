@@ -21,6 +21,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VinnyLibConverter_SMDX", "src\VinnyLibConverter_SMDX\VinnyLibConverter_SMDX.csproj", "{E9BE88F5-9605-461E-AE55-7725454A82D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinnyLibConverterLogger", "src\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj", "{ED41E516-7636-447A-9AAA-E314CC6F4AF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,12 +47,21 @@ Global
 		{780AB9C5-ED6F-4B11-A49A-5FF6F8AF7B37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{780AB9C5-ED6F-4B11-A49A-5FF6F8AF7B37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{780AB9C5-ED6F-4B11-A49A-5FF6F8AF7B37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9BE88F5-9605-461E-AE55-7725454A82D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9BE88F5-9605-461E-AE55-7725454A82D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9BE88F5-9605-461E-AE55-7725454A82D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9BE88F5-9605-461E-AE55-7725454A82D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED41E516-7636-447A-9AAA-E314CC6F4AF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED41E516-7636-447A-9AAA-E314CC6F4AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED41E516-7636-447A-9AAA-E314CC6F4AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED41E516-7636-447A-9AAA-E314CC6F4AF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6E390798-A874-4E07-B79F-5E9DED0CE0C0} = {EAC21F9B-E76A-4760-8619-6E510FF5DC62}
+		{E9BE88F5-9605-461E-AE55-7725454A82D5} = {EAC21F9B-E76A-4760-8619-6E510FF5DC62}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1DCD40E1-09D7-4088-8513-C5D3DE6FF16F}

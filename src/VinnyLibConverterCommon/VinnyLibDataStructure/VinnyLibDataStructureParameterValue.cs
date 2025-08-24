@@ -40,6 +40,41 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             mValue = value;
         }
 
+        public void SetValue(object value, VinnyLibDataStructureParameterDefinitionType propType)
+        {
+            if (value == null) return;
+            string valueStr = value.ToString();
+
+            switch(propType)
+            {
+                case VinnyLibDataStructureParameterDefinitionType.ParamBool:
+                    {
+                        bool result;
+                        if (bool.TryParse(valueStr, out result)) this.mValue = result;
+                        break;
+                    }
+                    
+                case VinnyLibDataStructureParameterDefinitionType.ParamInteger:
+                    {
+                        int result;
+                        if (int.TryParse(valueStr, out result)) this.mValue = result;
+                        break;
+                    }
+                case VinnyLibDataStructureParameterDefinitionType.ParamReal:
+                    {
+                        double result;
+                        if (double.TryParse(valueStr, out result)) this.mValue = result;
+                        break;
+                    }
+                default:
+                    {
+                        this.mValue = valueStr;
+                        break;
+                    }
+            }
+
+        }
+
         public bool GetIntegerValue(out int value)
         {
             value = -1;
@@ -96,6 +131,6 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         }
 
         private bool isValueNull => mValue == null;
-        private object mValue;
+        private object mValue = null;
     }
 }

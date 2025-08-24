@@ -13,6 +13,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         {
             pMaterialCounter = 0;
             mMaterials = new Dictionary<int, VinnyLibDataStructureMaterial>();
+            CreateMaterial(new int[] { 0, 0, 0 }, "Default");
         }
 
         public int CreateMaterial(int[] RGBA, string name = "")
