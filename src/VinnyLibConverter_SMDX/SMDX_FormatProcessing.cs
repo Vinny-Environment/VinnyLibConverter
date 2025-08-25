@@ -11,6 +11,7 @@ using VinnyLibConverterCommon.Transformation;
 using VinnyLibConverter_SMDX.SMDX;
 using System.Text.RegularExpressions;
 using VinnyLibConverter_SMDX.SMDX.Materials;
+using VinnyLibConverterUtils;
 
 namespace VinnyLibConverter_SMDX
 {
@@ -48,6 +49,9 @@ namespace VinnyLibConverter_SMDX
 
             Dictionary<int, List<int>> smdxGeometry2VinnyGeometry = new Dictionary<int, List<int>>();
 
+            //Ключ: SMDX_Content_Geometry.geometry; Значение: VinnyLibDataStructureGeometry.Id
+            //Dictionary<int, int> smdxGeometryId2vinnyGeometry = new Dictionary<int, int>();
+
             int smdxGeomertyCounter = 0;
             foreach (SMDX_Content_Geometry smdxGeometryInfo in smdxFileInfo.Content.geometry)
             {
@@ -55,6 +59,7 @@ namespace VinnyLibConverter_SMDX
                 if (smdxGeometryJ3dFile == null) 
                 {
                     smdxGeomertyCounter++;
+                    VinnyLibConverterLogger.InitLogger().WriteLog($"SMDX. Не удалось найти геометрию {smdxGeometryInfo.href}");
                     continue;
                 }
                 smdxGeometry2VinnyGeometry[smdxGeomertyCounter] = new List<int>();
@@ -77,12 +82,16 @@ namespace VinnyLibConverter_SMDX
                         vinnyGeometryInfoMeshDef.AddVertex(x, y, z);
                     }
                     //сохраняем грани
+                    int prevIndex = 0;
                     for (int smdxFaceCounter = 0; smdxFaceCounter < smdxGeometryPartInfoDef.triangles.Count - 2; smdxFaceCounter += 3)
                     {
                         int v1, v2, v3;
-                        v1 = smdxGeometryPartInfoDef.triangles[smdxFaceCounter];
-                        v2 = smdxGeometryPartInfoDef.triangles[smdxFaceCounter + 1];
-                        v3 = smdxGeometryPartInfoDef.triangles[smdxFaceCounter + 2];
+                        v1 = smdxGeometryPartInfoDef.triangles[smdxFaceCounter] + prevIndex;
+                        prevIndex = v1;
+                        v2 = smdxGeometryPartInfoDef.triangles[smdxFaceCounter + 1] + prevIndex;
+                        prevIndex = v2;
+                        v3 = smdxGeometryPartInfoDef.triangles[smdxFaceCounter + 2] + prevIndex;
+                        prevIndex = v3;
 
                         //Вот тут может возникнуть косяк, если mActiveConfig.CheckGeometryDubles = true и каке-то вершины "ужались", но при ЧТЕНИИ формата этого быть не должно
                         vinnyGeometryInfoMeshDef.AddFace(v1, v2, v3);
@@ -95,7 +104,7 @@ namespace VinnyLibConverter_SMDX
                         if (material != null && material.ambient != null && material.ambient.Length == 3)
                         {
                             int vinnyMaterialId = vinnyFileDef.MaterialsManager.CreateMaterial(material.GetColorRGB());
-                            for (int faceIndex = groupColorsInfo.Value[0]; faceIndex < groupColorsInfo.Value[1]; faceIndex++)
+                            for (int faceIndex = groupColorsInfo.Value[0]; faceIndex <= groupColorsInfo.Value[1]; faceIndex++)
                             {
                                 vinnyGeometryInfoMeshDef.AssignMaterialToFace(faceIndex, vinnyMaterialId);
                             }
@@ -116,49 +125,64 @@ namespace VinnyLibConverter_SMDX
                 if (!smdxGroupObjects.ContainsKey(smdxInsertionInfo.group)) smdxGroupObjects.Add(smdxInsertionInfo.group, new List<int>());
 
                 //заполняем VinnyLibDataStructureGeometryPlacementInfo
-                List<int> geoms = smdxGeometry2VinnyGeometry[smdxInsertionInfo.geometry];
-                foreach (int geomsId in geoms)
+                List<int> geoms = new List<int>();
+                if (smdxGeometry2VinnyGeometry.TryGetValue(smdxInsertionInfo.geometry, out geoms))
                 {
-                    int VinnyLibDataStructureGeometryPlacementInfoId = vinnyFileDef.GeometrtyManager.CreateGeometryPlacementInfo(geomsId);
-                    VinnyLibDataStructureGeometryPlacementInfo geomPI = vinnyFileDef.GeometrtyManager.GetGeometryPlacementInfoById(VinnyLibDataStructureGeometryPlacementInfoId);
-
-                    float[] posTmp = smdxFileInfo.Content.wcs;
-                    if (smdxInsertionInfo.position != null)
+                    foreach (int geomsId in geoms)
                     {
-                        if (smdxInsertionInfo.position.GetType() == typeof(Array))
+                        //Сперва проверяем тип insertion. Если position или normal выражен какой-то фигней с "interpolation": "linear" то вообще такое пропускаем
+
+                        float[] posTmp = smdxFileInfo.Content.wcs;
+
+                        string jsonStr = System.Text.Json.JsonSerializer.Serialize(smdxInsertionInfo.position, InternalUtils.GetWriteOpts());
+                        
+                        if (smdxInsertionInfo.position != null)
                         {
-                            float[] posRaw = ((Array)smdxInsertionInfo.position).Cast<float>().ToArray();
-                            posTmp[0] += posRaw[0];
-                            posTmp[1] += posRaw[1];
-                            if (posRaw.Length == 2) posTmp[2] += posRaw[2];
-                        }
-                        else if (smdxInsertionInfo.position.GetType() == typeof(Dictionary<string, object>))
-                        {
-                            //пропускаем. Не знаю как это читать
+                            if (jsonStr.Contains("interpolation"))
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                float[] posRaw = System.Text.Json.JsonSerializer.Deserialize<float[]>(jsonStr); //((Array)smdxInsertionInfo.position).Cast<float>().ToArray();
+                                //<Dictionary<string, SMDX_Geometry_j3d_Part>
+                                posTmp[0] += posRaw[0];
+                                posTmp[1] += posRaw[1];
+                                if (posRaw.Length == 2) posTmp[2] += posRaw[2];
+                            }
+
                         }
 
-                    }
-
-                    geomPI.Position = posTmp;
-                    if (smdxInsertionInfo.scale != null)
-                    {
-                        if (smdxInsertionInfo.scale.GetType() == typeof(Array))
+                        if (smdxInsertionInfo.normal != null)
                         {
-                            geomPI.Scale = ((Array)smdxInsertionInfo.scale).Cast<float>().ToArray();
+                            if (jsonStr.Contains("interpolation"))
+                            {
+                                continue;
+                            }
                         }
-                        else if (smdxInsertionInfo.scale.GetType() == typeof(float))
+
+                        int VinnyLibDataStructureGeometryPlacementInfoId = vinnyFileDef.GeometrtyManager.CreateGeometryPlacementInfo(geomsId);
+                        VinnyLibDataStructureGeometryPlacementInfo geomPI = vinnyFileDef.GeometrtyManager.GetGeometryPlacementInfoById(VinnyLibDataStructureGeometryPlacementInfoId);
+
+                        geomPI.Position = posTmp;
+                        if (smdxInsertionInfo.scale != null)
                         {
-                            geomPI.Scale = new float[3] { (float)smdxInsertionInfo.scale, (float)smdxInsertionInfo.scale, (float)smdxInsertionInfo.scale };
+                            if (smdxInsertionInfo.scale.GetType() == typeof(Array))
+                            {
+                                geomPI.Scale = ((Array)smdxInsertionInfo.scale).Cast<float>().ToArray();
+                            }
+                            else if (smdxInsertionInfo.scale.GetType() == typeof(float))
+                            {
+                                geomPI.Scale = new float[3] { (float)smdxInsertionInfo.scale, (float)smdxInsertionInfo.scale, (float)smdxInsertionInfo.scale };
+                            }
                         }
-                    }
 
-                    geomPI.VectorOZ_Rad = smdxInsertionInfo.angle;
+                        geomPI.VectorOZ_Rad = smdxInsertionInfo.angle;
 
-                    if (smdxInsertionInfo.normal != null)
-                    {
-                        if (smdxInsertionInfo.normal.GetType() == typeof(Array))
+                        if (smdxInsertionInfo.normal != null)
                         {
-                            float[] normalRaw = ((Array)smdxInsertionInfo.normal).Cast<float>().ToArray();
+                            jsonStr = System.Text.Json.JsonSerializer.Serialize(smdxInsertionInfo.normal, InternalUtils.GetWriteOpts());
+                            float[] normalRaw = System.Text.Json.JsonSerializer.Deserialize<float[]>(jsonStr);
                             if (normalRaw.Length == 3)
                             {
                                 QuaternionInfo normal = QuaternionInfo.NormalToQuaternion(new Vector3(normalRaw[0], normalRaw[1], normalRaw[2]));
@@ -168,16 +192,17 @@ namespace VinnyLibConverter_SMDX
                                 geomPI.VectorOZ_Rad += angles_XYZ[2]; //проверить, коррректно ли?
                             }
                         }
+
+
+
+                        geomPI.InitMatrix();
+
+                        smdxGroupObjects[smdxInsertionInfo.group].Add(geomPI.Id);
+
+                        vinnyFileDef.GeometrtyManager.SetGeometryPlacementInfo(geomPI.Id, geomPI);
                     }
-
-                    
-
-                    geomPI.InitMatrix();
-
-                    smdxGroupObjects[smdxInsertionInfo.group].Add(geomPI.Id);
-
-                    vinnyFileDef.GeometrtyManager.SetGeometryPlacementInfo(geomPI.Id, geomPI);
                 }
+                
             }
 
             //обработка groups -- это фактически объекты, геометрия которых лежит в блоке insertions, т.е. могут быть объекты без геометрии (структурные компоненты)
@@ -223,10 +248,8 @@ namespace VinnyLibConverter_SMDX
                     int propId = vinnyFileDef.ParametersManager.CreateParameterDefinition(smdxProperty.tag, propType);
                     VinnyLibDataStructureParameterValue paramValue = new VinnyLibDataStructureParameterValue();
                     paramValue.ParamDefId = propId;
-                    if (propType == VinnyLibDataStructureParameterDefinitionType.ParamBool)
-                    {
-                        paramValue.SetValue(smdxProperty.value, propType);
-                    }
+                    paramValue.SetValue(smdxProperty.value, propType);
+
                     vinnyObject.Parameters.Add(paramValue);
                 }
                 vinnyFileDef.ObjectsManager.SetObject(vinnyObject.Id, vinnyObject);
@@ -287,31 +310,55 @@ namespace VinnyLibConverter_SMDX
                     {
                         foreach (var faceMaterial in vinnyGeometryMeshDef.Faces2Materials)
                         {
-                            if (!materialsOfFacesCollection.ContainsKey(faceMaterial.Key)) materialsOfFacesCollection.Add(faceMaterial.Key, new List<int>());
-                            materialsOfFacesCollection[faceMaterial.Key].Add(faceMaterial.Value);
+                            if (!materialsOfFacesCollection.ContainsKey(faceMaterial.Value)) materialsOfFacesCollection.Add(faceMaterial.Value, new List<int>());
+                            materialsOfFacesCollection[faceMaterial.Value].Add(faceMaterial.Key);
                         }
                     }
                     else materialsOfFacesCollection.Add(vinnyGeometryMeshDef.MaterialId, vinnyGeometryMeshDef.Faces.Keys.Cast<int>().ToList());
 
                     //заполняем groups у j3d-файла
                     int prevoiusFacesCount = 0;
+                    int previousVertexIndex = 0;
+                    int faceCounter = 0;
+
                     foreach (var materialOfFacesCollection in materialsOfFacesCollection)
                     {
-                        smdxMeshGeometryPart.groups.Add(materialId2smdxJmtlNames[materialOfFacesCollection.Key], new int[] { prevoiusFacesCount, materialOfFacesCollection.Value.Count});
+                        smdxMeshGeometryPart.groups.Add(materialId2smdxJmtlNames[materialOfFacesCollection.Key], new int[] { prevoiusFacesCount, materialOfFacesCollection.Value.Count - 1});
                         //добавим в triangles j3d-файла одноцветные грани из materialOfFacesCollection.Value
+                        
                         foreach (int faceIndex in materialOfFacesCollection.Value)
                         {
                             int[] faceDef = vinnyGeometryMeshDef.Faces[faceIndex];
-                            smdxMeshGeometryPart.triangles.Add(faceDef[0]);
-                            smdxMeshGeometryPart.triangles.Add(faceDef[1]);
-                            smdxMeshGeometryPart.triangles.Add(faceDef[2]);
+                            int v1;
+                            if (faceCounter == 0) 
+                            {
+                                previousVertexIndex = faceDef[0];
+                                v1 = faceDef[0];
+                            }
+                            else 
+                            {
+                                v1 = faceDef[0] - previousVertexIndex;
+                            }
+                            int v2 = faceDef[1] - faceDef[0];
+                            int v3 = faceDef[2] - faceDef[1];
+
+                            previousVertexIndex = faceDef[2];
+
+                            smdxMeshGeometryPart.triangles.Add(v1);
+                            smdxMeshGeometryPart.triangles.Add(v2);
+                            smdxMeshGeometryPart.triangles.Add(v3);
+                            faceCounter++;
                         }
+                        prevoiusFacesCount = faceCounter - 1;
                     }
                     smdxMeshGeometry.Meshes.Add("geometry", smdxMeshGeometryPart);
 
-                    smdxProject.CreateGeometry(new SMDX_Content_Geometry() { href = $"geometry_{vinnyGeometryInfo.Key}.j3d", bounds = vinnyGeometryMeshDef.ComputeBounds() }, smdxMeshGeometry);
+                    //заполнять ли smoothing единицами?
+
+                    smdxProject.CreateGeometry(new SMDX_Content_Geometry() { href = $"geometry_{vinnyGeometryDef.Id}.j3d", bounds = vinnyGeometryMeshDef.ComputeBounds() }, smdxMeshGeometry);
 
                     vinnyGeometryId2smdxIds.Add(vinnyGeometryMeshDef.Id, smdxGeometryCounter);
+                    smdxGeometryCounter++;
                 }
                 else
                 {
@@ -320,12 +367,55 @@ namespace VinnyLibConverter_SMDX
                 }
             }
 
-            //заполняем groups
+            //заполняем groups -- в нашем понимании это объекты со свойствами
+            //т.к. идентификаторы объектов в Vinny-струкутре могут быть большими, сперва занесем все объекты в SMDX-groups, а потом скорректируем parent-информацию
+
+            //Ключ: VinnyLibDataStructureObject.Id, значение: порядковый номер smdx-group
+            Dictionary<int, int> vinnyObjectId2SmdxGroupNum = new Dictionary<int, int>();
+            //Вспомогательный словарь для связывания insertions с group
+            //Ключ: идентификатор VinnyLibDataStructureGeometryPlacementInfo, значение: порядковый номер smdx-group
+            Dictionary<int, int> vinnyGeometryPI2SmdxGroupNum = new Dictionary<int, int>();
+            int smdxGroupCounter = 0;
             foreach (var vinnyObjectInfo in vinnyData.ObjectsManager.Objects)
             {
                 VinnyLibDataStructureObject vinnyObjectDef = vinnyObjectInfo.Value;
+                foreach (int geomPIid in vinnyObjectDef.GeometryPlacementInfoIds)
+                {
+                    vinnyGeometryPI2SmdxGroupNum.Add(geomPIid, smdxGroupCounter);
+                }
 
+                SMDX_Content_Group smdxGroupDef = new SMDX_Content_Group();
+                smdxGroupDef.name = vinnyObjectDef.Name;
+
+                //заполняем свойства
+                if (vinnyObjectDef.Parameters.Count > 0) smdxGroupDef.properties = new List<SMDX_Content_Type_Property>();
+                foreach (VinnyLibDataStructureParameterValue vinnyProp in vinnyObjectDef.Parameters)
+                {
+                    VinnyLibDataStructureParameterDefinition vinnyParamDef = vinnyData.ParametersManager.GetParamDefById(vinnyProp.ParamDefId);
+                    smdxGroupDef.properties.Add(new SMDX_Content_Type_Property() { tag = vinnyParamDef.Name, value = vinnyProp.ToString() });
+                }
+
+                smdxProject.Content.groups.Add(smdxGroupDef);
+                vinnyObjectId2SmdxGroupNum.Add(vinnyObjectDef.Id, smdxGroupCounter);
+                smdxGroupCounter++;
             }
+
+            //задаем родителя
+            smdxGroupCounter = 0;
+            foreach (var smdxGroupInfo in smdxProject.Content.groups)
+            {
+                //получаем связанный объект с данным group
+                //вообще, данные должны получиться 100%, проверка ниже по идее не имеет смысла...
+                var linkedVinnyObjectInfo = vinnyObjectId2SmdxGroupNum.Where(a => a.Value == smdxGroupCounter);
+                if (linkedVinnyObjectInfo.Any())
+                {
+                    VinnyLibDataStructureObject vinnyObjectDef = vinnyData.ObjectsManager.GetObjectById(linkedVinnyObjectInfo.First().Key);
+                    if (vinnyObjectDef.ParentId != -1) smdxGroupInfo.parent = vinnyObjectId2SmdxGroupNum[vinnyObjectDef.ParentId];
+                }
+
+                smdxGroupCounter++;
+            }
+
 
             //заполняем insertions
             foreach (var vinnyGeometryPI_Info in vinnyData.GeometrtyManager.mGeometriesPlacementInfo)
@@ -334,9 +424,17 @@ namespace VinnyLibConverter_SMDX
 
                 SMDX_Content_Insertion smdxInsertionDef = new SMDX_Content_Insertion();
                 smdxInsertionDef.geometry = vinnyGeometryId2smdxIds[vinnyGeometryPI.IdGeometry];
+                smdxInsertionDef.group = vinnyGeometryPI2SmdxGroupNum[vinnyGeometryPI.Id];
+                smdxInsertionDef.position = vinnyGeometryPI.Position;
+                smdxInsertionDef.scale = vinnyGeometryPI.Scale;
+
+                //проверить корректность
+                QuaternionInfo q = vinnyGeometryPI.TransformationMatrixInfo.GetRotationInfo();
+                var v = q * Vector3.Forward;
+                smdxInsertionDef.normal = new float[] {v.X,  v.Y, v.Z};
+
+                smdxProject.Content.insertions.Add(smdxInsertionDef);
             }
-
-
             smdxProject.Save(outputParameters.Path);
         }
     }

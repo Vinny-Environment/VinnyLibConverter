@@ -11,6 +11,10 @@ namespace VinnyLibConverter_SMDX.SMDX
     /// </summary>
     public class SMDX_Content_Geometry
     {
+        public SMDX_Content_Geometry()
+        {
+            //lods = new List<SMDX_Content_Geometry_Lod>();
+        }
         /// <summary>
         /// Наименование файла j3d в папке /geometry с геометрией объекта
         /// </summary>

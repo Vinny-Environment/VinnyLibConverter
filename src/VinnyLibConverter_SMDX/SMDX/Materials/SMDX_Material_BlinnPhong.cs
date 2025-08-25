@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace VinnyLibConverter_SMDX.SMDX.Materials
@@ -88,7 +89,7 @@ namespace VinnyLibConverter_SMDX.SMDX.Materials
 
         public void Save(string path)
         {
-            File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(this));
+            File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(this, InternalUtils.GetWriteOpts()));
         }
 
         public static SMDX_Material_BlinnPhong LoadFrom(string path)

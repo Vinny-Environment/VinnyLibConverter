@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace VinnyLibConverter_SMDX.SMDX
@@ -70,7 +71,7 @@ namespace VinnyLibConverter_SMDX.SMDX
 
         public void Save(string path)
         {
-
+            File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(this, InternalUtils.GetWriteOpts()));
         }
     }
 }

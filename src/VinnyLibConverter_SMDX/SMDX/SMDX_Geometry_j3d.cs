@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace VinnyLibConverter_SMDX.SMDX
@@ -51,6 +52,10 @@ namespace VinnyLibConverter_SMDX.SMDX
     /// </summary>
     public class SMDX_Geometry_j3d
     {
+        public SMDX_Geometry_j3d()
+        {
+            Meshes = new Dictionary<string, SMDX_Geometry_j3d_Part>();
+        }
         /// <summary>
         /// Абсолютный файловый путь к j3d-модели
         /// </summary>
@@ -73,7 +78,7 @@ namespace VinnyLibConverter_SMDX.SMDX
 
         public void Save (string path)
         {
-            File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(this));
+            File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(Meshes, InternalUtils.GetWriteOpts()));
             
         }
     }

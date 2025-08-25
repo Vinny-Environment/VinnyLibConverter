@@ -31,7 +31,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
         internal VinnyLibDataStructureGeometryMesh(int id)
         {
-            mId = id;
+            this.Id = id;
 
             Points = new Dictionary<int, float[]>();
             Faces = new Dictionary<int, int[]>();

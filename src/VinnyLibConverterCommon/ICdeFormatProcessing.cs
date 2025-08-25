@@ -31,6 +31,31 @@ namespace VinnyLibConverterCommon
         public const string CdeFrmt_NWC = "nwcreate";
         public const string CdeFrmt_FBX = "fbx";
         public const string CdeFrmt_GLTF = "gltf";
+        public const string CdeFrmt_IFC = "ifc";
+        public const string CdeFrmt_DXF = "dxf";
+        public const string CdeFrmt_LandXML = "landxml";
+
+        public static Dictionary<CdeVariant, string> CdeFormatName
+        {
+            get
+            {
+                return new Dictionary<CdeVariant, string>
+                {
+                    {CdeVariant.SMDX, CdeFrmt_SMDX},
+                    {CdeVariant.MLT, CdeFrmt_MLT},
+                    {CdeVariant.IMC, CdeFrmt_IMC},
+                    {CdeVariant.DotBIM, CdeFrmt_DotBim},
+                    {CdeVariant.NWC, CdeFrmt_NWC},
+                    {CdeVariant.FBX, CdeFrmt_FBX},
+                    {CdeVariant.GLTF, CdeFrmt_GLTF},
+                    {CdeVariant.IFC, CdeFrmt_IFC},
+                    {CdeVariant.DXF, CdeFrmt_DXF},
+                    {CdeVariant.LandXML, CdeFrmt_LandXML},
+
+                };
+            }
+        }
+
 
         /// <summary>
         /// Вспомогательный метод для получения строки-идентификатора CDE. Используется пока только в путях к библиотекам. 

@@ -11,9 +11,10 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
     {
         public VinnyLibDataStructureGeometryPlacementInfo(int id, int geometryId)
         {
+            SetDefaultValues();
             this.Id = id;
             this.IdGeometry = geometryId;
-            SetDefaultValues();
+            
         }
         internal VinnyLibDataStructureGeometryPlacementInfo() { SetDefaultValues(); }
 

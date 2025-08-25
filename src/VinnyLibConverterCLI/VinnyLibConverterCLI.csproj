@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <OutDir>$(SolutionDir)bin\$(Configuration)</OutDir>
+    <OutDir>$(SolutionDir)..\VinnyLibBin\$(Configuration)</OutDir>
     <TargetFramework>net6.0</TargetFramework>
     <CopyLocalLockFileAssemblies>False</CopyLocalLockFileAssemblies>
   </PropertyGroup>

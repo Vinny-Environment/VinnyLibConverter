@@ -11,6 +11,10 @@ namespace VinnyLibConverter_SMDX.SMDX
     /// </summary>
     public class SMDX_Content_Group
     {
+        public SMDX_Content_Group()
+        {
+            //properties = new List<SMDX_Content_Type_Property>();
+        }
         /// <summary>
         /// Наименование группы
         /// </summary>
@@ -26,7 +30,7 @@ namespace VinnyLibConverter_SMDX.SMDX
         /// </summary>
         public int? type { get; set; }
 
-        public List<SMDX_Content_Type_Property>? properties { get; set; } = new List<SMDX_Content_Type_Property>();
+        public List<SMDX_Content_Type_Property>? properties { get; set; } 
     }
 
 }

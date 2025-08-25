@@ -10,6 +10,7 @@ namespace VinnyLibConverterCLI
     {
         static void Main(string[] args)
         {
+            //TODO: реализовать параметры командной строки с комментариями для ввода значений (и инициализация ImportExportParameters из консоли)
 #if DEBUG
             string executingAssemblyFile = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
             string execution_directory_path = Path.GetDirectoryName(executingAssemblyFile);
@@ -49,17 +50,19 @@ namespace VinnyLibConverterCLI
         public void cde_smdx_1()
         {
             string path1 = Path.Combine(pSamplesDirPath, "smdx", "MAF1.smdx");
+            string path2 = Path.Combine(pSamplesDirPath, "smdx", "MAF1_Export.smdx");
 
             var fotbimData = mConverter.ImportModel(CdeVariant.SMDX, ImportExportParameters.CreateForLocalCDE(path1));
-            //mConverter.ExportModel(CdeVariant.DotBIM, fotbimData, ImportExportParameters.CreateForLocalCDE(path2));
+            mConverter.ExportModel(CdeVariant.SMDX, fotbimData, ImportExportParameters.CreateForLocalCDE(path2));
         }
 
         public void cde_smdx_2()
         {
             string path1 = Path.Combine(pSamplesDirPath, "smdx", "5ZD.smdx");
+            string path2 = Path.Combine(pSamplesDirPath, "smdx", "5ZD_Export.smdx");
 
             var fotbimData = mConverter.ImportModel(CdeVariant.SMDX, ImportExportParameters.CreateForLocalCDE(path1));
-            //mConverter.ExportModel(CdeVariant.DotBIM, fotbimData, ImportExportParameters.CreateForLocalCDE(path2));
+            mConverter.ExportModel(CdeVariant.SMDX, fotbimData, ImportExportParameters.CreateForLocalCDE(path2));
         }
         #endregion
 

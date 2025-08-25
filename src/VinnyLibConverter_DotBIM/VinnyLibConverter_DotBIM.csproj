@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-        <OutDir>$(SolutionDir)bin\$(Configuration)\dependencies\dotbim</OutDir>
+        <OutDir>$(SolutionDir)..\VinnyLibBin\$(Configuration)\dependencies\dotbim</OutDir>
 		<TargetFramework>netstandard20</TargetFramework>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
