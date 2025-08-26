@@ -19,6 +19,7 @@ namespace VinnyLibConverterCLI
             //tests.cde_dotbim_1();
             //tests.cde_smdx_1();
             tests.cde_smdx_2();
+            //tests.cde_smdx_3();
 #endif
             Console.WriteLine("\nEnd!");
 
@@ -52,8 +53,8 @@ namespace VinnyLibConverterCLI
             string path1 = Path.Combine(pSamplesDirPath, "smdx", "MAF1.smdx");
             string path2 = Path.Combine(pSamplesDirPath, "smdx", "MAF1_Export.smdx");
 
-            var fotbimData = mConverter.ImportModel(CdeVariant.SMDX, ImportExportParameters.CreateForLocalCDE(path1));
-            mConverter.ExportModel(CdeVariant.SMDX, fotbimData, ImportExportParameters.CreateForLocalCDE(path2));
+            var data = mConverter.ImportModel(CdeVariant.SMDX, ImportExportParameters.CreateForLocalCDE(path1));
+            mConverter.ExportModel(CdeVariant.SMDX, data, ImportExportParameters.CreateForLocalCDE(path2));
         }
 
         public void cde_smdx_2()
@@ -61,8 +62,17 @@ namespace VinnyLibConverterCLI
             string path1 = Path.Combine(pSamplesDirPath, "smdx", "5ZD.smdx");
             string path2 = Path.Combine(pSamplesDirPath, "smdx", "5ZD_Export.smdx");
 
-            var fotbimData = mConverter.ImportModel(CdeVariant.SMDX, ImportExportParameters.CreateForLocalCDE(path1));
-            mConverter.ExportModel(CdeVariant.SMDX, fotbimData, ImportExportParameters.CreateForLocalCDE(path2));
+            var data = mConverter.ImportModel(CdeVariant.SMDX, ImportExportParameters.CreateForLocalCDE(path1));
+            mConverter.ExportModel(CdeVariant.SMDX, data, ImportExportParameters.CreateForLocalCDE(path2));
+        }
+
+        public void cde_smdx_3()
+        {
+            string path1 = Path.Combine(pSamplesDirPath, "dotbim", "House.bim");
+            string path2 = Path.Combine(pSamplesDirPath, "smdx", "House_Export.smdx");
+
+            var data = mConverter.ImportModel(CdeVariant.DotBIM, ImportExportParameters.CreateForLocalCDE(path1));
+            mConverter.ExportModel(CdeVariant.SMDX, data, ImportExportParameters.CreateForLocalCDE(path2));
         }
         #endregion
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -22,6 +22,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         {
             this.Id = id;
             this.Name = name;
+            this.Caption = name;
         }
         public int Id { get; private set; }
         public string Name { get; private set; }

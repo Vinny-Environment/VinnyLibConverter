@@ -52,17 +52,30 @@ namespace VinnyLibConverter_DotBIM
                 VinnyLibDataStructureGeometryMesh meshGeom = VinnyLibDataStructureGeometryMesh.asType(meshGeomRaw);
                 if (meshGeom != null)
                 {
+                    for (int dotbimMeshVertexCounter = 0; dotbimMeshVertexCounter < mesh.Coordinates.Count - 2; dotbimMeshVertexCounter += 3)
+                    {
+                        float x, y, z;
+                        x = (float)mesh.Coordinates[dotbimMeshVertexCounter];
+                        y = (float)mesh.Coordinates[dotbimMeshVertexCounter + 1];
+                        z = (float)mesh.Coordinates[dotbimMeshVertexCounter + 2];
+
+                        meshGeom.AddVertex(x, y, z);
+                    }
                     for(int dotbimMeshFaceIndicesCounter = 0; dotbimMeshFaceIndicesCounter < mesh.Indices.Count - 2; dotbimMeshFaceIndicesCounter+=3)
                     {
                         int VertexId1 = mesh.Indices[dotbimMeshFaceIndicesCounter];
                         int VertexId2 = mesh.Indices[dotbimMeshFaceIndicesCounter + 1];
                         int VertexId3 = mesh.Indices[dotbimMeshFaceIndicesCounter + 2];
 
+                        meshGeom.AddFace(VertexId1, VertexId2, VertexId3);
+
+                        /*
                         float[] Vertex1 = GetVertexCoords(VertexId1);
                         float[] Vertex2 = GetVertexCoords(VertexId2);
                         float[] Vertex3 = GetVertexCoords(VertexId3);
 
                         meshGeom.AddFace(Vertex1, Vertex2, Vertex3);
+                        */
                     }
 
                     dotbimFileDef.GeometrtyManager.SetGeometry(geomId, meshGeom);

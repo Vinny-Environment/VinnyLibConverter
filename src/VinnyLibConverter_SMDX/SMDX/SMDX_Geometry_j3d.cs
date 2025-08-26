@@ -70,7 +70,7 @@ namespace VinnyLibConverter_SMDX.SMDX
             string file_data = File.ReadAllText(path);
             var result_Meshes = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, SMDX_Geometry_j3d_Part>>(file_data);
             SMDX_Geometry_j3d smdx_geometry = new SMDX_Geometry_j3d();
-            smdx_geometry.Meshes = result_Meshes;
+            smdx_geometry.Meshes = result_Meshes ?? new Dictionary<string, SMDX_Geometry_j3d_Part>();
             //smdx_geometry.data_path = path;
 
             return smdx_geometry;

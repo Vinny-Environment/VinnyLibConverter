@@ -148,7 +148,7 @@ namespace VinnyLibConverter_SMDX
                                 //<Dictionary<string, SMDX_Geometry_j3d_Part>
                                 posTmp[0] += posRaw[0];
                                 posTmp[1] += posRaw[1];
-                                if (posRaw.Length == 2) posTmp[2] += posRaw[2];
+                                if (posRaw.Length == 3) posTmp[2] += posRaw[2];
                             }
 
                         }
@@ -223,6 +223,25 @@ namespace VinnyLibConverter_SMDX
 
                 vinnyObject.Name = smdxGroupInfo.name;
                 vinnyObject.ParentId = smdxGroupInfo.parent ?? -1;
+                SMDX_Content_Type? propTypeInfo = null;
+                if (smdxGroupInfo.type != null && smdxFileInfo.Content.types.Count > smdxGroupInfo.type) propTypeInfo = smdxFileInfo.Content.types[(int)smdxGroupInfo.type];
+                //Сопоставление кодов свойств в types их локализованным названиям там же
+                Dictionary<string, string> smdxPropTag2PropCaption = new Dictionary<string, string>();
+                if (propTypeInfo != null && propTypeInfo.properties != null && propTypeInfo.properties.Any())
+                {
+                    foreach (SMDX_Content_Type_Property typePropInfo in propTypeInfo.properties)
+                    {
+                        if (typePropInfo.name != null && typePropInfo.tag != null)
+                        {
+                            string propCaption = "";
+                            if (typePropInfo.name.Contains("|")) propCaption = typePropInfo.name.Split('|').Last();
+                            else propCaption = typePropInfo.name;
+
+                            smdxPropTag2PropCaption[typePropInfo.tag] = propCaption;
+                        }
+                    }
+                }
+
                 foreach (SMDX_Content_Type_Property? smdxProperty in smdxGroupInfo.properties ?? new List<SMDX_Content_Type_Property>())
                 {
                     if (smdxProperty == null) continue;
@@ -244,13 +263,29 @@ namespace VinnyLibConverter_SMDX
                             break;
                     }
 
-                    
-                    int propId = vinnyFileDef.ParametersManager.CreateParameterDefinition(smdxProperty.tag, propType);
-                    VinnyLibDataStructureParameterValue paramValue = new VinnyLibDataStructureParameterValue();
-                    paramValue.ParamDefId = propId;
-                    paramValue.SetValue(smdxProperty.value, propType);
+                    if (smdxProperty.tag != null)
+                    {
+                        int propId = vinnyFileDef.ParametersManager.CreateParameterDefinition(smdxProperty.tag, propType);
+                        VinnyLibDataStructureParameterDefinition propDef = vinnyFileDef.ParametersManager.GetParamDefById(propId);
+                        if (smdxPropTag2PropCaption.ContainsKey(smdxProperty.tag)) propDef.Caption = smdxPropTag2PropCaption[smdxProperty.tag];
+                        vinnyFileDef.ParametersManager.SetParameterDef(propId, propDef);
 
-                    vinnyObject.Parameters.Add(paramValue);
+                        VinnyLibDataStructureParameterValue paramValue = new VinnyLibDataStructureParameterValue();
+                        paramValue.ParamDefId = propId;
+                        paramValue.SetValue(smdxProperty.value, propType);
+
+                        //Категорией параметра будет значение SMDX_Content_Type.name, если он не null
+                        if (propTypeInfo == null) paramValue.ParamCategoryId = 0;
+                        else
+                        {
+                            int paramCategoryId = vinnyFileDef.ParametersManager.CreateCategory(propTypeInfo.name);
+                            paramValue.ParamCategoryId = paramCategoryId;
+                        }
+
+
+                        vinnyObject.Parameters.Add(paramValue);
+                    }
+                    
                 }
                 vinnyFileDef.ObjectsManager.SetObject(vinnyObject.Id, vinnyObject);
 
@@ -351,7 +386,7 @@ namespace VinnyLibConverter_SMDX
                         }
                         prevoiusFacesCount = faceCounter - 1;
                     }
-                    smdxMeshGeometry.Meshes.Add("geometry", smdxMeshGeometryPart);
+                    smdxMeshGeometry.Meshes.Add($"geometry_{vinnyGeometryDef.Id}", smdxMeshGeometryPart);
 
                     //заполнять ли smoothing единицами?
 
@@ -376,6 +411,9 @@ namespace VinnyLibConverter_SMDX
             //Ключ: идентификатор VinnyLibDataStructureGeometryPlacementInfo, значение: порядковый номер smdx-group
             Dictionary<int, int> vinnyGeometryPI2SmdxGroupNum = new Dictionary<int, int>();
             int smdxGroupCounter = 0;
+
+            //Сопоставление id-категорий параметров с созданными ТИПАМИ smdx (в types)
+            Dictionary<int, int> vinnyCategory2smdxTypeId = new Dictionary<int, int>();
             foreach (var vinnyObjectInfo in vinnyData.ObjectsManager.Objects)
             {
                 VinnyLibDataStructureObject vinnyObjectDef = vinnyObjectInfo.Value;
@@ -388,12 +426,55 @@ namespace VinnyLibConverter_SMDX
                 smdxGroupDef.name = vinnyObjectDef.Name;
 
                 //заполняем свойства
-                if (vinnyObjectDef.Parameters.Count > 0) smdxGroupDef.properties = new List<SMDX_Content_Type_Property>();
-                foreach (VinnyLibDataStructureParameterValue vinnyProp in vinnyObjectDef.Parameters)
+                if (vinnyObjectDef.Parameters.Count > 0)
                 {
-                    VinnyLibDataStructureParameterDefinition vinnyParamDef = vinnyData.ParametersManager.GetParamDefById(vinnyProp.ParamDefId);
-                    smdxGroupDef.properties.Add(new SMDX_Content_Type_Property() { tag = vinnyParamDef.Name, value = vinnyProp.ToString() });
+                    smdxGroupDef.properties = new List<SMDX_Content_Type_Property>();
+                    foreach (VinnyLibDataStructureParameterValue vinnyProp in vinnyObjectDef.Parameters)
+                    {
+                        VinnyLibDataStructureParameterDefinition vinnyParamDef = vinnyData.ParametersManager.GetParamDefById(vinnyProp.ParamDefId);
+                        //обработка категорий и сохранение их в types
+                        string catName = vinnyData.ParametersManager.GetCategoryNameById(vinnyProp.ParamCategoryId);
+                        int smdxTypeId = -1;
+                        if (catName != null)
+                        {
+                            SMDX_Content_Type smdxTypeInfo;
+                            if (!vinnyCategory2smdxTypeId.ContainsKey(vinnyProp.ParamCategoryId))
+                            {
+                                smdxTypeInfo = new SMDX_Content_Type();
+                                smdxTypeInfo.id = $"category_{vinnyCategory2smdxTypeId.Count}";
+                                smdxTypeInfo.name = catName;
+                                smdxTypeInfo.properties = new List<SMDX_Content_Type_Property>();
+                                parseProps();
+
+                                smdxProject.Content.types.Add(smdxTypeInfo);
+                                smdxTypeId = vinnyCategory2smdxTypeId.Count;
+                                vinnyCategory2smdxTypeId.Add(vinnyProp.ParamCategoryId, smdxTypeId);
+                            }
+                            else
+                            {
+                                smdxTypeInfo = smdxProject.Content.types[vinnyCategory2smdxTypeId[vinnyProp.ParamCategoryId]];
+                                parseProps();
+                                smdxProject.Content.types[vinnyCategory2smdxTypeId[vinnyProp.ParamCategoryId]] = smdxTypeInfo;
+                            }
+
+                            void parseProps()
+                            {
+                                foreach (VinnyLibDataStructureParameterValue vinnyProp2 in vinnyObjectDef.Parameters)
+                                {
+                                    VinnyLibDataStructureParameterDefinition vinnyParamDef2 = vinnyData.ParametersManager.GetParamDefById(vinnyProp2.ParamDefId);
+                                    if (vinnyProp2.ParamCategoryId == vinnyProp.ParamCategoryId && !smdxTypeInfo.properties.Where(p => p.tag == vinnyParamDef2.Name).Any())
+                                    {
+                                        smdxTypeInfo.properties.Add(new SMDX_Content_Type_Property() { tag = vinnyParamDef2.Name, name = vinnyParamDef2.Caption });
+                                    }
+                                }
+                            }
+                            
+                        }
+                        smdxGroupDef.properties.Add(new SMDX_Content_Type_Property() { tag = vinnyParamDef.Caption, value = vinnyProp.ToString() });
+                    }
                 }
+                
+
 
                 smdxProject.Content.groups.Add(smdxGroupDef);
                 vinnyObjectId2SmdxGroupNum.Add(vinnyObjectDef.Id, smdxGroupCounter);

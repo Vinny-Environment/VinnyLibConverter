@@ -9,6 +9,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Resources\JMTL_BlinnPhongTemplate.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\JMTL_BlinnPhongTemplate.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="System.Text.Json" Version="8.0.5" />
     </ItemGroup>
 

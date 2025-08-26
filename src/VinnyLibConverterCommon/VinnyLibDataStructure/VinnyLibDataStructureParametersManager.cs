@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +10,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
     /// </summary>
     public class VinnyLibDataStructureParametersManager
     {
+        public const string CategoryDefaultName = "Default";
         public VinnyLibDataStructureParametersManager()
         {
             mParamDefCounter = 0;
@@ -17,6 +18,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
             mCategoriesCounter = 0;
             Categories = new Dictionary<int, string>();
+            CreateCategory(CategoryDefaultName);
         }
 
         public int CreateParameterDefinition(string paramName, VinnyLibDataStructureParameterDefinitionType paramType = VinnyLibDataStructureParameterDefinitionType.ParamString)
@@ -52,6 +54,13 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             Categories.Add(mCategoriesCounter, categoryName);
             mCategoriesCounter++;
             return mCategoriesCounter - 1;
+        }
+
+        public string GetCategoryNameById(int idCategory)
+        {
+            string catName = "";
+            if (Categories.TryGetValue(idCategory, out catName)) return catName;
+            return null;
         }
 
         public Dictionary<int, VinnyLibDataStructureParameterDefinition> Parameters { get; internal set; }
