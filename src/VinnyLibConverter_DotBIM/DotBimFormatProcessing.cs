@@ -8,6 +8,7 @@ using VinnyLibConverterCommon.VinnyLibDataStructure;
 using System.Linq;
 using System.Collections.Generic;
 using VinnyLibConverterCommon.Transformation;
+using VinnyLibConverterCommon.Interfaces;
 
 namespace VinnyLibConverter_DotBIM
 {

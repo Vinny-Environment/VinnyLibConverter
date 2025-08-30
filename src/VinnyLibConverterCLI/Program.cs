@@ -6,6 +6,7 @@ using System.Reflection;
 
 using VinnyLibConverterCommon.Transformation;
 using VinnyLibConverterCommon.VinnyLibDataStructure;
+using VinnyLibConverterCommon.Interfaces;
 
 namespace VinnyLibConverterCLI
 {
@@ -16,9 +17,9 @@ namespace VinnyLibConverterCLI
             //TODO: реализовать параметры командной строки с комментариями для ввода значений (и инициализация ImportExportParameters из консоли)
 #if DEBUG
             string executingAssemblyFile = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
-            string execution_directory_path = Path.GetDirectoryName(executingAssemblyFile);
+            string executionDirectoryPath = Path.GetDirectoryName(executingAssemblyFile);
 
-            VinnyTests tests = new VinnyTests(execution_directory_path, @"E:\DataTest\VinnyLibConverterSamples");
+            VinnyTests tests = new VinnyTests(executionDirectoryPath, @"E:\DataTest\VinnyLibConverterSamples");
             //tests.cde_dotbim_1();
             //tests.cde_smdx_1();
             //tests.cde_smdx_2();
@@ -53,8 +54,8 @@ namespace VinnyLibConverterCLI
             string path1 = Path.Combine(pSamplesDirPath, "dotbim", "Pyramid.bim");
             string path2 = Path.Combine(pSamplesDirPath, "dotbim", "Pyramid_Export.bim");
 
-            var fotbimData = mConverter.ImportModel(CdeVariant.DotBIM, ImportExportParameters.CreateForLocalCDE(path1));
-            mConverter.ExportModel(CdeVariant.DotBIM, fotbimData, ImportExportParameters.CreateForLocalCDE(path2));
+            var dotbimData = mConverter.ImportModel(new ImportExportParameters() { Path = path1, ModelType = CdeVariant.DotBIM});
+            mConverter.ExportModel(dotbimData, new ImportExportParameters() { Path = path2, ModelType = CdeVariant.DotBIM });
         }
 
         public void cde_dotbim_2()
@@ -62,13 +63,15 @@ namespace VinnyLibConverterCLI
             string path1 = Path.Combine(pSamplesDirPath, "dotbim", "BeamBridgeExample.bim");
             string path2 = Path.Combine(pSamplesDirPath, "dotbim", "BeamBridgeExample_Export.nwc");
 
-            var data = mConverter.ImportModel(CdeVariant.DotBIM, ImportExportParameters.CreateForLocalCDE(path1));
+            var data = mConverter.ImportModel(new ImportExportParameters() { Path = path1, ModelType = CdeVariant.DotBIM});
 
-            var writeParams = ImportExportParameters.CreateForLocalCDE(path2);
+            var writeParams = new ImportExportParameters() {Path = path2 };
             TransformationMatrix4x4 matrix = TransformationMatrix4x4.CreateEmptyTransformationMatrix();
             matrix.SetPosition(500, 200, 0);
             writeParams.TransformationInfo.Add(matrix);
-            mConverter.ExportModel(CdeVariant.NWC, data, writeParams);
+            writeParams.ModelType = CdeVariant.NWC;
+
+            mConverter.ExportModel(data, writeParams);
         }
         #endregion
 
@@ -78,8 +81,8 @@ namespace VinnyLibConverterCLI
             string path1 = Path.Combine(pSamplesDirPath, "smdx", "MAF1.smdx");
             string path2 = Path.Combine(pSamplesDirPath, "smdx", "MAF1_Export.smdx");
 
-            var data = mConverter.ImportModel(CdeVariant.SMDX, ImportExportParameters.CreateForLocalCDE(path1));
-            mConverter.ExportModel(CdeVariant.SMDX, data, ImportExportParameters.CreateForLocalCDE(path2));
+            var data = mConverter.ImportModel(new ImportExportParameters() { Path = path1, ModelType = CdeVariant.SMDX});
+            mConverter.ExportModel(data, new ImportExportParameters() { Path = path2, ModelType = CdeVariant.SMDX });
         }
 
         public void cde_smdx_2()
@@ -87,8 +90,8 @@ namespace VinnyLibConverterCLI
             string path1 = Path.Combine(pSamplesDirPath, "smdx", "5ZD.smdx");
             string path2 = Path.Combine(pSamplesDirPath, "smdx", "5ZD_Export.smdx");
 
-            var data = mConverter.ImportModel(CdeVariant.SMDX, ImportExportParameters.CreateForLocalCDE(path1));
-            mConverter.ExportModel(CdeVariant.SMDX, data, ImportExportParameters.CreateForLocalCDE(path2));
+            var data = mConverter.ImportModel(new ImportExportParameters() { Path = path1, ModelType = CdeVariant.SMDX });
+            mConverter.ExportModel(data, new ImportExportParameters() { Path = path2, ModelType = CdeVariant.SMDX });
         }
 
         public void cde_smdx_3()
@@ -96,8 +99,8 @@ namespace VinnyLibConverterCLI
             string path1 = Path.Combine(pSamplesDirPath, "dotbim", "House.bim");
             string path2 = Path.Combine(pSamplesDirPath, "smdx", "House_Export.smdx");
 
-            var data = mConverter.ImportModel(CdeVariant.DotBIM, ImportExportParameters.CreateForLocalCDE(path1));
-            mConverter.ExportModel(CdeVariant.SMDX, data, ImportExportParameters.CreateForLocalCDE(path2));
+            var data = mConverter.ImportModel(new ImportExportParameters() { Path = path1, ModelType = CdeVariant.DotBIM });
+            mConverter.ExportModel(data, new ImportExportParameters() { Path = path2, ModelType = CdeVariant.SMDX });
         }
 
        

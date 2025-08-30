@@ -10,6 +10,8 @@ namespace VinnyLibConverterCommon.Transformation
         Affine,
         Geodetic
     }
+
+
     public interface ICoordinatesTransformation
     {
         public float[] TransformPoint3d(float[] xyz);

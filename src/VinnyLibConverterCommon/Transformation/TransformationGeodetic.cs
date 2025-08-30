@@ -26,6 +26,12 @@ namespace VinnyLibConverterCommon.Transformation
             throw new NotImplementedException();
         }
 
+        public override string ToString()
+        {
+            return "Geodetic";
+            //TODO: return a CS's names after PROJ's initialize (create PROJ SWIG...)
+        }
+
         private string pWktStartCS;
         private string pWktTargetCS;
     }

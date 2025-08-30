@@ -39,13 +39,17 @@ namespace VinnyLibConverterCommon.Transformation
             return new float[] { x_new, y_new, xyz[2] };
         }
 
-        private MatrixImpl pMatrix;
+        public override string ToString()
+        {
+            return $"X'={ScaleX}*X + {RotationY}*Y + {TranslationX};Y'={ScaleY}*X + {RotationX}*Y + {TranslationY}";
+        }
 
-        public float ScaleX { get; private set; }
-        public float RotationX { get; private set; }
-        public float RotationY { get; private set; }
-        public float ScaleY { get; private set; }
-        public float TranslationX { get; private set; }
-        public float TranslationY { get; private set; }
+
+        public float ScaleX { get; private set; } = 1;
+        public float RotationX { get; private set; } = 1;
+        public float RotationY { get; private set; } = 1;
+        public float ScaleY { get; private set; } = 1;
+        public float TranslationX { get; private set; } = 0;
+        public float TranslationY { get; private set; } = 0;
     }
 }

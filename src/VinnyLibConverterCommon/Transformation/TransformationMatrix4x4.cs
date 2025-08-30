@@ -93,7 +93,7 @@ namespace VinnyLibConverterCommon.Transformation
             Matrix = MatrixImpl.Multiply(this.Matrix, matrix);
         }
 
-        public void SetRotationFromEulerAngles(float x, float y, float z)
+        public void SetRotationFromAngles(float x, float y, float z)
         {
             QuaternionInfo q = new QuaternionInfo(x, y, z);
             SetRotationFromQuaternion(q);

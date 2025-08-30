@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VinnyLibConverterUI"
         mc:Ignorable="d"
-        Title="Настройки обработки для VinnyLibConverter" d:DesignHeight="620" d:DesignWidth="800">
+        Title="Настройки обработки для VinnyLibConverter" d:DesignHeight="620" d:DesignWidth="800" Icon="/VinnyLibConverterUI;component/Resources/vinnyIcon_32x32.png">
     <Grid>
         <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
             <StackPanel Orientation="Vertical" Width="410">
@@ -13,7 +13,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Label x:Name="LabelPath" Content="Путь к данным" Width="100"></Label>
                     <TextBox x:Name="TextBoxPath" Width="200"></TextBox>
-                    <Button x:Name="ButtonSetPath" Margin="10,0,0,0" Content="Обзор" Width="80"></Button>
+                    <Button x:Name="ButtonSetPath" Margin="10,0,0,0" Content="Обзор" Width="80" Click="ButtonSetPath_Click"></Button>
                 </StackPanel>
                 <GroupBox x:Name="GroupWebParameters" Margin="0,10,0,0" Header="Для WEB" IsEnabled="false">
                     <StackPanel Orientation="Vertical">
@@ -37,7 +37,7 @@
                         <CheckBox x:Name="CheckBoxCheckGeometryDubles" Margin="0,10,0,0" Content="Проверять дубли геометрии" IsEnabled="false"></CheckBox>
                         <StackPanel Orientation="Horizontal">
                             <Label x:Name="LabelGeometryDublesAccuracy" Content="Точность округления координат" Width="200"></Label>
-                            <TextBox x:Name="TextGeometryDublesAccuracy" Width="190" Text="5" IsEnabled="false"></TextBox>
+                            <TextBox x:Name="TextBoxGeometryDublesAccuracy" Width="190" Text="5" IsEnabled="false"></TextBox>
                         </StackPanel>
                         <CheckBox x:Name="CheckBoxCheckMaterialsDubles" Margin="0,10,0,0" Content="Проверять дубли материалов" IsChecked="true"></CheckBox>
                         <CheckBox x:Name="CheckBoxCheckParameterDefsDubles" Margin="0,10,0,0" Content="Проверять дубли параметров" IsChecked="true"></CheckBox>
@@ -47,20 +47,20 @@
                     <StackPanel Orientation="Vertical">
                         <ListBox x:Name="ListBoxTransformationInfo" Height="100"></ListBox>
                         <CheckBox x:Name="CheckBoxReprojectOnlyPosition" Margin="0,5,0,0" Content="Пересчитывать только Position" IsChecked="true"></CheckBox>
-                        <Button x:Name="ButtonDeleteTransformation" Margin="0,5,0,0" Content="Удалить выбранные параметры трансформации"></Button>
-                        <Button x:Name="ButtonSaveTransformation" Margin="0,10,0,0" Content="Добавить настроенные параметры трансформации (справа)"></Button>
+                        <Button x:Name="ButtonDeleteTransformation" Margin="0,5,0,0" Content="Удалить выбранные параметры трансформации" Click="ButtonDeleteTransformation_Click"></Button>
+                        <Button x:Name="ButtonSaveTransformation" Margin="0,10,0,0" Content="Добавить настроенные параметры трансформации (справа)" Click="ButtonSaveTransformation_Click"></Button>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox x:Name="GroupBoxGeneralSettings" Header="Общие настройки">
                     <StackPanel Orientation="Vertical">
-                        <Button x:Name="ButtonLoadSettings" Margin="0,5,0,0" Content="Загрузить настройки из файла"></Button>
-                        <Button x:Name="ButtonSaveSettings" Margin="0,5,0,0" Content="Сохранить настройки в файл"></Button>
+                        <Button x:Name="ButtonLoadSettings" Margin="0,5,0,0" Content="Загрузить настройки из файла" Click="ButtonLoadSettings_Click"></Button>
+                        <Button x:Name="ButtonSaveSettings" Margin="0,5,0,0" Content="Сохранить настройки в файл" Click="ButtonSaveSettings_Click"></Button>
                     </StackPanel>
                 </GroupBox>
                 <Button x:Name="ButtonStart" Margin="0,10,0,0" Content="Применить настройки обработки"></Button>
             </StackPanel>
             <StackPanel Orientation="Vertical" Margin="5,0,0,0" Width="350">
-                <TabControl>
+                <TabControl x:Name="TabControlTransformationTypes">
                     <TabItem x:Name="TabItemMatrix4x4" Header="Matrix4x4">
                         <Grid>
                             <StackPanel Orientation="Vertical">
@@ -102,6 +102,7 @@
                                 <Separator Margin="10,10,10,0"></Separator>
                                 <Label x:Name="LabelMatrixResult" Content="Результирующая матрица 4x4:"></Label>
                                 <TextBox x:Name="TextBoxResultMatrix" Width="300" Height="80" IsReadOnly="true"></TextBox>
+                                <Button x:Name="ButtonShowMatrix4x4" Margin="10,10,10,10" Content="Показать матрицу" Click="ButtonShowMatrix4x4_Click"></Button>
                             </StackPanel>
                         </Grid>
                     </TabItem>
@@ -112,32 +113,32 @@
                                 <Separator Margin="10,0,10,0"></Separator>
 
                                 <StackPanel Orientation="Horizontal">
-                                    <Label x:Name="LabelAffineT_TranslationX" Content="Величина TranslationX" Width="150"></Label>
-                                    <TextBox x:Name="TextBoxAffineT_TranslationX" Margin="10,0,0,0" Width="150" ></TextBox>
+                                    <Label x:Name="LabelAffineT_TranslationX" Content="Величина TranslationX (λ)" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_TranslationX" Margin="10,0,0,0" Width="150" Text="0"></TextBox>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                    <Label x:Name="LabelAffineT_TranslationY" Content="Величина TranslationY" Width="150"></Label>
-                                    <TextBox x:Name="TextBoxAffineT_TranslationY" Margin="10,0,0,0" Width="150"></TextBox>
+                                    <Label x:Name="LabelAffineT_TranslationY" Content="Величина TranslationY (μ)" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_TranslationY" Margin="10,0,0,0" Width="150" Text="0"></TextBox>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                    <Label x:Name="LabelAffineT_RotationX" Content="Величина RotationX" Width="150"></Label>
-                                    <TextBox x:Name="TextBoxAffineT_RotationX" Margin="10,0,0,0" Width="150"></TextBox>
+                                    <Label x:Name="LabelAffineT_RotationX" Content="Величина RotationX (δ)" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_RotationX" Margin="10,0,0,0" Width="150" Text="1"></TextBox>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                    <Label x:Name="LabelAffineT_RotationY" Content="Величина RotationY" Width="150"></Label>
-                                    <TextBox x:Name="TextBoxAffineT_RotationY" Margin="10,0,0,0" Width="150"></TextBox>
+                                    <Label x:Name="LabelAffineT_RotationY" Content="Величина RotationY (β)" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_RotationY" Margin="10,0,0,0" Width="150" Text="1"></TextBox>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                    <Label x:Name="LabelAffineT_ScaleX" Content="Величина ScaleX" Width="150"></Label>
-                                    <TextBox x:Name="TextBoxAffineT_ScaleX" Margin="10,0,0,0" Width="150"></TextBox>
+                                    <Label x:Name="LabelAffineT_ScaleX" Content="Величина ScaleX (α)" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_ScaleX" Margin="10,0,0,0" Width="150" Text="1"></TextBox>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                    <Label x:Name="LabelAffineT_ScaleY" Content="Величина ScaleY" Width="150"></Label>
-                                    <TextBox x:Name="TextBoxAffineT_ScaleY" Margin="10,0,0,0" Width="150"></TextBox>
+                                    <Label x:Name="LabelAffineT_ScaleY" Content="Величина ScaleY (γ)" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_ScaleY" Margin="10,0,0,0" Width="150" Text="1"></TextBox>
                                 </StackPanel>
                                 <Separator Margin="10,10,10,0"></Separator>
                                 <Label x:Name="LabelAffinnT_Comment" Content="Схема преобразования:"></Label>
-                                <Image x:Name="Image_AffineTSchema" Height="60"></Image>
+                                <Image x:Name="Image_AffineTSchema" Height="60" Source="/VinnyLibConverterUI;component/Resources/affine.png"></Image>
                             </StackPanel>
                         </Grid>
                     </TabItem>
@@ -154,7 +155,7 @@
                         </Grid>
                     </TabItem>
                 </TabControl>
-                <GroupBox x:Name="GroupBoxUnitsSettings" Margin="0,10,0,0" Header="Настройки единиц">
+                <GroupBox x:Name="GroupBoxUnitsSettings" Margin="0,10,0,0" Header="Настройки единиц углов">
                     <StackPanel Orientation="Vertical">
                         <RadioButton x:Name="RadioButton_IsRadian" Content="Радианы"></RadioButton>
                         <RadioButton x:Name="RadioButton_IsDegree" Margin="0,5,0,0" Content="Градусы" IsChecked="True"></RadioButton>

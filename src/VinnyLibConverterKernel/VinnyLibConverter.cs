@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using VinnyLibConverterCommon;
+using VinnyLibConverterCommon.Interfaces;
 using VinnyLibConverterCommon.VinnyLibDataStructure;
 
 using VinnyLibConverterUtils;
@@ -78,12 +79,11 @@ namespace VinnyLibConverterKernel
             return mInstance;
         }
 
-        public VinnyLibDataStructureModel ImportModel(CdeVariant ModelType, ImportExportParameters openParameters)
+        public VinnyLibDataStructureModel ImportModel(ImportExportParameters openParameters)
         {
-            //LoadAssemblies(ModelType);
-
-            switch (ModelType)
+            switch (openParameters.ModelType)
             {
+                case CdeVariant.VinnyLibConverterCache: return VinnyLibDataStructureModel.LoadFromFile(openParameters.Path);
                 case CdeVariant.DotBIM: return new VinnyLibConverter_DotBIM.DotBimFormatProcessing().Import(openParameters);
                 case CdeVariant.SMDX: return new VinnyLibConverter_SMDX.SMDX_FormatProcessing().Import(openParameters);
                 case CdeVariant.NWC: return new VinnyLibConverter_nwcreate.nwcreate_FormatProcessing().Import(openParameters);
@@ -92,13 +92,11 @@ namespace VinnyLibConverterKernel
             return null;
         }
 
-        public void ExportModel(CdeVariant ModelType, VinnyLibDataStructureModel ModelData, ImportExportParameters outputParameters)
+        public void ExportModel(VinnyLibDataStructureModel ModelData, ImportExportParameters outputParameters)
         {
-            //LoadAssemblies(ModelType);
-
             if (ModelData == null) return;
             if (File.Exists(outputParameters.Path)) File.Delete(outputParameters.Path);
-            switch (ModelType)
+            switch (outputParameters.ModelType)
             {
                 case CdeVariant.DotBIM:
                     new VinnyLibConverter_DotBIM.DotBimFormatProcessing().Export(ModelData, outputParameters);
@@ -109,16 +107,19 @@ namespace VinnyLibConverterKernel
                 case CdeVariant.NWC:
                     new VinnyLibConverter_nwcreate.nwcreate_FormatProcessing().Export(ModelData, outputParameters);
                     break;
+                case CdeVariant.VinnyLibConverterCache:
+                    {
+                        ModelData.SetCoordinatesTransformation(outputParameters.TransformationInfo);
+                        ModelData.Save(outputParameters.Path);
+                    }
+                    break;
             }
         }
 
-        public void Convert(CdeVariant inputType, ImportExportParameters openParameters, CdeVariant outputType, ImportExportParameters outputParameters)
+        public void Convert(ImportExportParameters openParameters, ImportExportParameters outputParameters)
         {
-            //LoadAssemblies(inputType);
-            //LoadAssemblies(outputType);
-
-            VinnyLibDataStructureModel data = ImportModel(inputType, openParameters);
-            ExportModel(outputType, data, outputParameters);
+            VinnyLibDataStructureModel data = ImportModel(openParameters);
+            ExportModel(data, outputParameters);
         }
 
         private static VinnyLibConverter mInstance;

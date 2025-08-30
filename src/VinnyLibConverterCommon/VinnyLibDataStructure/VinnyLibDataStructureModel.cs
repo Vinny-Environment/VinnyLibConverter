@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 using VinnyLibConverterCommon.Transformation;
 
 namespace VinnyLibConverterCommon.VinnyLibDataStructure
@@ -112,7 +113,30 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             }
         }
 
-        
+
         #endregion
+
+        public static VinnyLibDataStructureModel LoadFromFile(string path)
+        {
+            if (System.IO.File.Exists(path))
+            {
+                using (var stream = System.IO.File.OpenRead(path))
+                {
+                    var serializer = new XmlSerializer(typeof(VinnyLibDataStructureModel));
+                    return serializer.Deserialize(stream) as VinnyLibDataStructureModel; ;
+                }
+            }
+            return null;
+        }
+
+        public void Save(string path)
+        {
+            using (var writer = new System.IO.StreamWriter(path))
+            {
+                var serializer = new XmlSerializer(this.GetType());
+                serializer.Serialize(writer, this);
+                writer.Flush();
+            }
+        }
     }
 }

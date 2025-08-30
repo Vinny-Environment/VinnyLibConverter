@@ -12,6 +12,7 @@ using VinnyLibConverter_SMDX.SMDX;
 using System.Text.RegularExpressions;
 using VinnyLibConverter_SMDX.SMDX.Materials;
 using VinnyLibConverterUtils;
+using VinnyLibConverterCommon.Interfaces;
 
 namespace VinnyLibConverter_SMDX
 {

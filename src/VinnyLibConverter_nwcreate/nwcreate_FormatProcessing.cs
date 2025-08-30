@@ -10,6 +10,7 @@ using VinnyLibConverterCommon.Transformation;
 
 using VinnyLibConverterUtils;
 using static VinnyLibConverterCommon.VinnyLibDataStructure.VinnyLibDataStructureObjectsManager;
+using VinnyLibConverterCommon.Interfaces;
 
 namespace VinnyLibConverter_nwcreate
 {

@@ -51,7 +51,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         {
             TransformationMatrixInfo = TransformationMatrix4x4.CreateEmptyTransformationMatrix();
             TransformationMatrixInfo.SetPosition(Position[0], Position[1], Position[2]);
-            TransformationMatrixInfo.SetRotationFromEulerAngles(VectorOX_Rad, VectorOY_Rad, VectorOZ_Rad);
+            TransformationMatrixInfo.SetRotationFromAngles(VectorOX_Rad, VectorOY_Rad, VectorOZ_Rad);
             TransformationMatrixInfo.SetScale(Scale[0], Scale[1], Scale[2]);
         }
 

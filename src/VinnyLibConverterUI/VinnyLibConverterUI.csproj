@@ -2,18 +2,27 @@
 
   <PropertyGroup>
       <TargetFrameworks>net461;net6.0-windows;net8.0-windows</TargetFrameworks>
-      <OutDir>$(SolutionDir)..\VinnyLibBin\$(Configuration)\ui</OutDir>
+      <OutputPath>$(SolutionDir)..\VinnyLibBin\$(Configuration)\ui</OutputPath>
       <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
       <AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>
       <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
       <UseWPF>true</UseWPF>
   </PropertyGroup>
-
+    
   <ItemGroup>
       <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">
           <Private>False</Private>
           <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
       </ProjectReference>
+  </ItemGroup>
+    
+  <ItemGroup>
+    <None Update="Resources\affine.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\vinnyIcon_512x512.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

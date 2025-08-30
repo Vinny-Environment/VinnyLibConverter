@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 using VinnyLibConverterCommon.Transformation;
 
 namespace VinnyLibConverterCommon
@@ -10,7 +11,7 @@ namespace VinnyLibConverterCommon
     /// </summary>
     public sealed class ImportExportParameters
     {
-        internal ImportExportParameters()
+        public ImportExportParameters()
         {
             CheckGeometryDubles = false;
             CheckMaterialsDubles = true;
@@ -44,7 +45,7 @@ namespace VinnyLibConverterCommon
             return p;
         }
 
-
+        public CdeVariant ModelType { get; set; }
 
         #region Для локальных CDE (файлы, БД)
         /// <summary>
@@ -87,5 +88,28 @@ namespace VinnyLibConverterCommon
         /// </summary>
         public List<ICoordinatesTransformation> TransformationInfo { get; set; }
         public static ImportExportParameters mActiveConfig { get; set; } = new ImportExportParameters();
+
+        public static ImportExportParameters LoadFromFile(string path)
+        {
+            if (System.IO.File.Exists(path))
+            {
+                using (var stream = System.IO.File.OpenRead(path))
+                {
+                    var serializer = new XmlSerializer(typeof(ImportExportParameters));
+                    return serializer.Deserialize(stream) as ImportExportParameters; ;
+                }
+            }
+            return null;
+        }
+
+        public void Save(string path)
+        {
+            using (var writer = new System.IO.StreamWriter(path))
+            {
+                var serializer = new XmlSerializer(this.GetType());
+                serializer.Serialize(writer, this);
+                writer.Flush();
+            }
+        }
     }
 }

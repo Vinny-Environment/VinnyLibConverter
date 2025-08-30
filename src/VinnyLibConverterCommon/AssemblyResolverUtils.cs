@@ -6,9 +6,11 @@ using System.Text;
 
 namespace VinnyLibConverterCommon
 {
+    /*
     /// <summary>
-    /// Вспомогательный класс для загрузки и выгрузки библиотек из домена
+    /// Вспомогательный класс для загрузки и выгрузки библиотек из домена (надо всё держать на .NET Core для этого)
     /// </summary>
+    
     public class AssemblyResolverUtils
     {
         public static AssemblyResolverUtils CreateInstance(string VinnyLibConverterPath)
@@ -28,4 +30,5 @@ namespace VinnyLibConverterCommon
         private static AssemblyResolverUtils mInstance;
         private string mVinnyLibConverterPath { get; set; }
     }
+    */
 }
