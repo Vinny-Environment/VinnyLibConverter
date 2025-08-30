@@ -66,6 +66,12 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                         if (double.TryParse(valueStr, out result)) this.mValue = result;
                         break;
                     }
+                case VinnyLibDataStructureParameterDefinitionType.ParamDate:
+                    {
+                        DateTime result;
+                        if (DateTime.TryParse(valueStr, out result)) this.mValue = result;
+                        break;
+                    }
                 default:
                     {
                         this.mValue = valueStr;
@@ -73,6 +79,14 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                     }
             }
 
+        }
+
+        public bool GetBooleanValue(out bool value)
+        {
+            value = false;
+            if (isValueNull) return false;
+
+            return bool.TryParse(mValue.ToString(), out value);
         }
 
         public bool GetIntegerValue(out int value)

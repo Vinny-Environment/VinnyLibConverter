@@ -1,0 +1,169 @@
+<Window x:Class="VinnyLibConverterUI.VLC_UI_MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VinnyLibConverterUI"
+        mc:Ignorable="d"
+        Title="Настройки обработки для VinnyLibConverter" d:DesignHeight="620" d:DesignWidth="800">
+    <Grid>
+        <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
+            <StackPanel Orientation="Vertical" Width="410">
+                <Label x:Name="LabelSettingsTab" Content="Настройки импорта-экспорта данных"></Label>
+                <StackPanel Orientation="Horizontal">
+                    <Label x:Name="LabelPath" Content="Путь к данным" Width="100"></Label>
+                    <TextBox x:Name="TextBoxPath" Width="200"></TextBox>
+                    <Button x:Name="ButtonSetPath" Margin="10,0,0,0" Content="Обзор" Width="80"></Button>
+                </StackPanel>
+                <GroupBox x:Name="GroupWebParameters" Margin="0,10,0,0" Header="Для WEB" IsEnabled="false">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" >
+                            <Label x:Name="LabelToken" Content="Токен" Width="100"></Label>
+                            <TextBox x:Name="TextBoxToken" Width="290"></TextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <Label x:Name="LabelLogin" Content="Логин" Width="100"></Label>
+                            <TextBox x:Name="TextBoxLogin" Width="290"></TextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <Label x:Name="LabelPassword" Content="Пароль" Width="100"></Label>
+                            <TextBox x:Name="TextBoxPassword" Width="290"></TextBox>
+                        </StackPanel>
+                    </StackPanel>
+                    
+                </GroupBox>
+                <GroupBox x:Name="GroupOtherParameters" Header="Прочие параметры" Margin="0,10,0,0">
+                    <StackPanel Orientation="Vertical">
+                        <CheckBox x:Name="CheckBoxCheckGeometryDubles" Margin="0,10,0,0" Content="Проверять дубли геометрии" IsEnabled="false"></CheckBox>
+                        <StackPanel Orientation="Horizontal">
+                            <Label x:Name="LabelGeometryDublesAccuracy" Content="Точность округления координат" Width="200"></Label>
+                            <TextBox x:Name="TextGeometryDublesAccuracy" Width="190" Text="5" IsEnabled="false"></TextBox>
+                        </StackPanel>
+                        <CheckBox x:Name="CheckBoxCheckMaterialsDubles" Margin="0,10,0,0" Content="Проверять дубли материалов" IsChecked="true"></CheckBox>
+                        <CheckBox x:Name="CheckBoxCheckParameterDefsDubles" Margin="0,10,0,0" Content="Проверять дубли параметров" IsChecked="true"></CheckBox>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox x:Name="GroupBoxTransformationInfo" Header="Параметры трансформации координат">
+                    <StackPanel Orientation="Vertical">
+                        <ListBox x:Name="ListBoxTransformationInfo" Height="100"></ListBox>
+                        <CheckBox x:Name="CheckBoxReprojectOnlyPosition" Margin="0,5,0,0" Content="Пересчитывать только Position" IsChecked="true"></CheckBox>
+                        <Button x:Name="ButtonDeleteTransformation" Margin="0,5,0,0" Content="Удалить выбранные параметры трансформации"></Button>
+                        <Button x:Name="ButtonSaveTransformation" Margin="0,10,0,0" Content="Добавить настроенные параметры трансформации (справа)"></Button>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox x:Name="GroupBoxGeneralSettings" Header="Общие настройки">
+                    <StackPanel Orientation="Vertical">
+                        <Button x:Name="ButtonLoadSettings" Margin="0,5,0,0" Content="Загрузить настройки из файла"></Button>
+                        <Button x:Name="ButtonSaveSettings" Margin="0,5,0,0" Content="Сохранить настройки в файл"></Button>
+                    </StackPanel>
+                </GroupBox>
+                <Button x:Name="ButtonStart" Margin="0,10,0,0" Content="Применить настройки обработки"></Button>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="5,0,0,0" Width="350">
+                <TabControl>
+                    <TabItem x:Name="TabItemMatrix4x4" Header="Matrix4x4">
+                        <Grid>
+                            <StackPanel Orientation="Vertical">
+                                <Label x:Name="LabelMatrixx4x4_Info" Content="Настройки для матрицы трансформации 4x4"></Label>
+                                <Separator Margin="10,0,10,0"></Separator>
+                                <Label x:Name="LabelTranslationVector" Content="Сдвиг на величину (м.), XYZ"></Label>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox x:Name="TextBox_TranslationX" Margin="10,0,0,0" Text="0" Width="70"></TextBox>
+                                    <TextBox x:Name="TextBox_TranslationY" Margin="10,0,0,0" Text="0" Width="70"></TextBox>
+                                    <TextBox x:Name="TextBox_TranslationZ" Margin="10,0,0,0" Text="0" Width="70"></TextBox>
+                                </StackPanel>
+                                <GroupBox x:Name="GroupBoxRotationInfo" Margin="0,5,0,0" Header="Задание поворота">
+                                    <StackPanel Orientation="Vertical">
+                                        <RadioButton x:Name="RadioButton_AsQuaternion" Margin="0,5,0,0"  Content="Кватернион"></RadioButton>
+                                        <RadioButton x:Name="RadioButton_AsDegrees" Margin="0,5,0,0"  Content="Углы поворота для осей" IsChecked="True"></RadioButton>
+                                        <Label x:Name="LabelRotQuaternion" Content="Кватернион поворота (X, Y, Z, W)"></Label>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox x:Name="TextBox_RotQuaternionX" Margin="10,0,0,0" Text="0" Width="70"></TextBox>
+                                            <TextBox x:Name="TextBox_RotQuaternionY" Margin="10,0,0,0" Text="0" Width="70"></TextBox>
+                                            <TextBox x:Name="TextBox_RotQuaternionZ" Margin="10,0,0,0" Text="0" Width="70"></TextBox>
+                                            <TextBox x:Name="TextBox_RotQuaternionW" Margin="10,0,0,0" Text="1" Width="70"></TextBox>
+                                        </StackPanel>
+                                        <Label x:Name="LabelRotAxis" Content="Углы поворота для осей (X, Y, Z)">
+                                        </Label>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox x:Name="TextBox_RotAxisAnglesX" Margin="10,0,0,0" Text="0" Width="70"></TextBox>
+                                            <TextBox x:Name="TextBox_RotAxisAnglesY" Margin="10,0,0,0" Text="0" Width="70"></TextBox>
+                                            <TextBox x:Name="TextBox_RotAxisAnglesZ" Margin="10,0,0,0" Text="0" Width="70"></TextBox>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </GroupBox>
+                                <Label x:Name="LabelScale" Content="Масштабирование по осям (X, Y, Z)">
+                                </Label>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox x:Name="TextBox_ScaleX" Margin="10,0,0,0" Text="1" Width="70"></TextBox>
+                                    <TextBox x:Name="TextBox_ScaleY" Margin="10,0,0,0" Text="1" Width="70"></TextBox>
+                                    <TextBox x:Name="TextBox_ScaleZ" Margin="10,0,0,0" Text="1" Width="70"></TextBox>
+                                </StackPanel>
+                                <Separator Margin="10,10,10,0"></Separator>
+                                <Label x:Name="LabelMatrixResult" Content="Результирующая матрица 4x4:"></Label>
+                                <TextBox x:Name="TextBoxResultMatrix" Width="300" Height="80" IsReadOnly="true"></TextBox>
+                            </StackPanel>
+                        </Grid>
+                    </TabItem>
+                    <TabItem x:Name="TabItemAffine" Header="Affine">
+                        <Grid>
+                            <StackPanel Orientation="Vertical">
+                                <Label x:Name="LabelAffine_Info" Content="Настройки для аффиннового преобразования"></Label>
+                                <Separator Margin="10,0,10,0"></Separator>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <Label x:Name="LabelAffineT_TranslationX" Content="Величина TranslationX" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_TranslationX" Margin="10,0,0,0" Width="150" ></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <Label x:Name="LabelAffineT_TranslationY" Content="Величина TranslationY" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_TranslationY" Margin="10,0,0,0" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <Label x:Name="LabelAffineT_RotationX" Content="Величина RotationX" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_RotationX" Margin="10,0,0,0" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <Label x:Name="LabelAffineT_RotationY" Content="Величина RotationY" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_RotationY" Margin="10,0,0,0" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <Label x:Name="LabelAffineT_ScaleX" Content="Величина ScaleX" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_ScaleX" Margin="10,0,0,0" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <Label x:Name="LabelAffineT_ScaleY" Content="Величина ScaleY" Width="150"></Label>
+                                    <TextBox x:Name="TextBoxAffineT_ScaleY" Margin="10,0,0,0" Width="150"></TextBox>
+                                </StackPanel>
+                                <Separator Margin="10,10,10,0"></Separator>
+                                <Label x:Name="LabelAffinnT_Comment" Content="Схема преобразования:"></Label>
+                                <Image x:Name="Image_AffineTSchema" Height="60"></Image>
+                            </StackPanel>
+                        </Grid>
+                    </TabItem>
+                    <TabItem x:Name="TabItemGeodetic" Header="Geodetic">
+                        <Grid>
+                            <StackPanel Orientation="Vertical">
+                                <Label x:Name="LabelGeodetic_Info" Content="Настройки для геодезического преобразования координат"></Label>
+                                <Separator Margin="10,0,10,0"></Separator>
+                                <Label x:Name="LabelGeodetic_StartCS" Content="WKT-код исходной системы координат:"></Label>
+                                <TextBox x:Name="TextBoxGeodetic_StartCsWKT" Margin="0,5,0,0" Height="100"></TextBox>
+                                <Label x:Name="LabelGeodetic_TargetCS" Margin="0,5,0,0" Content="WKT-код целевой системы координат:"></Label>
+                                <TextBox x:Name="TextBoxGeodetic_TargetCsWKT" Margin="0,5,0,0" Height="100"></TextBox>
+                            </StackPanel>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+                <GroupBox x:Name="GroupBoxUnitsSettings" Margin="0,10,0,0" Header="Настройки единиц">
+                    <StackPanel Orientation="Vertical">
+                        <RadioButton x:Name="RadioButton_IsRadian" Content="Радианы"></RadioButton>
+                        <RadioButton x:Name="RadioButton_IsDegree" Margin="0,5,0,0" Content="Градусы" IsChecked="True"></RadioButton>
+                    </StackPanel>
+                </GroupBox>
+                
+
+            </StackPanel>
+        </StackPanel>
+        
+    </Grid>
+</Window>

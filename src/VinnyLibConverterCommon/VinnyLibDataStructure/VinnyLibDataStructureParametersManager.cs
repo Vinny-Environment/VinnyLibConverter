@@ -63,6 +63,20 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             return null;
         }
 
+        public Dictionary<string, List<VinnyLibDataStructureParameterValue>> SortParamsByCategories(List<VinnyLibDataStructureParameterValue> paramValuesInfo)
+        {
+            Dictionary<string, List<VinnyLibDataStructureParameterValue>> data = new Dictionary<string, List<VinnyLibDataStructureParameterValue>>();
+            foreach (VinnyLibDataStructureParameterValue param in paramValuesInfo)
+            {
+                string categoryName = GetCategoryNameById(param.ParamCategoryId);
+                if (data.ContainsKey(categoryName)) data[categoryName].Add(param);
+                else data[categoryName] = new List<VinnyLibDataStructureParameterValue>() { param };
+            }
+
+            return data;
+
+        }
+
         public Dictionary<int, VinnyLibDataStructureParameterDefinition> Parameters { get; internal set; }
         private int mParamDefCounter = 0;
 

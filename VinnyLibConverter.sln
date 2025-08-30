@@ -23,7 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VinnyLibConverter_SMDX", "src\VinnyLibConverter_SMDX\VinnyLibConverter_SMDX.csproj", "{E9BE88F5-9605-461E-AE55-7725454A82D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinnyLibConverterLogger", "src\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj", "{ED41E516-7636-447A-9AAA-E314CC6F4AF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VinnyLibConverterLogger", "src\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj", "{ED41E516-7636-447A-9AAA-E314CC6F4AF4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VinnyLibConverter_nwcreate", "src\VinnyLibConverter_nwcreate\VinnyLibConverter_nwcreate.csproj", "{7F255FD8-0CDE-4C7A-99B5-6B18CE6FB18A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VinnyLibConverterUI", "src\VinnyLibConverterUI\VinnyLibConverterUI.csproj", "{9B293FEF-9FD1-413E-A01B-B4AE92CC2C1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +59,14 @@ Global
 		{ED41E516-7636-447A-9AAA-E314CC6F4AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED41E516-7636-447A-9AAA-E314CC6F4AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED41E516-7636-447A-9AAA-E314CC6F4AF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F255FD8-0CDE-4C7A-99B5-6B18CE6FB18A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F255FD8-0CDE-4C7A-99B5-6B18CE6FB18A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F255FD8-0CDE-4C7A-99B5-6B18CE6FB18A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F255FD8-0CDE-4C7A-99B5-6B18CE6FB18A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B293FEF-9FD1-413E-A01B-B4AE92CC2C1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B293FEF-9FD1-413E-A01B-B4AE92CC2C1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B293FEF-9FD1-413E-A01B-B4AE92CC2C1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B293FEF-9FD1-413E-A01B-B4AE92CC2C1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +74,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6E390798-A874-4E07-B79F-5E9DED0CE0C0} = {EAC21F9B-E76A-4760-8619-6E510FF5DC62}
 		{E9BE88F5-9605-461E-AE55-7725454A82D5} = {EAC21F9B-E76A-4760-8619-6E510FF5DC62}
+		{7F255FD8-0CDE-4C7A-99B5-6B18CE6FB18A} = {EAC21F9B-E76A-4760-8619-6E510FF5DC62}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1DCD40E1-09D7-4088-8513-C5D3DE6FF16F}

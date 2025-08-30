@@ -16,6 +16,7 @@
       <Private>False</Private>
       <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
     </ProjectReference>
+    <ProjectReference Include="..\VinnyLibConverter_nwcreate\VinnyLibConverter_nwcreate.csproj" />
     <ProjectReference Include="..\VinnyLibConverter_SMDX\VinnyLibConverter_SMDX.csproj" />
   </ItemGroup>
 

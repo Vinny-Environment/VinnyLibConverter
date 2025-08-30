@@ -77,6 +77,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
         public void SetGeometryPlacementInfo(int id, VinnyLibDataStructureGeometryPlacementInfo placementInfo)
         {
+            placementInfo.InitMatrix();
             this.mGeometriesPlacementInfo[id] = placementInfo;
         }
 

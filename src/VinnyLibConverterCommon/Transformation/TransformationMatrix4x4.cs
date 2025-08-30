@@ -25,32 +25,27 @@ namespace VinnyLibConverterCommon.Transformation
             //transformMatrix.Matrix[0, 0] = 1; transformMatrix.Matrix[0, 1] = 0; transformMatrix.Matrix[0, 2] = 0; transformMatrix.Matrix[0, 3] = 0;
             //transformMatrix.Matrix[1, 0] = 0; transformMatrix.Matrix[1, 1] = 1; transformMatrix.Matrix[1, 2] = 0; transformMatrix.Matrix[1, 3] = 0;
             //transformMatrix.Matrix[2, 0] = 0; transformMatrix.Matrix[2, 1] = 0; transformMatrix.Matrix[2, 2] = 1; transformMatrix.Matrix[2, 3] = 0;
-            //transformMatrix.Matrix[3, 0] = 0; transformMatrix.Matrix[3, 1] = 0; transformMatrix.Matrix[3, 2] = 1; transformMatrix.Matrix[3, 3] = 0;
+            //transformMatrix.Matrix[3, 0] = 0; transformMatrix.Matrix[3, 1] = 0; transformMatrix.Matrix[3, 2] = 0; transformMatrix.Matrix[3, 3] = 1;
 
             return transformMatrix;
         }
 
         public void SetScale(float x, float y, float z)
         {
-            float[,] ScaleMatrix = new float[,]
-            {
-                { x, 0, 0, 0 },
-                { 1, y, 0, 0 },
-                { 0, 0, z, 0 },
-                { 0, 0, 0, 1 }
-            };
+            MatrixImpl ScaleMatrix = new MatrixImpl(4, 4);
+            ScaleMatrix[0, 0] = x;
+            ScaleMatrix[1, 1] = y;
+            ScaleMatrix[2, 2] = z;
             MultiplyMatrix(ScaleMatrix);
         }
 
         public void SetPosition(float x, float y, float z)
         {
-            float[,] ScaleMatrix = new float[,]
-             {
-                 { 1, 0, 0, x },
-                 { 0, 1, 0, y },
-                 { 0, 0, 1, z },
-                 { 0, 0, 0, 1 }
-            };
+            MatrixImpl ScaleMatrix = new MatrixImpl(4, 4);
+            ScaleMatrix[0, 3] = x;
+            ScaleMatrix[1, 3] = y;
+            ScaleMatrix[2, 3] = z;
+
             MultiplyMatrix(ScaleMatrix);
         }
 
@@ -117,6 +112,7 @@ namespace VinnyLibConverterCommon.Transformation
         /// <returns></returns>
         public float[] TransformPoint3d(float[] xyz)
         {
+            /*
             MatrixImpl xyzMatrix = new MatrixImpl(3, 1);
             xyzMatrix[0, 0] = xyz[0];
             xyzMatrix[1, 0] = xyz[1];
@@ -124,28 +120,28 @@ namespace VinnyLibConverterCommon.Transformation
 
             var productResult = MatrixImpl.Multiply(xyzMatrix, this.Matrix).Matrix;
             return new float[3] { productResult[0, 0], productResult[1, 0], productResult[2, 0] };
+            */
+            float x = xyz[0] * Matrix[0, 0] + xyz[1] * Matrix[0, 1] + xyz[2] * Matrix[0, 2] + Matrix[0, 3];
+            float y = xyz[0] * Matrix[1, 0] + xyz[1] * Matrix[1, 1] + xyz[2] * Matrix[1, 2] + Matrix[1, 3];
+            float z = xyz[0] * Matrix[2, 0] + xyz[1] * Matrix[2, 1] + xyz[2] * Matrix[2, 2] + Matrix[2, 3];
+            float w = xyz[0] * Matrix[3, 0] + xyz[1] * Matrix[3, 1] + xyz[2] * Matrix[3, 2] + Matrix[3, 3];
 
-            //float x = xyz[0] * Matrix[0, 0] + xyz[1] * Matrix[0, 1] + xyz[2] * Matrix[0, 2] + Matrix[0, 3];
-            //float y = xyz[0] * Matrix[1, 0] + xyz[1] * Matrix[1, 1] + xyz[2] * Matrix[1, 2] + Matrix[1, 3];
-            //float z = xyz[0] * Matrix[2, 0] + xyz[1] * Matrix[2, 1] + xyz[2] * Matrix[2, 2] + Matrix[2, 3];
-            //float w = xyz[0] * Matrix[3, 0] + xyz[1] * Matrix[3, 1] + xyz[2] * Matrix[3, 2] + Matrix[3, 3];
+            //Perspective division if w != 1
+            if (w != 1 && w != 0)
+                {
+                    x /= w;
+                    y /= w;
+                    z /= w;
+                }
 
-            // Perspective division if w != 1
-            //if (w != 1 && w != 0)
-            //{
-            //    x /= w;
-            //    y /= w;
-            //    z /= w;
-            //}
-
-            //return new float[] { x, y, z };
+            return new float[] { x, y, z };
         }
 
         public MatrixImpl Matrix { get; internal set; }
 
-        private void MultiplyMatrix(float[,] OtherMatrix)
+        private void MultiplyMatrix(MatrixImpl OtherMatrix)
         {
-            Matrix = MatrixImpl.Multiply(this.Matrix, new MatrixImpl(OtherMatrix, 4, 4));
+            Matrix = MatrixImpl.Multiply(this.Matrix, OtherMatrix);
         }
     }
 }

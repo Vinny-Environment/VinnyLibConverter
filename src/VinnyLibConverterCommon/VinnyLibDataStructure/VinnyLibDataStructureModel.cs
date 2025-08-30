@@ -51,6 +51,18 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                     }
                 }
             }
+            else if (ImportExportParameters.mActiveConfig.ReprojectOnlyPosition == true)
+            {
+                foreach (int geometryPlInfoId in GeometrtyManager.mGeometriesPlacementInfo.Keys)
+                {
+                    VinnyLibDataStructureGeometryPlacementInfo onePlInfo = GeometrtyManager.mGeometriesPlacementInfo[geometryPlInfoId];
+                    foreach (ICoordinatesTransformation transformation in transformations)
+                    {
+                        onePlInfo.Position = transformation.TransformPoint3d(onePlInfo.Position);
+                    }
+                    GeometrtyManager.SetGeometryPlacementInfo(geometryPlInfoId, onePlInfo);
+                }
+            }
             else
             {
                 var oldGeometryKeys = GeometrtyManager.mGeometries.Keys;
@@ -97,9 +109,6 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                     objectInfo.GeometryPlacementInfoIds = idsNew;
                     ObjectsManager.SetObject(objectInfoKey, objectInfo);
                 }
-
-
-
             }
         }
 

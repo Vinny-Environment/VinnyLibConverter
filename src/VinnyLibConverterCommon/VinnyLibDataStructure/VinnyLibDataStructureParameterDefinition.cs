@@ -9,7 +9,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         ParamString,
         ParamInteger,
         ParamReal,
-        //ParamDate = QMetaType::QDateTime,
+        ParamDate,
         ParamBool
 
     };

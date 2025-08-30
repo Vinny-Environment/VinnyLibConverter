@@ -4,6 +4,9 @@ using VinnyLibConverterCommon;
 using System.IO;
 using System.Reflection;
 
+using VinnyLibConverterCommon.Transformation;
+using VinnyLibConverterCommon.VinnyLibDataStructure;
+
 namespace VinnyLibConverterCLI
 {
     internal class Program
@@ -18,8 +21,16 @@ namespace VinnyLibConverterCLI
             VinnyTests tests = new VinnyTests(execution_directory_path, @"E:\DataTest\VinnyLibConverterSamples");
             //tests.cde_dotbim_1();
             //tests.cde_smdx_1();
-            tests.cde_smdx_2();
+            //tests.cde_smdx_2();
+            tests.cde_dotbim_2();
             //tests.cde_smdx_3();
+
+            VinnyLibDataStructureGeometryPlacementInfo gi = new VinnyLibDataStructureGeometryPlacementInfo(-1, -1);
+            gi.Position = new float[3] { 100, 50, 0 };
+            gi.InitMatrix();
+
+            var p = gi.TransformationMatrixInfo.TransformPoint3d(new float[] { 0, 0, 0 });
+
 #endif
             Console.WriteLine("\nEnd!");
 
@@ -44,6 +55,20 @@ namespace VinnyLibConverterCLI
 
             var fotbimData = mConverter.ImportModel(CdeVariant.DotBIM, ImportExportParameters.CreateForLocalCDE(path1));
             mConverter.ExportModel(CdeVariant.DotBIM, fotbimData, ImportExportParameters.CreateForLocalCDE(path2));
+        }
+
+        public void cde_dotbim_2()
+        {
+            string path1 = Path.Combine(pSamplesDirPath, "dotbim", "BeamBridgeExample.bim");
+            string path2 = Path.Combine(pSamplesDirPath, "dotbim", "BeamBridgeExample_Export.nwc");
+
+            var data = mConverter.ImportModel(CdeVariant.DotBIM, ImportExportParameters.CreateForLocalCDE(path1));
+
+            var writeParams = ImportExportParameters.CreateForLocalCDE(path2);
+            TransformationMatrix4x4 matrix = TransformationMatrix4x4.CreateEmptyTransformationMatrix();
+            matrix.SetPosition(500, 200, 0);
+            writeParams.TransformationInfo.Add(matrix);
+            mConverter.ExportModel(CdeVariant.NWC, data, writeParams);
         }
         #endregion
 
@@ -74,6 +99,8 @@ namespace VinnyLibConverterCLI
             var data = mConverter.ImportModel(CdeVariant.DotBIM, ImportExportParameters.CreateForLocalCDE(path1));
             mConverter.ExportModel(CdeVariant.SMDX, data, ImportExportParameters.CreateForLocalCDE(path2));
         }
+
+       
         #endregion
 
         private VinnyLibConverter mConverter;

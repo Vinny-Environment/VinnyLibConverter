@@ -13,3 +13,5 @@
 Приводимые ниже библиотеки собираются в каталог `\dependencies` в соответствующие подкаталоги.
 
 * `VinnyLibConverter_DotBIM`: поддержка формата DotBIM (https://dotbim.net/). Используется, в основном, только для тестирования логики приложения и отладки;
+* `VinnyLibConverter_SMDX`: поддержка формата SMDX (https://smdx.info/). Реализовано ограниченное чтение (плохо: некоторые типы геометрий, текстуры, дерево параметров) и ограниченная запись (параметры);
+* `VinnyLibConverter_nwcreate`: поддержка записи в формат Autodesk NWC, для Autodesk Navisworks (NWcreate-library);

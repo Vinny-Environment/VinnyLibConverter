@@ -24,9 +24,10 @@ namespace VinnyLibConverterCommon.Transformation
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    Matrix[i, i] = 1;
+                    Matrix[i, j] = 0;
+                    if (i == j) Matrix[i, j] = 1;
+
                 }
-                    
             }
         }
 
@@ -44,7 +45,7 @@ namespace VinnyLibConverterCommon.Transformation
             var result = new MatrixImpl(size, size);
             for (int i = 0; i < size; i++)
             {
-                result[i, i] = 1; //??? А точно ли единицы?
+                result[i, i] = 1;
             }
             return result;
         }

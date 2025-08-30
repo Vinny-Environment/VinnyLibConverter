@@ -192,11 +192,6 @@ namespace VinnyLibConverter_SMDX
                                 geomPI.VectorOZ_Rad += angles_XYZ[2]; //проверить, коррректно ли?
                             }
                         }
-
-
-
-                        geomPI.InitMatrix();
-
                         smdxGroupObjects[smdxInsertionInfo.group].Add(geomPI.Id);
 
                         vinnyFileDef.GeometrtyManager.SetGeometryPlacementInfo(geomPI.Id, geomPI);

@@ -6,12 +6,13 @@
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
-	<ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">
             <Private>False</Private>
             <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
         </ProjectReference>
-	</ItemGroup>
+        <ProjectReference Include="..\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj" />
+    </ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="dotbim" Version="1.2.0" />

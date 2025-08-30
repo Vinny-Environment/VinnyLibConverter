@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <TargetFrameworks>net461;net6.0-windows;net8.0-windows</TargetFrameworks>
+      <OutDir>$(SolutionDir)..\VinnyLibBin\$(Configuration)\ui</OutDir>
+      <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+      <AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+      <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">
+          <Private>False</Private>
+          <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+      </ProjectReference>
+  </ItemGroup>
+
+</Project>

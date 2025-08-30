@@ -21,8 +21,17 @@ namespace VinnyLibConverterKernel
             string VinnyLibConverterCommonPath = Path.Combine(pVinnyLibDirectory, "VinnyLibConverterCommon.dll");
             var ass = Assembly.LoadFrom(VinnyLibConverterCommonPath);
 
+            //Add to PATH env nwcreate-dir
+            string nwcreateDir = Path.Combine(VinnyLibDirectoryPath, pDepsDirName, "nwcreate");
+            string newEnwPathValue = Environment.GetEnvironmentVariable("PATH");
+            if (newEnwPathValue.EndsWith(";")) newEnwPathValue += nwcreateDir + ";";
+            else newEnwPathValue += ";" + nwcreateDir + ";";
+
+            Environment.SetEnvironmentVariable("PATH", newEnwPathValue);
+
             foreach (string depsDir in Directory.GetDirectories(Path.Combine(VinnyLibDirectoryPath, pDepsDirName), "*.*", SearchOption.TopDirectoryOnly))
             {
+                
                 foreach (string DepsAssPath in Directory.GetFiles(depsDir, "*.dll", SearchOption.TopDirectoryOnly))
                 {
                     try
@@ -32,6 +41,11 @@ namespace VinnyLibConverterKernel
                     catch (Exception ex) { VinnyLibConverterLogger.InitLogger().WriteLog(ex.Message); }
                 }
             }
+
+            //принудительная загрузка некоторых библиотек
+            //string VinnyLibDepsNwcreate_nwcreateWrapperLib = Path.Combine(pVinnyLibDirectory, pDepsDirName, "nwcreate", "nwcreateWrapperLib.dll");
+            //ass = Assembly.LoadFrom(VinnyLibDepsNwcreate_nwcreateWrapperLib);
+
         }
 
         /*
@@ -72,6 +86,8 @@ namespace VinnyLibConverterKernel
             {
                 case CdeVariant.DotBIM: return new VinnyLibConverter_DotBIM.DotBimFormatProcessing().Import(openParameters);
                 case CdeVariant.SMDX: return new VinnyLibConverter_SMDX.SMDX_FormatProcessing().Import(openParameters);
+                case CdeVariant.NWC: return new VinnyLibConverter_nwcreate.nwcreate_FormatProcessing().Import(openParameters);
+
             }
             return null;
         }
@@ -89,6 +105,9 @@ namespace VinnyLibConverterKernel
                     break;
                 case CdeVariant.SMDX:
                     new VinnyLibConverter_SMDX.SMDX_FormatProcessing().Export(ModelData, outputParameters);
+                    break;
+                case CdeVariant.NWC:
+                    new VinnyLibConverter_nwcreate.nwcreate_FormatProcessing().Export(ModelData, outputParameters);
                     break;
             }
         }

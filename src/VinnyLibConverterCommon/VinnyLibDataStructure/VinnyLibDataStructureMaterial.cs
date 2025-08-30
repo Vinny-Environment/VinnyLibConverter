@@ -14,7 +14,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public int ColorR { get; set; } = 0;
         public int ColorG { get; set; } = 0;
         public int ColorB { get; set; } = 0;
-        public int ColorAlpha { get; set; } = 255;
+        public int ColorAlpha { get; set; } = 0;
 
         internal VinnyLibDataStructureMaterial() { }
         internal VinnyLibDataStructureMaterial(int id)

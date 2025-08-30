@@ -7,6 +7,12 @@ namespace VinnyLibConverterUtils
 {
     public class VinnyLibConverterLogger
     {
+        public enum MessageType
+        {
+            Info,
+            Error,
+            Warning,
+        }
         public VinnyLibConverterLogger()
         {
             string executingAssemblyFile = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
@@ -25,10 +31,14 @@ namespace VinnyLibConverterUtils
             return mInstance;
         }
 
-        public void WriteLog(string message)
+        public void WriteLog(string message, MessageType mType = MessageType.Info, bool directToFile = false)
         {
             string timeStart = DateTime.Now.ToString("T");
-            mLog.AppendLine(timeStart + "\t" + message);
+            string mesPrefix = mType.ToString();
+            string log = timeStart + "\t" + mesPrefix + "\t" + message;
+            
+            mLog.AppendLine(log);
+            if (directToFile) SaveLog();
 
             if (mLog.Length > 10000) SaveLog();
         }

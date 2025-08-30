@@ -15,6 +15,7 @@ namespace VinnyLibConverterCommon
             CheckGeometryDubles = false;
             CheckMaterialsDubles = true;
             CheckParameterDefsDubles = true;
+            ReprojectOnlyPosition = true;
             TransformationInfo = new List<ICoordinatesTransformation>();
         }
 
@@ -50,6 +51,8 @@ namespace VinnyLibConverterCommon
         /// Абсолютный файловый путь к данным (для чтения и записи)
         /// </summary>
         public string Path { get; set; }
+        //TODO: (напр., для файла мэппинга IFC)
+        private string[] AuxliaryPaths { get; set; }
         #endregion
 
         #region Для WEB CDE
@@ -63,8 +66,21 @@ namespace VinnyLibConverterCommon
         /// </summary>
         public int VertexAccuracy { get; set; } = 5;
         public bool CheckGeometryDubles { get; set; }
+
+        /// <summary>
+        /// Флаг, проверять ли дублирование цветов материалов
+        /// </summary>
         public bool CheckMaterialsDubles { get; set; }
+
+        /// <summary>
+        /// Флаг, проверять ли уникальность параметров (внутренним имена и категории)
+        /// </summary>
         public bool CheckParameterDefsDubles { get; set; }
+
+        /// <summary>
+        /// Если true, то при наличии в TransformationInfo параметров для Аффинного преобразования или геодезического будут пересчитаны только координаты точки вставки mesh'а, а координаты самой базовой геометрии останутся неизменными. Если false то все mesh'ы будут пересчитаны в соответствующие им VinnyLibDataStructureGeometryPlacementInfo и все VinnyLibDataStructureGeometryPlacementInfo "обнулены"
+        /// </summary>
+        public bool ReprojectOnlyPosition { get; set; }
 
         /// <summary>
         /// Набор последовательных преобразований координат

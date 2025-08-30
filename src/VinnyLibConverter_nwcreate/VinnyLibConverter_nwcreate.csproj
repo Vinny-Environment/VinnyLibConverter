@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <OutDir>$(SolutionDir)..\VinnyLibBin\$(Configuration)\dependencies\nwcreate</OutDir>
+      <TargetFramework>netstandard20</TargetFramework>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">
+            <Private>False</Private>
+            <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+        </ProjectReference>
+        <ProjectReference Include="..\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj" />
+    </ItemGroup>
+
+  <ItemGroup>
+        <Reference Include="nwcreateNET">
+          <HintPath>$(SolutionDir)..\VinnyLibBin\$(Configuration)\dependencies\nwcreate\nwcreateNET.dll</HintPath>
+          <Private>False</Private>
+          <EmbedInteropTypes>False</EmbedInteropTypes>
+        </Reference>
+   </ItemGroup>
+
+</Project>
