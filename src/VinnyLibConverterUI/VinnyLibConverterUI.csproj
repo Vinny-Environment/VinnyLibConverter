@@ -8,6 +8,16 @@
       <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
       <UseWPF>true</UseWPF>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\vinnyIcon_32x32.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\vinnyIcon_32x32.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
     
   <ItemGroup>
       <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">

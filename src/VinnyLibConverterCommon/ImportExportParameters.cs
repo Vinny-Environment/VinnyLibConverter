@@ -106,7 +106,7 @@ namespace VinnyLibConverterCommon
         {
             using (var writer = new System.IO.StreamWriter(path))
             {
-                var serializer = new XmlSerializer(this.GetType());
+                var serializer = new XmlSerializer(typeof(ImportExportParameters));
                 serializer.Serialize(writer, this);
                 writer.Flush();
             }

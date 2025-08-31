@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -28,8 +29,11 @@ namespace VinnyLibConverterUI
         {
             pIsImport = isForImport;
             InitializeComponent();
+            //init affine schema
+            this.TextBox_AffineSchema.Text = "X' = αX + βY + λ;\nY' = γX + δY + μ";
             Utils.LoadVinnyLibConverterCommon();
             VinnyParametets = new VinnyLibConverterCommon.ImportExportParameters();
+            this.SizeToContent = SizeToContent.WidthAndHeight;
         }
 
         private void SetUiFromConfig(VinnyLibConverterCommon.ImportExportParameters VinnyParametets)
@@ -239,8 +243,8 @@ namespace VinnyLibConverterUI
 
         private void ButtonShowMatrix4x4_Click(object sender, RoutedEventArgs e)
         {
-            var matrix = CreateMatrix4x4FromData();
-            this.TextBoxResultMatrix.Text = matrix.ToString();
+            VinnyLibConverterCommon.Transformation.TransformationMatrix4x4 matrix = CreateMatrix4x4FromData();
+            this.TextBoxResultMatrix.Text = matrix.Matrix.ToString();
         }
 
         #endregion

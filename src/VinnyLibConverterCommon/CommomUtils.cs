@@ -55,28 +55,28 @@ namespace VinnyLibConverterCommon
                 new DataExchangeFormatInfo(){
                     Caption = "VinnyLibConverter Cached XML Data",
                     Type = CdeVariant.DotBIM,
-                    Extensions= new string[]{".vlcxml" },
+                    Extensions= new string[]{"vlcxml" },
                     IsReadable=true,
                     IsWritable=true
                 },
                 new DataExchangeFormatInfo(){
                     Caption = "DotBIM",
                     Type = CdeVariant.DotBIM,
-                    Extensions= new string[]{".bim" },
+                    Extensions= new string[]{"bim" },
                     IsReadable=true,
                     IsWritable=true
                 },
                 new DataExchangeFormatInfo(){
                     Caption = "Topomatic SMDX",
                     Type = CdeVariant.SMDX,
-                    Extensions= new string[]{".smdx" },
+                    Extensions= new string[]{"smdx" },
                     IsReadable=true,
                     IsWritable=true
                 },
                 new DataExchangeFormatInfo(){
                     Caption = "Navisworks cashe (NWC)",
                     Type = CdeVariant.NWC,
-                    Extensions= new string[]{".nwc" },
+                    Extensions= new string[]{"nwc" },
                     IsReadable=false,
                     IsWritable=true
                 }

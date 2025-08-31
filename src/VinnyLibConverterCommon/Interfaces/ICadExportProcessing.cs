@@ -11,6 +11,6 @@ namespace VinnyLibConverterCommon.Interfaces
     public interface ICadExportProcessing
     {
         VinnyLibDataStructureModel CreateData();
-        void ExportTo(CdeVariant outputType, VinnyLibDataStructureModel vinnyData, ImportExportParameters outputParameters);
+        void ExportTo(VinnyLibDataStructureModel vinnyData, ImportExportParameters outputParameters);
     }
 }

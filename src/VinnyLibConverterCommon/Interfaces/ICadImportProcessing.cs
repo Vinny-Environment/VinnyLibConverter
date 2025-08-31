@@ -10,6 +10,6 @@ namespace VinnyLibConverterCommon.Interfaces
     /// </summary>
     public interface ICadImportProcessing
     {
-        VinnyLibDataStructureModel ImportFrom(CdeVariant outputType, ImportExportParameters openParameters);
+        VinnyLibDataStructureModel ImportFrom(ImportExportParameters openParameters);
     }
 }

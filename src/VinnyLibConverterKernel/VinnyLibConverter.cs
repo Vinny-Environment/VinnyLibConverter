@@ -72,8 +72,20 @@ namespace VinnyLibConverterKernel
         }
         */
 
+        public static VinnyLibConverter CreateInstance2()
+        {
+            string executingAssemblyFile = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
+            string executionDirectoryPath = System.IO.Path.GetDirectoryName(executingAssemblyFile);
+
+            if (mInstance == null) mInstance = new VinnyLibConverter(executionDirectoryPath);
+            return mInstance;
+        }
+
         public static VinnyLibConverter CreateInstance(string libPath, bool force = false)
         {
+            string executingAssemblyFile = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
+            string executionDirectoryPath = System.IO.Path.GetDirectoryName(executingAssemblyFile);
+
             if (mInstance == null) mInstance = new VinnyLibConverter(libPath);
             else if (force) mInstance = new VinnyLibConverter(libPath);
             return mInstance;
