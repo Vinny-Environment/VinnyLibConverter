@@ -39,7 +39,7 @@ namespace VinnyLibConverter_DotBIM
             //header
             foreach (var metadata in dotbimFile.Info)
             {
-                dotbimFileDef.Header.AddHeaderData(metadata.Key, metadata.Value);
+                dotbimFileDef.Header.Parameters.Add(dotbimFileDef.ParametersManager.CreateParameterValueWithDefs(metadata.Key, metadata.Value));
             }
             //geometry
             foreach (var mesh in dotbimFile.Meshes)
@@ -165,9 +165,11 @@ namespace VinnyLibConverter_DotBIM
 
             //метаданные
             dotbimFile.Info = new Dictionary<string, string>();
-            foreach (var metadata in vinnyData.Header.Data)
+            foreach (var metadata in vinnyData.Header.Parameters)
             {
-                if (!dotbimFile.Info.ContainsKey(metadata.Item1)) dotbimFile.Info.Add(metadata.Item1, metadata.Item2);
+                var paramDef = vinnyData.ParametersManager.GetParamDefById(metadata.ParamDefId);
+                if (paramDef == null) continue;
+                if (!dotbimFile.Info.ContainsKey(paramDef.Name)) dotbimFile.Info.Add(paramDef.Name, metadata.ToString());
             }
 
             //элементы + геометрия

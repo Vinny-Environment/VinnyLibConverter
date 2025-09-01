@@ -9,9 +9,10 @@ namespace VinnyLibConverterCommon.Transformation
     /// Xt = X*a + Y*b + c
     /// Yt = X*a2 + Y*b2 + c2
     /// </summary>
+    [Serializable]
     public class TransformationAffine : ICoordinatesTransformation
     {
-        public CoordinatesTransformationVariant GetTransformationType()
+        public override CoordinatesTransformationVariant GetTransformationType()
         {
             return CoordinatesTransformationVariant.Affine;
         }
@@ -32,7 +33,7 @@ namespace VinnyLibConverterCommon.Transformation
             this.TranslationY = translationY;
         }
 
-        public float[] TransformPoint3d(float[] xyz)
+        public override float[] TransformPoint3d(float[] xyz)
         {
             float x_new = xyz[0] * ScaleX + xyz[1] * RotationY + TranslationX;
             float y_new = xyz[0] * ScaleY + xyz[1] * RotationX + TranslationY;
@@ -45,11 +46,11 @@ namespace VinnyLibConverterCommon.Transformation
         }
 
 
-        public float ScaleX { get; private set; } = 1;
-        public float RotationX { get; private set; } = 1;
-        public float RotationY { get; private set; } = 1;
-        public float ScaleY { get; private set; } = 1;
-        public float TranslationX { get; private set; } = 0;
-        public float TranslationY { get; private set; } = 0;
+        public float ScaleX { get; set; } = 1;
+        public float RotationX { get; set; } = 1;
+        public float RotationY { get; set; } = 1;
+        public float ScaleY { get; set; } = 1;
+        public float TranslationX { get; set; } = 0;
+        public float TranslationY { get; set; } = 0;
     }
 }

@@ -10,28 +10,28 @@ namespace VinnyLibConverterCommon.Transformation
     /// </summary>
     public class MatrixImpl
     {
-        public int Rows { get; }
-        public int Columns { get; }
+        public int Rows { get; set; }
+        public int Columns { get; set; }
 
         private MatrixImpl() { }
         public MatrixImpl(int rows, int columns)
         {
             Rows = rows;
             Columns = columns;
-            Matrix = new float[rows, columns];
+            Matrix = new float[rows * columns];
 
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    Matrix[i, j] = 0;
-                    if (i == j) Matrix[i, j] = 1;
+                    this[i, j] = 0;
+                    if (i == j) this[i, j] = 1;
 
                 }
             }
         }
 
-        public MatrixImpl(float[,] matrix, int rows, int columns)
+        public MatrixImpl(float[] matrix, int rows, int columns)
         {
             Rows = rows;
             Columns = columns;
@@ -227,12 +227,12 @@ namespace VinnyLibConverterCommon.Transformation
         /// 4x4 transformation matrix
         /// https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D1%82%D1%80%D0%B8%D1%86%D0%B0_%D0%BF%D0%B5%D1%80%D0%B5%D1%85%D0%BE%D0%B4%D0%B0
         /// </summary>
-        public float[,] Matrix { get; private set; }
+        public float[] Matrix { get; set; }
 
         public float this[int row, int col]
         {
-            get => Matrix[row, col];
-            set => Matrix[row, col] = value;
+            get => Matrix[row * Rows + col];
+            set => Matrix[row * Rows + col] = value;
         }
     }
 }

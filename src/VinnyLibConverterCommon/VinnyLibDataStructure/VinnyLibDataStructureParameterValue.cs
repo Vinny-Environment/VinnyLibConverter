@@ -11,6 +11,12 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
     {
         public VinnyLibDataStructureParameterValue() { }
 
+        public VinnyLibDataStructureParameterValue(int paramDefId, int paramCategoryId)
+        {
+            this.ParamDefId = paramDefId;
+            this.ParamCategoryId = paramCategoryId;
+        }
+
         public int ParamDefId { get; set; }
         public int ParamCategoryId { get; set; }
 

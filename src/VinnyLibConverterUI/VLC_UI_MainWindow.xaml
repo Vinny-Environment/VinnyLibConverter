@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VinnyLibConverterUI"
         mc:Ignorable="d"
-        Title="Настройки обработки для VinnyLibConverter" d:DesignHeight="620" d:DesignWidth="800">
+        Title="Настройки обработки для VinnyLibConverter" d:DesignHeight="650" d:DesignWidth="800">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="37*"/>
@@ -61,7 +61,7 @@
 						<Button x:Name="ButtonSaveSettings" Margin="0,5,0,0" Content="Сохранить настройки в файл" Click="ButtonSaveSettings_Click"></Button>
 					</StackPanel>
 				</GroupBox>
-				<Button x:Name="ButtonStart" Margin="0,10,0,0" Content="Применить настройки обработки"></Button>
+                <Button x:Name="ButtonStart" Margin="0,10,0,0" Content="Применить настройки обработки" Click="ButtonStart_Click"></Button>
 			</StackPanel>
 			<StackPanel Orientation="Vertical" Margin="5,0,0,0" Width="350">
 				<TabControl x:Name="TabControlTransformationTypes">
@@ -142,7 +142,7 @@
 								</StackPanel>
 								<Separator Margin="10,10,10,0"></Separator>
 								<Label x:Name="LabelAffinnT_Comment" Content="Схема преобразования:"></Label>
-                                <TextBox x:Name="TextBox_AffineSchema" Height="60" HorizontalAlignment="Center" Width="200"></TextBox>
+                                <TextBox x:Name="TextBox_AffineSchema" Height="60" HorizontalAlignment="Center" Width="200" IsReadOnly="True"></TextBox>
 								<!--<Image x:Name="Image_AffineTSchema" Height="60" Source="Resources/affine.png"></Image>-->
 							</StackPanel>
 						</Grid>

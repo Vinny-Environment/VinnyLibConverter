@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 using System.Text;
+using System.Xml.Serialization;
 using VinnyLibConverterCommon.Transformation;
 
 namespace VinnyLibConverterCommon.VinnyLibDataStructure
@@ -141,10 +143,51 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         }
 
 
+        [XmlIgnore]
+        public Dictionary<int, VinnyLibDataStructureGeometryPlacementInfo> mGeometriesPlacementInfo { get; set; }
 
-        public Dictionary<int, VinnyLibDataStructureGeometryPlacementInfo> mGeometriesPlacementInfo { get; private set; }
-        public Dictionary<int, VinnyLibDataStructureGeometry> mGeometries { get; private set; }
+        // Helper property for XML serialization
+        [XmlArray("mGeometriesPlacementInfo")]
+        [XmlArrayItem("mGeometriesPlacementInfo")]
+        public List<KeyValuePair_GeometryPlacementInfo> GeometriesPlacementInfoList
+        {
+            get => mGeometriesPlacementInfo.Select(kv => new KeyValuePair_GeometryPlacementInfo { Key = kv.Key, Value = kv.Value }).ToList();
+            set => mGeometriesPlacementInfo = value.ToDictionary(item => item.Key, item => item.Value);
+        }
+
+        [XmlIgnore]
+        public Dictionary<int, VinnyLibDataStructureGeometry> mGeometries { get; set; }
+
+        // Helper property for XML serialization
+        [XmlArray("mGeometries")]
+        [XmlArrayItem("mGeometries")]
+        public List<KeyValuePair_Geometry> GeometriesList
+        {
+            get => mGeometries.Select(kv => new KeyValuePair_Geometry { Key = kv.Key, Value = kv.Value }).ToList();
+            set => mGeometries = value.ToDictionary(item => item.Key, item => item.Value);
+        }
+
         private int mGeometryCounter;
         private int mGeometryPlacementInfoCounter;
     }
+
+    // Helper class for mGeometriesPlacementInfo serrialization
+    public class KeyValuePair_GeometryPlacementInfo
+    {
+        public int Key { get; set; }
+
+        public VinnyLibDataStructureGeometryPlacementInfo Value { get; set; }
+    }
+
+    // Helper class for Geometries serrialization
+    public class KeyValuePair_Geometry
+    {
+        public int Key { get; set; }
+
+        public VinnyLibDataStructureGeometry Value { get; set; }
+    }
+
+
+
+
 }

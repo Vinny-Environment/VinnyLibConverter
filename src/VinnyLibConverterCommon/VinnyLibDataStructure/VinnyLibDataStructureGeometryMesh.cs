@@ -4,9 +4,11 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace VinnyLibConverterCommon.VinnyLibDataStructure
 {
+    [Serializable]
     public sealed class VinnyLibDataStructureGeometryMesh : VinnyLibDataStructureGeometry
     {
         public override VinnyLibDataStructureGeometryType GetGeometryType() 
@@ -37,7 +39,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             Faces = new Dictionary<int, int[]>();
             Faces2Materials = new Dictionary<int, int>();
         }
-        private VinnyLibDataStructureGeometryMesh() { }
+        public VinnyLibDataStructureGeometryMesh() { }
 
         public int AddVertex(float x, float y, float z)
         {
@@ -141,9 +143,61 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         //Округление координат для сравнения точек
         private int mAccuracy = 5;
 
-        public Dictionary<int, float[]> Points { get; internal set; }
-        public Dictionary<int, int[]> Faces { get; internal set; }
+        [XmlIgnore]
+        public Dictionary<int, float[]> Points { get; set; }
 
-        public Dictionary<int, int> Faces2Materials { get; internal set; }
+        // Helper property for XML serialization
+        [XmlArray("Points")]
+        [XmlArrayItem("Points")]
+        public List<KeyValuePair_Point> PointsList
+        {
+            get => Points.Select(kv => new KeyValuePair_Point { Key = kv.Key, Value = kv.Value }).ToList();
+            set => Points = value.ToDictionary(item => item.Key, item => item.Value);
+        }
+
+        [XmlIgnore]
+        public Dictionary<int, int[]> Faces { get; set; }
+
+        // Helper property for XML serialization
+        [XmlArray("Faces")]
+        [XmlArrayItem("Faces")]
+        public List<KeyValuePair_Face> FacesList
+        {
+            get => Faces.Select(kv => new KeyValuePair_Face { Key = kv.Key, Value = kv.Value }).ToList();
+            set => Faces = value.ToDictionary(item => item.Key, item => item.Value);
+        }
+
+        [XmlIgnore]
+        public Dictionary<int, int> Faces2Materials { get; set; }
+
+        // Helper property for XML serialization
+        [XmlArray("Faces2Materials")]
+        [XmlArrayItem("Faces2Materials")]
+        public List<KeyValuePair_FacesMaterial> Faces2MaterialsList
+        {
+            get => Faces2Materials.Select(kv => new KeyValuePair_FacesMaterial { Key = kv.Key, Value = kv.Value }).ToList();
+            set => Faces2Materials = value.ToDictionary(item => item.Key, item => item.Value);
+        }
+    }
+
+    public class KeyValuePair_Point
+    {
+        public int Key { get; set; }
+
+        public float[] Value { get; set; }
+    }
+
+    public class KeyValuePair_Face
+    {
+        public int Key { get; set; }
+
+        public int[] Value { get; set; }
+    }
+
+    public class KeyValuePair_FacesMaterial
+    {
+        public int Key { get; set; }
+
+        public int Value { get; set; }
     }
 }

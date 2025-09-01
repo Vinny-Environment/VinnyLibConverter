@@ -6,6 +6,7 @@ namespace VinnyLibConverterCommon
 {
     public enum CdeVariant : int
     {
+        _Unkwnown = -1,
         VinnyLibConverterCache = 0,
         MLT = 1,//? Частично проприетарный формат, CMesh бинарный под копирайтом
         IMC = 2,

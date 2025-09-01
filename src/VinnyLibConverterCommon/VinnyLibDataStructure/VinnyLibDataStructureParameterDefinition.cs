@@ -18,17 +18,18 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
     /// </summary>
     public class VinnyLibDataStructureParameterDefinition
     {
+        public VinnyLibDataStructureParameterDefinition() { }
         public VinnyLibDataStructureParameterDefinition(int id, string name, VinnyLibDataStructureParameterDefinitionType paramType = VinnyLibDataStructureParameterDefinitionType.ParamString)
         {
             this.Id = id;
             this.Name = name;
             this.Caption = name;
         }
-        public int Id { get; private set; }
-        public string Name { get; private set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
         public string Caption { get; set; } = "";
         public bool IsReadOnly { get; set; } = false;
-        public VinnyLibDataStructureParameterDefinitionType ParamType { get; private set; }
+        public VinnyLibDataStructureParameterDefinitionType ParamType { get; set; }
 
         public override bool Equals(object obj)
         {

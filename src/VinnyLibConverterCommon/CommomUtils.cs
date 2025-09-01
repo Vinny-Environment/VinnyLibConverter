@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using VinnyLibConverterCommon.Interfaces;
 
 namespace VinnyLibConverterCommon
@@ -81,6 +81,15 @@ namespace VinnyLibConverterCommon
                     IsWritable=true
                 }
             };
+        }
+
+        public static CdeVariant GetCdeVariantFromExtension(string ext)
+        {
+            ext = ext.Replace(".", "");
+            var currentFormats = GetCurrentFormats();
+            var needFormats = currentFormats.Where(a=>a.Extensions.Contains(ext)).ToList();
+            if (needFormats.Any()) return needFormats.First().Type;
+            return CdeVariant._Unkwnown;
         }
 
         public static float DegreeToRadians(float degree)

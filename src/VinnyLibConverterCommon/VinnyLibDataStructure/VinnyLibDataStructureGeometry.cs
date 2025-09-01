@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace VinnyLibConverterCommon.VinnyLibDataStructure
 {
@@ -12,6 +13,8 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         Brep = 3
     };
 
+    [Serializable]
+    [XmlInclude(typeof(VinnyLibDataStructureGeometryMesh))]
     public abstract class VinnyLibDataStructureGeometry
     {
         public virtual VinnyLibDataStructureGeometryType GetGeometryType()
@@ -34,6 +37,6 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         /// </summary>
         public int MaterialId { get; set; } = 0;
 
-        public int Id { get; internal set; }
+        public int Id { get; set; }
     }
 }

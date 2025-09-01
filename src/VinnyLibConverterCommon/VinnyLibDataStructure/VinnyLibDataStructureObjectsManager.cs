@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace VinnyLibConverterCommon.VinnyLibDataStructure
 {
@@ -111,8 +113,26 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         }
 
 
+        [XmlIgnore]
+        public Dictionary<int, VinnyLibDataStructureObject> Objects { get; set; }
 
-        public Dictionary<int, VinnyLibDataStructureObject> Objects { get; internal set; }
+        // Helper property for XML serialization
+        [XmlArray("Objects")]
+        [XmlArrayItem("Objects")]
+        public List<KeyValuePair_Object> MaterialsList
+        {
+            get => Objects.Select(kv => new KeyValuePair_Object { Key = kv.Key, Value = kv.Value }).ToList();
+            set => Objects = value.ToDictionary(item => item.Key, item => item.Value);
+        }
+
         private int mObjectIdCounter;
+    }
+
+    // Helper class for Objects serrialization
+    public class KeyValuePair_Object
+    {
+        public int Key { get; set; }
+
+        public VinnyLibDataStructureObject Value { get; set; }
     }
 }

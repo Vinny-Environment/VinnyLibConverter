@@ -16,7 +16,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             this.IdGeometry = geometryId;
             
         }
-        internal VinnyLibDataStructureGeometryPlacementInfo() { SetDefaultValues(); }
+        public VinnyLibDataStructureGeometryPlacementInfo() { SetDefaultValues(); }
 
         private void SetDefaultValues()
         {
@@ -35,8 +35,8 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             VectorOZ_Rad = 0;
         }
 
-        public int Id { get; internal set; }
-        public int IdGeometry { get; internal set; }
+        public int Id { get; set; }
+        public int IdGeometry { get; set; }
 
         public float[] Position { get; set; }
         public float[] Scale { get; set; }
@@ -55,6 +55,6 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             TransformationMatrixInfo.SetScale(Scale[0], Scale[1], Scale[2]);
         }
 
-        public TransformationMatrix4x4 TransformationMatrixInfo { get; private set; }
+        public TransformationMatrix4x4 TransformationMatrixInfo { get; set; }
     }
 }

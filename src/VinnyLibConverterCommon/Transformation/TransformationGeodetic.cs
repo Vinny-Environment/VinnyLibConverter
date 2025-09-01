@@ -4,21 +4,22 @@ using System.Text;
 
 namespace VinnyLibConverterCommon.Transformation
 {
+    [Serializable]
     public class TransformationGeodetic : ICoordinatesTransformation
     {
-        public CoordinatesTransformationVariant GetTransformationType()
+        public override CoordinatesTransformationVariant GetTransformationType()
         {
             return CoordinatesTransformationVariant.Geodetic;
         }
         private TransformationGeodetic() { }
         public TransformationGeodetic(string wktStartCs, string WktTargetCs)
         {
-            pWktStartCS = wktStartCs;
-            pWktTargetCS = WktTargetCs;
+            WktStartCS = wktStartCs;
+            WktTargetCS = WktTargetCs;
         }
         
 
-        public float[] TransformPoint3d(float[] xyz)
+        public override float[] TransformPoint3d(float[] xyz)
         {
             //TODO: подтянуть GDAL и реализовать пересчет (не хочется сюда тащить огромный GDAL OSR со своими абстракциями)
             //TODO (2): создать SWIG-обёртку над маленькой C библиотекой на основе PROJ (указание пути к proj.db, пересчет точки, пересчет точек)
@@ -32,7 +33,7 @@ namespace VinnyLibConverterCommon.Transformation
             //TODO: return a CS's names after PROJ's initialize (create PROJ SWIG...)
         }
 
-        private string pWktStartCS;
-        private string pWktTargetCS;
+        public string WktStartCS { get; set; }
+        public string WktTargetCS { get; set; }
     }
 }

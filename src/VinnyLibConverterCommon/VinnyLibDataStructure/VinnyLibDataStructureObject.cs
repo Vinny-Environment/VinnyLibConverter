@@ -8,9 +8,9 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
     /// <summary>
     /// Описание объекта модели
     /// </summary>
-    public class VinnyLibDataStructureObject
+    public class VinnyLibDataStructureObject : VinnyLibDataStructureObjectWithParametersBase
     {
-        internal VinnyLibDataStructureObject()
+        public VinnyLibDataStructureObject()
         {
             Parameters = new List<VinnyLibDataStructureParameterValue>();
             GeometryPlacementInfoIds = new List<int>();
@@ -21,7 +21,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             Parameters = new List<VinnyLibDataStructureParameterValue>();
             GeometryPlacementInfoIds = new List<int>();
         }
-        public int Id { get; private set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Вспомогательный идентификатор, заполняется при чтении файла. Указывает на идентификатор объекта внутри данного файла
@@ -33,8 +33,6 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public string Description { get; set; } = "";
         public string UniqueId { get; set; }
         public string ModifiedDate { get; set; }
-
-        
 
         public void AddGeometryPlacementInfo(VinnyLibDataStructureGeometryPlacementInfo geometryPlacementInfo)
         {
@@ -53,6 +51,5 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
 
         public List<int> GeometryPlacementInfoIds { get; internal set; }
-        public List<VinnyLibDataStructureParameterValue> Parameters { get; internal set; }
     }
 }

@@ -54,10 +54,16 @@ namespace VinnyLibConverterUI
             {
                 this.ListBoxTransformationInfo.Items.Add(tr.ToString().Replace(Environment.NewLine, ""));
             }
+
+            this.VinnyParametets = VinnyParametets;
         }
 
         private void SaveUiToConfig()
         {
+            if (this.TextBoxPath.Text == "")
+            {
+                //throw new Exception("VinnyRenga. Путь к файлу не указан!");
+            }
             this.VinnyParametets.Path = this.TextBoxPath.Text;
 
             this.VinnyParametets.Token = this.TextBoxToken.Text;
@@ -70,6 +76,7 @@ namespace VinnyLibConverterUI
             this.VinnyParametets.CheckParameterDefsDubles = this.CheckBoxCheckParameterDefsDubles.IsChecked ?? false;
             this.VinnyParametets.ReprojectOnlyPosition = this.CheckBoxReprojectOnlyPosition.IsChecked ?? false;
 
+            this.VinnyParametets.ModelType = VinnyLibConverterCommon.CommomUtils.GetCdeVariantFromExtension(System.IO.Path.GetExtension(this.VinnyParametets.Path));
         }
 
         private VinnyLibConverterCommon.Transformation.TransformationMatrix4x4 CreateMatrix4x4FromData()
@@ -113,9 +120,9 @@ namespace VinnyLibConverterUI
 
             //scale
             matrix.SetScale(
-                float.Parse(this.TextBox_ScaleX.Text),
-                float.Parse(this.TextBox_ScaleY.Text),
-                float.Parse(this.TextBox_ScaleY.Text));
+                (float)double.Parse(this.TextBox_ScaleX.Text),
+                (float)double.Parse(this.TextBox_ScaleY.Text),
+                (float)double.Parse(this.TextBox_ScaleY.Text));
 
             return matrix;
         }
@@ -154,11 +161,16 @@ namespace VinnyLibConverterUI
             }
 
             exts = exts.Distinct().ToList();
-            filters.Add($"_Все файлы | {string.Join(";", exts)}");
             
+
             filters = filters.Distinct().ToList();
             filters.Sort();
-            fileDialog.Filter = string.Join("|", filters);
+
+            List<string> filters2 = new List<string>();
+            if (pIsImport) filters2.Add($"Все файлы | {string.Join(";", exts)}");
+            filters2 = filters2.Concat(filters).ToList();
+
+            fileDialog.Filter = string.Join("|", filters2);
 
             if (fileDialog.ShowDialog() == true)
             {
@@ -172,6 +184,12 @@ namespace VinnyLibConverterUI
             if (ListBoxTransformationInfo.SelectedIndex <= 0) return;
             if (ListBoxTransformationInfo.SelectedIndex > this.VinnyParametets.TransformationInfo.Count) return;
             this.VinnyParametets.TransformationInfo.RemoveAt(ListBoxTransformationInfo.SelectedIndex);
+
+            this.ListBoxTransformationInfo.Items.Clear();
+            foreach (var tr in this.VinnyParametets.TransformationInfo)
+            {
+                this.ListBoxTransformationInfo.Items.Add(tr.ToString());
+            }
         }
 
         private void ButtonSaveTransformation_Click(object sender, RoutedEventArgs e)
@@ -246,6 +264,15 @@ namespace VinnyLibConverterUI
             VinnyLibConverterCommon.Transformation.TransformationMatrix4x4 matrix = CreateMatrix4x4FromData();
             this.TextBoxResultMatrix.Text = matrix.Matrix.ToString();
         }
+
+        private void ButtonStart_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
+            this.SaveUiToConfig();
+            this.Close();
+        }
+
+        
 
         #endregion
 

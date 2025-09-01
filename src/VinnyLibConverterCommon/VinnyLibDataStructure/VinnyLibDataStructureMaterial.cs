@@ -9,14 +9,14 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
     /// </summary>
     public class VinnyLibDataStructureMaterial
     {
-        public int Id { get; private set; }
-        public string Name { get; internal set; } = "";
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
         public int ColorR { get; set; } = 0;
         public int ColorG { get; set; } = 0;
         public int ColorB { get; set; } = 0;
         public int ColorAlpha { get; set; } = 0;
 
-        internal VinnyLibDataStructureMaterial() { }
+        public VinnyLibDataStructureMaterial() { }
         internal VinnyLibDataStructureMaterial(int id)
         {
             this.Id = id;

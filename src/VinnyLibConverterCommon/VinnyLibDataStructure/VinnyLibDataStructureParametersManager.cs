@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace VinnyLibConverterCommon.VinnyLibDataStructure
 {
@@ -63,6 +64,24 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             return null;
         }
 
+        /// <summary>
+        /// Вспомогательный метод для создания значения параметра с попутной регистрацией определения параметра, категории при их отсутствии
+        /// </summary>
+        /// <param name="paramName"></param>
+        /// <param name="paramValue"></param>
+        /// <param name="paramCategory"></param>
+        /// <param name="paramType"></param>
+        /// <returns></returns>
+        public VinnyLibDataStructureParameterValue CreateParameterValueWithDefs(string paramName, object paramValue, string paramCategory = CategoryDefaultName, VinnyLibDataStructureParameterDefinitionType paramType = VinnyLibDataStructureParameterDefinitionType.ParamString)
+        {
+            int paramDefId = CreateParameterDefinition(paramName, paramType);
+            int categoryId = CreateCategory(paramCategory);
+
+            VinnyLibDataStructureParameterValue paramValueDef = new VinnyLibDataStructureParameterValue(paramDefId, categoryId);
+            paramValueDef.SetValue(paramValue, paramType);
+            return paramValueDef;
+        }
+
         public Dictionary<string, List<VinnyLibDataStructureParameterValue>> SortParamsByCategories(List<VinnyLibDataStructureParameterValue> paramValuesInfo)
         {
             Dictionary<string, List<VinnyLibDataStructureParameterValue>> data = new Dictionary<string, List<VinnyLibDataStructureParameterValue>>();
@@ -77,11 +96,51 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
         }
 
-        public Dictionary<int, VinnyLibDataStructureParameterDefinition> Parameters { get; internal set; }
+        [XmlIgnore]
+        public Dictionary<int, VinnyLibDataStructureParameterDefinition> Parameters { get; set; }
+
+        // Helper property for XML serialization
+        [XmlArray("Parameters")]
+        [XmlArrayItem("Parameters")]
+        public List<KeyValuePair_Parameter> ParametersList
+        {
+            get => Parameters.Select(kv => new KeyValuePair_Parameter { Key = kv.Key, Value = kv.Value }).ToList();
+            set => Parameters = value.ToDictionary(item => item.Key, item => item.Value);
+        }
+
+
         private int mParamDefCounter = 0;
 
-        public Dictionary<int, string> Categories { get; internal set; }
+        [XmlIgnore]
+        public Dictionary<int, string> Categories { get; set; }
+
+        // Helper property for XML serialization
+        [XmlArray("Categories")]
+        [XmlArrayItem("Categories")]
+        public List<KeyValuePair_Category> CategoriesList
+        {
+            get => Categories.Select(kv => new KeyValuePair_Category { Key = kv.Key, Value = kv.Value }).ToList();
+            set => Categories = value.ToDictionary(item => item.Key, item => item.Value);
+        }
+
         public int mCategoriesCounter = 0;
 
+    }
+
+
+    // Helper class for Objects serrialization
+    public class KeyValuePair_Parameter
+    {
+        public int Key { get; set; }
+
+        public VinnyLibDataStructureParameterDefinition Value { get; set; }
+    }
+
+    // Helper class for Categories serrialization
+    public class KeyValuePair_Category
+    {
+        public int Key { get; set; }
+
+        public string Value { get; set; }
     }
 }

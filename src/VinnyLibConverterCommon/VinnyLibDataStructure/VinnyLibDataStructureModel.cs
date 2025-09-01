@@ -21,12 +21,12 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             GeometrtyManager = new VinnyLibDataStructureGeometryManager();
             MaterialsManager = new VinnyLibDataStructureMaterialsManager();
         }
-        public VinnyLibDataStructureHeader Header { get; private set; }
+        public VinnyLibDataStructureHeader Header { get; set; }
 
-        public VinnyLibDataStructureObjectsManager ObjectsManager { get; private set; }
-        public VinnyLibDataStructureParametersManager ParametersManager { get; private set; }
-        public VinnyLibDataStructureMaterialsManager MaterialsManager { get; private set; }
-        public VinnyLibDataStructureGeometryManager GeometrtyManager { get; private set; }
+        public VinnyLibDataStructureObjectsManager ObjectsManager { get; set; }
+        public VinnyLibDataStructureParametersManager ParametersManager { get; set; }
+        public VinnyLibDataStructureMaterialsManager MaterialsManager { get; set; }
+        public VinnyLibDataStructureGeometryManager GeometrtyManager { get; set; }
 
         #region Различные действия
         
@@ -133,7 +133,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         {
             using (var writer = new System.IO.StreamWriter(path))
             {
-                var serializer = new XmlSerializer(this.GetType());
+                var serializer = new XmlSerializer(typeof(VinnyLibDataStructureModel));
                 serializer.Serialize(writer, this);
                 writer.Flush();
             }

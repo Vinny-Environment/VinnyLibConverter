@@ -10,9 +10,10 @@ namespace VinnyLibConverterCommon.Transformation
     /// Задание трансформции координат через матрицу 4x4.
     /// Используйте методы в СТРОГОЙ последовательности: SetPosition() -> SetRotation() -> SetScale()
     /// </summary>
+    [Serializable]
     public class TransformationMatrix4x4 : ICoordinatesTransformation
     {
-        public CoordinatesTransformationVariant GetTransformationType()
+        public override CoordinatesTransformationVariant GetTransformationType()
         {
             return CoordinatesTransformationVariant.Matrix4x4;
         }
@@ -110,7 +111,7 @@ namespace VinnyLibConverterCommon.Transformation
         /// </summary>
         /// <param name="xyz"></param>
         /// <returns></returns>
-        public float[] TransformPoint3d(float[] xyz)
+        public override float[] TransformPoint3d(float[] xyz)
         {
             /*
             MatrixImpl xyzMatrix = new MatrixImpl(3, 1);
@@ -137,7 +138,7 @@ namespace VinnyLibConverterCommon.Transformation
             return new float[] { x, y, z };
         }
 
-        public MatrixImpl Matrix { get; internal set; }
+        public MatrixImpl Matrix { get; set; }
 
         private void MultiplyMatrix(MatrixImpl OtherMatrix)
         {
