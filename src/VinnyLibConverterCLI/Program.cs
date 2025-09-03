@@ -12,13 +12,61 @@ namespace VinnyLibConverterCLI
 {
     internal class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
             //TODO: реализовать параметры командной строки с комментариями для ввода значений (и инициализация ImportExportParameters из консоли)
-#if DEBUG
             string executingAssemblyFile = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
             string executionDirectoryPath = Path.GetDirectoryName(executingAssemblyFile);
+#if DEBUG
+            args = new string[] {"-showForImport"};
+#endif
+            if (args.Length > 0)
+            {
+                string argFirst = args[0];
+                if (argFirst == "-showForImport" || argFirst == "-showForExport")
+                {
+                    bool isImport = argFirst == "showForImport";
+                    string uiLib = Path.Combine(executionDirectoryPath, "ui", "net6.0-windows", "VinnyLibConverterUI.dll");
+                    Assembly.LoadFrom(uiLib);
 
+                    ShowSettingsWindow(isImport);
+                    return;
+                }
+                else if (argFirst == "-convert")
+                {
+                    if (args.Length == 3)
+                    {
+                        string inputParamsPath = args[1];
+                        string outputParamsPath = args[2];
+
+                        if (!File.Exists(inputParamsPath))
+                        {
+                            Console.WriteLine("Файл с конфигурацией для импорта не существует " + inputParamsPath);
+                            return;
+                        }
+                        if (!File.Exists(outputParamsPath))
+                        {
+                            Console.WriteLine("Файл с конфигурацией для экспорта не существует " + outputParamsPath);
+                            return;
+                        }
+
+                        ImportExportParameters inputParams = ImportExportParameters.LoadFromFile(inputParamsPath);
+                        ImportExportParameters outputParams = ImportExportParameters.LoadFromFile(outputParamsPath);
+
+
+                        VinnyLibConverter Converter = VinnyLibConverter.CreateInstance(executionDirectoryPath);
+                        Converter.Convert(inputParams, outputParams);
+                        return;
+
+                    }
+                }
+            }
+#if RELEASE
+#endif
+#if DEBUG
+
+            return;
             VinnyTests tests = new VinnyTests(executionDirectoryPath, @"E:\DataTest\VinnyLibConverterSamples");
             tests.cde_nwc_3();
             //tests.cde_smdx_1();
@@ -34,7 +82,17 @@ namespace VinnyLibConverterCLI
 
 #endif
             Console.WriteLine("\nEnd!");
+            Console.ReadKey();
 
+        }
+
+        private static void ShowSettingsWindow(bool isImport)
+        {
+            VinnyLibConverterUI.VLC_UI_MainWindow settingsWindow = new VinnyLibConverterUI.VLC_UI_MainWindow(isImport);
+            if (settingsWindow.ShowDialog() == true)
+            {
+                return;
+            }
         }
 
     }

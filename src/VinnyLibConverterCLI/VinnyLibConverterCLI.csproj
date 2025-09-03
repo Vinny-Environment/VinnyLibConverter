@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <OutDir>$(SolutionDir)..\VinnyLibBin\$(Configuration)</OutDir>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <CopyLocalLockFileAssemblies>False</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
