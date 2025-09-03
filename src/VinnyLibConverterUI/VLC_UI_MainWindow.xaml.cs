@@ -34,6 +34,11 @@ namespace VinnyLibConverterUI
             Utils.LoadVinnyLibConverterCommon();
             VinnyParametets = new VinnyLibConverterCommon.ImportExportParameters();
             this.SizeToContent = SizeToContent.WidthAndHeight;
+
+            if (pIsImport)
+            {
+                this.CheckBoxTryCombineSameMeshGeometries.IsEnabled = false;
+            }
         }
 
         private void SetUiFromConfig(VinnyLibConverterCommon.ImportExportParameters VinnyParametets)
@@ -49,6 +54,8 @@ namespace VinnyLibConverterUI
             this.CheckBoxCheckMaterialsDubles.IsChecked = VinnyParametets.CheckMaterialsDubles;
             this.CheckBoxCheckParameterDefsDubles.IsChecked = VinnyParametets.CheckMaterialsDubles;
             this.CheckBoxReprojectOnlyPosition.IsChecked = VinnyParametets.ReprojectOnlyPosition;
+            this.CheckBoxInverseXYCoordinates.IsChecked = VinnyParametets.InverseXYCoordinates;
+            this.CheckBoxTryCombineSameMeshGeometries.IsChecked = VinnyParametets.TryCombineSameMeshGeometries;
 
             foreach (var tr in VinnyParametets.TransformationInfo)
             {
@@ -75,6 +82,8 @@ namespace VinnyLibConverterUI
             this.VinnyParametets.CheckMaterialsDubles = this.CheckBoxCheckMaterialsDubles.IsChecked ?? false;
             this.VinnyParametets.CheckParameterDefsDubles = this.CheckBoxCheckParameterDefsDubles.IsChecked ?? false;
             this.VinnyParametets.ReprojectOnlyPosition = this.CheckBoxReprojectOnlyPosition.IsChecked ?? false;
+            this.VinnyParametets.InverseXYCoordinates = this.CheckBoxInverseXYCoordinates.IsChecked ?? false;
+            this.VinnyParametets.TryCombineSameMeshGeometries = this.CheckBoxTryCombineSameMeshGeometries.IsChecked ?? false;
 
             this.VinnyParametets.ModelType = VinnyLibConverterCommon.CommomUtils.GetCdeVariantFromExtension(System.IO.Path.GetExtension(this.VinnyParametets.Path));
         }
@@ -183,7 +192,14 @@ namespace VinnyLibConverterUI
         {
             if (ListBoxTransformationInfo.SelectedIndex <= 0) return;
             if (ListBoxTransformationInfo.SelectedIndex > this.VinnyParametets.TransformationInfo.Count) return;
-            this.VinnyParametets.TransformationInfo.RemoveAt(ListBoxTransformationInfo.SelectedIndex);
+
+            List<VinnyLibConverterCommon.Transformation.ICoordinatesTransformation> existedTr = new List<VinnyLibConverterCommon.Transformation.ICoordinatesTransformation>();
+            this.VinnyParametets.TransformationInfo = new List<VinnyLibConverterCommon.Transformation.ICoordinatesTransformation>();
+
+            for(int i = 0; i < existedTr.Count; i++)
+            {
+                if (i != ListBoxTransformationInfo.SelectedIndex) this.VinnyParametets.TransformationInfo.Add(existedTr[i]);
+            }
 
             this.ListBoxTransformationInfo.Items.Clear();
             foreach (var tr in this.VinnyParametets.TransformationInfo)

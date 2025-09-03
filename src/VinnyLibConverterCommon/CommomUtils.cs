@@ -53,9 +53,16 @@ namespace VinnyLibConverterCommon
             return new DataExchangeFormatInfo[]
             {
                 new DataExchangeFormatInfo(){
-                    Caption = "VinnyLibConverter Cached XML Data",
-                    Type = CdeVariant.DotBIM,
+                    Caption = "VinnyLibConverter Cached",
+                    Type = CdeVariant.VinnyLibConverterCache,
                     Extensions= new string[]{"vlcxml" },
+                    IsReadable=true,
+                    IsWritable=true
+                },
+                new DataExchangeFormatInfo(){
+                    Caption = "VinnyLibConverter Cached Compressed",
+                    Type = CdeVariant.VinnyLibConverterCacheCompressed,
+                    Extensions= new string[]{"vlcxmlzip" },
                     IsReadable=true,
                     IsWritable=true
                 },

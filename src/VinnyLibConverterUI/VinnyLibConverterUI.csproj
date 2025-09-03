@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-      <TargetFrameworks>net461;net6.0-windows;net8.0-windows</TargetFrameworks>
+      <TargetFrameworks>net48;net6.0-windows;net8.0-windows</TargetFrameworks>
       <OutputPath>$(SolutionDir)..\VinnyLibBin\$(Configuration)\ui</OutputPath>
       <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
       <AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>

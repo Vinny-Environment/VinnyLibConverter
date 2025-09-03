@@ -8,7 +8,8 @@ namespace VinnyLibConverterCommon
     {
         _Unkwnown = -1,
         VinnyLibConverterCache = 0,
-        MLT = 1,//? Частично проприетарный формат, CMesh бинарный под копирайтом
+        VinnyLibConverterCacheCompressed = 1,
+        MLT = 11,//? Частично проприетарный формат, CMesh бинарный под копирайтом
         IMC = 2,
         DotBIM = 3,
         NWC = 4,

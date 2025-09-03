@@ -15,7 +15,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         {
             pMaterialCounter = 0;
             mMaterials = new Dictionary<int, VinnyLibDataStructureMaterial>();
-            CreateMaterial(new int[] { 0, 0, 0 }, "Default");
+            //CreateMaterial(new int[] { 0, 0, 0 }, "Default");
         }
 
         public int CreateMaterial(int[] RGBA, string name = "")
@@ -44,30 +44,14 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         {
             VinnyLibDataStructureMaterial outputMaterial = new VinnyLibDataStructureMaterial();
             mMaterials.TryGetValue(id, out outputMaterial);
-            //if (mMaterials.TryGetValue(id, out outputMaterial)) //return outputMaterial;
+            //if (Materials.TryGetValue(id, out outputMaterial)) //return outputMaterial;
             return outputMaterial;
         }
 
         [XmlIgnore]
-        public Dictionary<int, VinnyLibDataStructureMaterial> mMaterials { get; private set; }
+        public Dictionary<int, VinnyLibDataStructureMaterial> mMaterials { get; set; }
 
-        // Helper property for XML serialization
-        [XmlArray("mMaterials")]
-        [XmlArrayItem("mMaterials")]
-        public List<KeyValuePair_Material> MaterialsList
-        {
-            get => mMaterials.Select(kv => new KeyValuePair_Material { Key = kv.Key, Value = kv.Value }).ToList();
-            set => mMaterials = value.ToDictionary(item => item.Key, item => item.Value);
-        }
-
+        public List<VinnyLibDataStructureMaterial> Materials { get; set; }
         private int pMaterialCounter = 0;
-    }
-
-    // Helper class for mMaterials serrialization
-    public class KeyValuePair_Material
-    {
-        public int Key { get; set; }
-
-        public VinnyLibDataStructureMaterial Value { get; set; }
     }
 }

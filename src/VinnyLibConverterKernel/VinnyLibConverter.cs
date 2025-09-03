@@ -96,6 +96,7 @@ namespace VinnyLibConverterKernel
             switch (openParameters.ModelType)
             {
                 case CdeVariant.VinnyLibConverterCache: return VinnyLibDataStructureModel.LoadFromFile(openParameters.Path);
+                case CdeVariant.VinnyLibConverterCacheCompressed: return VinnyLibDataStructureModel.LoadFromFile(openParameters.Path);
                 case CdeVariant.DotBIM: return new VinnyLibConverter_DotBIM.DotBimFormatProcessing().Import(openParameters);
                 case CdeVariant.SMDX: return new VinnyLibConverter_SMDX.SMDX_FormatProcessing().Import(openParameters);
                 case CdeVariant.NWC: return new VinnyLibConverter_nwcreate.nwcreate_FormatProcessing().Import(openParameters);
@@ -120,6 +121,12 @@ namespace VinnyLibConverterKernel
                     new VinnyLibConverter_nwcreate.nwcreate_FormatProcessing().Export(ModelData, outputParameters);
                     break;
                 case CdeVariant.VinnyLibConverterCache:
+                    {
+                        ModelData.SetCoordinatesTransformation(outputParameters.TransformationInfo);
+                        ModelData.Save(outputParameters.Path);
+                    }
+                    break;
+                case CdeVariant.VinnyLibConverterCacheCompressed:
                     {
                         ModelData.SetCoordinatesTransformation(outputParameters.TransformationInfo);
                         ModelData.Save(outputParameters.Path);

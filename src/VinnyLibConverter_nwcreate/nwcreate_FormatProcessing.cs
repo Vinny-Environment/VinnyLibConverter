@@ -76,7 +76,7 @@ namespace VinnyLibConverter_nwcreate
                     foreach (int vinnyGeometryPlacementInfoId in vinnyObj.GeometryPlacementInfoIds)
                     {
                         VinnyLibDataStructureGeometryPlacementInfo vinnyGeometryPlacementInfo = vinnyData.GeometrtyManager.GetGeometryPlacementInfoById(vinnyGeometryPlacementInfoId);
-                        VinnyLibDataStructureGeometry vinnyGeometryInfo = vinnyData.GeometrtyManager.GetGeometryById(vinnyGeometryPlacementInfoId);
+                        VinnyLibDataStructureGeometry vinnyGeometryInfo = vinnyData.GeometrtyManager.GetMeshGeometryById(vinnyGeometryPlacementInfoId);
                         if (vinnyGeometryInfo == null) continue;
 
                         LcNwcGeometryWrapper nwcObjectGeometryDef = new LcNwcGeometryWrapper();
@@ -97,7 +97,7 @@ namespace VinnyLibConverter_nwcreate
                             nwcGeomStreamDef.Begin(0);
                             //Сопоставление индексов точек в mesh с результатом nwcGeomStreamDef.IndexedVertex
                             Dictionary<int, int> vinnyPoint2nwcVertex = new Dictionary<int, int>();
-                            foreach (var facesInfo in vinnyGeometryMeshInfo.Faces)
+                            foreach (var facesInfo in vinnyGeometryMeshInfo.mFaces)
                             {
                                 var faceVertex1 = vinnyGeometryPlacementInfo.TransformationMatrixInfo.TransformPoint3d(
                                     vinnyGeometryMeshInfo.GetPointCoords(facesInfo.Value[0]));

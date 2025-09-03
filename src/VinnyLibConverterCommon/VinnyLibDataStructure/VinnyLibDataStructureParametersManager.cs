@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace VinnyLibConverterCommon.VinnyLibDataStructure
@@ -15,10 +16,10 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public VinnyLibDataStructureParametersManager()
         {
             mParamDefCounter = 0;
-            Parameters = new Dictionary<int, VinnyLibDataStructureParameterDefinition>();
+            mParameters = new Dictionary<int, VinnyLibDataStructureParameterDefinition>();
 
             mCategoriesCounter = 0;
-            Categories = new Dictionary<int, string>();
+            mCategories = new Dictionary<int, string>();
             CreateCategory(CategoryDefaultName);
         }
 
@@ -27,32 +28,32 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             VinnyLibDataStructureParameterDefinition paramDef = new VinnyLibDataStructureParameterDefinition(mParamDefCounter, paramName, paramType);
             if (ImportExportParameters.mActiveConfig.CheckParameterDefsDubles)
             {
-                foreach (var paramDefInfo in Parameters)
+                foreach (var paramDefInfo in mParameters)
                 {
                     if (paramDefInfo.Value.Equals(paramDef)) return paramDefInfo.Key;
                 }
             }
-            Parameters.Add(mParamDefCounter, paramDef);
+            mParameters.Add(mParamDefCounter, paramDef);
             mParamDefCounter++;
             return mParamDefCounter - 1;
         }
 
         public void SetParameterDef(int id, VinnyLibDataStructureParameterDefinition paramDef)
         {
-            Parameters[id] = paramDef;
+            mParameters[id] = paramDef;
         }
 
         public VinnyLibDataStructureParameterDefinition GetParamDefById(int id)
         {
             VinnyLibDataStructureParameterDefinition outputParamDef = new VinnyLibDataStructureParameterDefinition(0, "");
-            if (Parameters.TryGetValue(id, out outputParamDef)) return outputParamDef;
+            if (mParameters.TryGetValue(id, out outputParamDef)) return outputParamDef;
             return null;
         }
 
         public int CreateCategory(string categoryName)
         {
-            if (Categories.ContainsValue(categoryName)) return Categories.Where(a => a.Value == categoryName).First().Key;
-            Categories.Add(mCategoriesCounter, categoryName);
+            if (mCategories.ContainsValue(categoryName)) return mCategories.Where(a => a.Value == categoryName).First().Key;
+            mCategories.Add(mCategoriesCounter, categoryName);
             mCategoriesCounter++;
             return mCategoriesCounter - 1;
         }
@@ -60,7 +61,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public string GetCategoryNameById(int idCategory)
         {
             string catName = "";
-            if (Categories.TryGetValue(idCategory, out catName)) return catName;
+            if (mCategories.TryGetValue(idCategory, out catName)) return catName;
             return null;
         }
 
@@ -72,9 +73,15 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         /// <param name="paramCategory"></param>
         /// <param name="paramType"></param>
         /// <returns></returns>
-        public VinnyLibDataStructureParameterValue CreateParameterValueWithDefs(string paramName, object paramValue, string paramCategory = CategoryDefaultName, VinnyLibDataStructureParameterDefinitionType paramType = VinnyLibDataStructureParameterDefinitionType.ParamString)
+        public VinnyLibDataStructureParameterValue CreateParameterValueWithDefs(string paramName,  object paramValue, string paramCategory = CategoryDefaultName, VinnyLibDataStructureParameterDefinitionType paramType = VinnyLibDataStructureParameterDefinitionType.ParamString, string paramCaption = "")
         {
             int paramDefId = CreateParameterDefinition(paramName, paramType);
+            if (paramCaption != "")
+            {
+                VinnyLibDataStructureParameterDefinition paramDef = GetParamDefById(paramDefId);
+                paramDef.Caption = paramCaption;
+                this.SetParameterDef(paramDefId, paramDef);
+            }
             int categoryId = CreateCategory(paramCategory);
 
             VinnyLibDataStructureParameterValue paramValueDef = new VinnyLibDataStructureParameterValue(paramDefId, categoryId);
@@ -97,50 +104,28 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         }
 
         [XmlIgnore]
-        public Dictionary<int, VinnyLibDataStructureParameterDefinition> Parameters { get; set; }
+        public Dictionary<int, VinnyLibDataStructureParameterDefinition> mParameters { get; set; }
 
-        // Helper property for XML serialization
-        [XmlArray("Parameters")]
-        [XmlArrayItem("Parameters")]
-        public List<KeyValuePair_Parameter> ParametersList
-        {
-            get => Parameters.Select(kv => new KeyValuePair_Parameter { Key = kv.Key, Value = kv.Value }).ToList();
-            set => Parameters = value.ToDictionary(item => item.Key, item => item.Value);
-        }
-
+        public List<VinnyLibDataStructureParameterDefinition> Parameters { get; set; }
 
         private int mParamDefCounter = 0;
 
         [XmlIgnore]
-        public Dictionary<int, string> Categories { get; set; }
-
-        // Helper property for XML serialization
-        [XmlArray("Categories")]
-        [XmlArrayItem("Categories")]
-        public List<KeyValuePair_Category> CategoriesList
-        {
-            get => Categories.Select(kv => new KeyValuePair_Category { Key = kv.Key, Value = kv.Value }).ToList();
-            set => Categories = value.ToDictionary(item => item.Key, item => item.Value);
-        }
+        public Dictionary<int, string> mCategories { get; set; }
+        public List<CategoryInfo> Categories { get; set; }
 
         public int mCategoriesCounter = 0;
 
     }
 
-
-    // Helper class for Objects serrialization
-    public class KeyValuePair_Parameter
+    public class CategoryInfo
     {
-        public int Key { get; set; }
-
-        public VinnyLibDataStructureParameterDefinition Value { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 
-    // Helper class for Categories serrialization
-    public class KeyValuePair_Category
-    {
-        public int Key { get; set; }
 
-        public string Value { get; set; }
-    }
+
+
+    
 }

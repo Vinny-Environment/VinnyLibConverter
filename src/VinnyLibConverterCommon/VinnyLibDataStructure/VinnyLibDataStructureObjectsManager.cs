@@ -22,33 +22,33 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public VinnyLibDataStructureObjectsManager()
         {
             mObjectIdCounter = 0;
-            Objects = new Dictionary<int, VinnyLibDataStructureObject>();
+            mObjects = new Dictionary<int, VinnyLibDataStructureObject>();
         }
 
         public int CreateObject()
         {
             VinnyLibDataStructureObject objectDef = new VinnyLibDataStructureObject(mObjectIdCounter);
-            Objects.Add(mObjectIdCounter, objectDef);
+            mObjects.Add(mObjectIdCounter, objectDef);
             mObjectIdCounter++;
             return mObjectIdCounter - 1;
         }
 
         public void SetObject(int id, VinnyLibDataStructureObject objDef)
         {
-            Objects[id] = objDef;
+            mObjects[id] = objDef;
         }
 
         public VinnyLibDataStructureObject GetObjectById(int id)
         {
             VinnyLibDataStructureObject outputObjectDef = new VinnyLibDataStructureObject();
-            if (Objects.TryGetValue(id, out outputObjectDef)) return outputObjectDef;
+            if (mObjects.TryGetValue(id, out outputObjectDef)) return outputObjectDef;
             return null;
         }
 
         public VinnyLibDataStructureObject[] GetObjectsChilds(int ObjectId)
         {
             List<VinnyLibDataStructureObject> ObjectsTmp = new List<VinnyLibDataStructureObject>();
-            foreach (var objData in Objects)
+            foreach (var objData in mObjects)
             {
                 if (objData.Value.ParentId == ObjectId) ObjectsTmp.Add(objData.Value);
             }
@@ -60,7 +60,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             var obj = GetObjectById(ObjectId);
             if (obj == null) return null;
 
-            foreach (var objData in Objects)
+            foreach (var objData in mObjects)
             {
                 if (objData.Value.Id == obj.ParentId) return objData.Value;
             }
@@ -74,7 +74,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public VinnyLibDataStructureObject[] GetRootObjects()
         {
             List<VinnyLibDataStructureObject> root = new List<VinnyLibDataStructureObject>();
-            foreach (var objData in Objects)
+            foreach (var objData in mObjects)
             {
                 if (objData.Value.ParentId == -1) root.Add(objData.Value);
             }
@@ -88,7 +88,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         /// <returns></returns>
         public StructureInfo GetStructure(int idObject)
         {
-            VinnyLibDataStructureObject obj = Objects[idObject];
+            VinnyLibDataStructureObject obj = mObjects[idObject];
             StructureInfo sInfo = new StructureInfo();
             sInfo.Id = obj.Id;
             sInfo.ParentId = obj.ParentId;
@@ -105,7 +105,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public StructureInfo[] GetAllStructure()
         {
             List<StructureInfo> info = new List<StructureInfo>();
-            foreach (var objData in Objects)
+            foreach (var objData in mObjects)
             {
                 if (objData.Value.ParentId == -1) info.Add(GetStructure(objData.Value.Id));
             }
@@ -114,25 +114,11 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
 
         [XmlIgnore]
-        public Dictionary<int, VinnyLibDataStructureObject> Objects { get; set; }
+        public Dictionary<int, VinnyLibDataStructureObject> mObjects { get; set; }
 
-        // Helper property for XML serialization
-        [XmlArray("Objects")]
-        [XmlArrayItem("Objects")]
-        public List<KeyValuePair_Object> MaterialsList
-        {
-            get => Objects.Select(kv => new KeyValuePair_Object { Key = kv.Key, Value = kv.Value }).ToList();
-            set => Objects = value.ToDictionary(item => item.Key, item => item.Value);
-        }
+        public List<VinnyLibDataStructureObject> Objects { get; set; }
 
         private int mObjectIdCounter;
     }
 
-    // Helper class for Objects serrialization
-    public class KeyValuePair_Object
-    {
-        public int Key { get; set; }
-
-        public VinnyLibDataStructureObject Value { get; set; }
-    }
 }

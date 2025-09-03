@@ -13,6 +13,9 @@
       <CopyLocalSatelliteAssemblies></CopyLocalSatelliteAssemblies>
     </ProjectReference>
     <ProjectReference Include="..\VinnyLibConverterKernel\VinnyLibConverterKernel.csproj" />
+    <ProjectReference Include="..\VinnyLibConverterUI\VinnyLibConverterUI.csproj">
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">

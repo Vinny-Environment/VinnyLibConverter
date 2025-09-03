@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace VinnyLibConverterCommon.VinnyLibDataStructure
 {
@@ -151,6 +152,6 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         }
 
         private bool isValueNull => mValue == null;
-        private object mValue = null;
+        public object mValue { get; set; }
     }
 }

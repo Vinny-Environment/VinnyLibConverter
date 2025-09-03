@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VinnyLibConverterUI"
         mc:Ignorable="d"
-        Title="Настройки обработки для VinnyLibConverter" d:DesignHeight="650" d:DesignWidth="800">
+        Title="Настройки обработки для VinnyLibConverter" d:DesignHeight="680" d:DesignWidth="800">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="37*"/>
@@ -43,12 +43,14 @@
 							<Label x:Name="LabelGeometryDublesAccuracy" Content="Точность округления координат" Width="200"></Label>
 							<TextBox x:Name="TextBoxGeometryDublesAccuracy" Width="190" Text="5" IsEnabled="false"></TextBox>
 						</StackPanel>
-						<CheckBox x:Name="CheckBoxCheckMaterialsDubles" Margin="0,10,0,0" Content="Проверять дубли материалов" IsChecked="true"></CheckBox>
+                        <CheckBox x:Name="CheckBoxTryCombineSameMeshGeometries" Content="(Export) Объединять одинаковые геометрии" IsEnabled="false"></CheckBox>
+                        <CheckBox x:Name="CheckBoxCheckMaterialsDubles" Margin="0,10,0,0" Content="Проверять дубли материалов" IsChecked="true"></CheckBox>
 						<CheckBox x:Name="CheckBoxCheckParameterDefsDubles" Margin="0,10,0,0" Content="Проверять дубли параметров" IsChecked="true"></CheckBox>
 					</StackPanel>
 				</GroupBox>
 				<GroupBox x:Name="GroupBoxTransformationInfo" Header="Параметры трансформации координат">
 					<StackPanel Orientation="Vertical">
+                        <CheckBox x:Name="CheckBoxInverseXYCoordinates" Content="Обратить координаты XY" IsEnabled="false"></CheckBox>
 						<ListBox x:Name="ListBoxTransformationInfo" Height="100"></ListBox>
 						<CheckBox x:Name="CheckBoxReprojectOnlyPosition" Margin="0,5,0,0" Content="Пересчитывать только Position" IsChecked="true"></CheckBox>
 						<Button x:Name="ButtonDeleteTransformation" Margin="0,5,0,0" Content="Удалить выбранные параметры трансформации" Click="ButtonDeleteTransformation_Click"></Button>

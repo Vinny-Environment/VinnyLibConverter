@@ -42,10 +42,12 @@ namespace VinnyLibConverter_DotBIM
                 dotbimFileDef.Header.Parameters.Add(dotbimFileDef.ParametersManager.CreateParameterValueWithDefs(metadata.Key, metadata.Value));
             }
             //geometry
+            Dictionary<int, int> dotbimGeometry2VinnyGeometry = new Dictionary<int, int>();
             foreach (var mesh in dotbimFile.Meshes)
             {
-                int geomId = dotbimFileDef.GeometrtyManager.CreateGeometry(VinnyLibDataStructureGeometryType.Mesh, mesh.MeshId);
-                VinnyLibDataStructureGeometry meshGeomRaw = dotbimFileDef.GeometrtyManager.GetGeometryById(geomId);
+                int geomId = dotbimFileDef.GeometrtyManager.CreateGeometry(VinnyLibDataStructureGeometryType.Mesh);
+                dotbimGeometry2VinnyGeometry[mesh.MeshId] = geomId;
+                VinnyLibDataStructureGeometry meshGeomRaw = dotbimFileDef.GeometrtyManager.GetMeshGeometryById(geomId);
                 VinnyLibDataStructureGeometryMesh meshGeom = VinnyLibDataStructureGeometryMesh.asType(meshGeomRaw);
                 if (meshGeom != null)
                 {
@@ -75,7 +77,7 @@ namespace VinnyLibConverter_DotBIM
                         */
                     }
 
-                    dotbimFileDef.GeometrtyManager.SetGeometry(geomId, meshGeom);
+                    dotbimFileDef.GeometrtyManager.SetMeshGeometry(geomId, meshGeom);
                 }
                 float[] GetVertexCoords(int VertexId)
                 {
@@ -89,7 +91,7 @@ namespace VinnyLibConverter_DotBIM
 
             foreach (var elem in dotbimFile.Elements)
             {
-                VinnyLibDataStructureGeometry meshGeomRaw = dotbimFileDef.GeometrtyManager.GetGeometryById(elem.MeshId);
+                VinnyLibDataStructureGeometry meshGeomRaw = dotbimFileDef.GeometrtyManager.GetMeshGeometryById(dotbimGeometry2VinnyGeometry[elem.MeshId]);
                 VinnyLibDataStructureGeometryMesh meshGeom = VinnyLibDataStructureGeometryMesh.asType(meshGeomRaw);
 
                 int objectId = dotbimFileDef.ObjectsManager.CreateObject();
@@ -110,7 +112,7 @@ namespace VinnyLibConverter_DotBIM
                 //задаем цвет
                 meshGeom.MaterialId = dotbimFileDef.MaterialsManager.CreateMaterial(new int[] { elem.Color.R, elem.Color.G, elem.Color.B, elem.Color.A });
 
-                dotbimFileDef.GeometrtyManager.SetGeometry(elem.MeshId, meshGeom);
+                dotbimFileDef.GeometrtyManager.SetMeshGeometry(dotbimGeometry2VinnyGeometry[elem.MeshId], meshGeom);
 
                 
 
@@ -131,7 +133,7 @@ namespace VinnyLibConverter_DotBIM
                 }
 
                 //задаем информацию о положении геометрии
-                int geomPlacementInfoId = dotbimFileDef.GeometrtyManager.CreateGeometryPlacementInfo(elem.MeshId);
+                int geomPlacementInfoId = dotbimFileDef.GeometrtyManager.CreateGeometryPlacementInfo(dotbimGeometry2VinnyGeometry[elem.MeshId]);
                 VinnyLibDataStructureGeometryPlacementInfo placementInfo = dotbimFileDef.GeometrtyManager.GetGeometryPlacementInfoById(geomPlacementInfoId);
                 placementInfo.Position = new float[] { (float)elem.Vector.X, (float)elem.Vector.Y, (float)elem.Vector.Z };
                 QuaternionInfo q = new QuaternionInfo()
@@ -146,7 +148,7 @@ namespace VinnyLibConverter_DotBIM
                 placementInfo.VectorOY_Rad = XYZ_Euler[1];
                 placementInfo.VectorOZ_Rad = XYZ_Euler[2];
 
-                dotbimFileDef.GeometrtyManager.SetGeometryPlacementInfo(geomPlacementInfoId, placementInfo);
+                dotbimFileDef.GeometrtyManager.SetMeshGeometryPlacementInfo(geomPlacementInfoId, placementInfo);
 
                 objectDef.GeometryPlacementInfoIds.Add(geomPlacementInfoId);
 
@@ -176,7 +178,7 @@ namespace VinnyLibConverter_DotBIM
 
             dotbimFile.Elements = new List<dotbim.Element>();
             dotbimFile.Meshes = new List<dotbim.Mesh>();
-            foreach (var objectDefRaw in vinnyData.ObjectsManager.Objects)
+            foreach (var objectDefRaw in vinnyData.ObjectsManager.mObjects)
             {
                 VinnyLibDataStructureObject objectDef = objectDefRaw.Value;
 
@@ -199,7 +201,7 @@ namespace VinnyLibConverter_DotBIM
                 //задается по первому GeometryPlacementInfo, остальные выравниваются по данному (TODO)
                 var placementIdFirst = objectDef.GeometryPlacementInfoIds.First();
                 VinnyLibDataStructureGeometryPlacementInfo placementFirst = vinnyData.GeometrtyManager.GetGeometryPlacementInfoById(placementIdFirst);
-                VinnyLibDataStructureGeometry geometryDef = vinnyData.GeometrtyManager.GetGeometryById(placementFirst.IdGeometry);
+                VinnyLibDataStructureGeometry geometryDef = vinnyData.GeometrtyManager.GetMeshGeometryById(placementFirst.IdGeometry);
                 VinnyLibDataStructureGeometryMesh geometryMeshDef = VinnyLibDataStructureGeometryMesh.asType(geometryDef);
 
                 //материал объекта
@@ -213,14 +215,14 @@ namespace VinnyLibConverter_DotBIM
                 dotbimElement.Rotation = new dotbim.Rotation() { Qx = quaternionInfo.X, Qy = quaternionInfo.Y, Qz = quaternionInfo.Z, Qw = quaternionInfo.W };
                 dotbimElement.MeshId = placementFirst.IdGeometry;
 
-                vinnyData.GeometrtyManager.SetGeometryPlacementInfo(placementFirst.Id, placementFirst);
+                vinnyData.GeometrtyManager.SetMeshGeometryPlacementInfo(placementFirst.Id, placementFirst);
 
                 dotbim.Mesh dotbimMesh = new dotbim.Mesh();
                 dotbimMesh.MeshId = placementFirst.IdGeometry;
                 dotbimMesh.Coordinates = new List<double>();
                 dotbimMesh.Indices = new List<int>();
 
-                foreach (var coordInfo in geometryMeshDef.Points)
+                foreach (var coordInfo in geometryMeshDef.mPoints)
                 {
                     float[] coord = coordInfo.Value;
 
@@ -229,7 +231,7 @@ namespace VinnyLibConverter_DotBIM
                     dotbimMesh.Coordinates.Add(coord[2]);
                 }
 
-                foreach (var faceInfo in geometryMeshDef.Faces)
+                foreach (var faceInfo in geometryMeshDef.mFaces)
                 {
                     int[] face = faceInfo.Value;
                     dotbimMesh.Indices.Add(face[0]);
@@ -239,7 +241,7 @@ namespace VinnyLibConverter_DotBIM
                 dotbimFile.Meshes.Add(dotbimMesh);
 
                 dotbimElement.FaceColors = new List<int>();
-                foreach(var materialFaceInfo in geometryMeshDef.Faces2Materials)
+                foreach(var materialFaceInfo in geometryMeshDef.mFaces2Materials)
                 {
                     var materialInfo = vinnyData.MaterialsManager.GetMaterialById(materialFaceInfo.Value);
                     dotbimElement.FaceColors.Add(materialInfo.ColorR);

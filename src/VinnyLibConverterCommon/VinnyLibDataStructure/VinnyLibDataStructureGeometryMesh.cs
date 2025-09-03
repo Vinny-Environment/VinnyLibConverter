@@ -18,9 +18,9 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
         public override float[] ComputeBounds()
         {
-            var x = this.Points.Values.Select(c => c[0]);
-            var y = this.Points.Values.Select(c => c[1]);
-            var z = this.Points.Values.Select(c => c[2]);
+            var x = this.mPoints.Values.Select(c => c[0]);
+            var y = this.mPoints.Values.Select(c => c[1]);
+            var z = this.mPoints.Values.Select(c => c[2]);
 
             return new float[] {x.Min(), y.Min(), z.Min(), x.Max(), y.Max(), z.Max()};
         }
@@ -31,15 +31,22 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             return null;
         }
 
+        private void InitFields()
+        {
+            mPoints = new Dictionary<int, float[]>();
+            mFaces = new Dictionary<int, int[]>();
+            mFaces2Materials = new Dictionary<int, int>();
+        }
+
         internal VinnyLibDataStructureGeometryMesh(int id)
         {
             this.Id = id;
-
-            Points = new Dictionary<int, float[]>();
-            Faces = new Dictionary<int, int[]>();
-            Faces2Materials = new Dictionary<int, int>();
+            InitFields();
         }
-        public VinnyLibDataStructureGeometryMesh() { }
+        public VinnyLibDataStructureGeometryMesh()
+        {
+            InitFields();
+        }
 
         public int AddVertex(float x, float y, float z)
         {
@@ -55,8 +62,8 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
             if (!ImportExportParameters.mActiveConfig.CheckGeometryDubles) 
             {
-                Points.Add(Points.Count, xyz);
-                return Points.Count;
+                mPoints.Add(mPoints.Count, xyz);
+                return mPoints.Count - 1;
             }
             else
             {
@@ -64,13 +71,13 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                 float yNew = Convert.ToSingle(Math.Round(xyz[1], ImportExportParameters.mActiveConfig.VertexAccuracy));
                 float zNew = Convert.ToSingle(Math.Round(xyz[2], ImportExportParameters.mActiveConfig.VertexAccuracy));
 
-                for (int vertexCounter = 0; vertexCounter < Points.Count; vertexCounter++)
+                for (int vertexCounter = 0; vertexCounter < mPoints.Count; vertexCounter++)
                 {
-                    float[] pointCoords = Points[vertexCounter];
+                    float[] pointCoords = mPoints[vertexCounter];
                     if (pointCoords[0] == xNew && pointCoords[1] == yNew && pointCoords[2] == zNew) return vertexCounter;
                 }
-                Points.Add(Points.Count, new float[3] { xNew, yNew, zNew });
-                return Points.Count;
+                mPoints.Add(mPoints.Count, new float[3] { xNew, yNew, zNew });
+                return mPoints.Count -  1;
             }
         }
 
@@ -95,14 +102,14 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
             if (ImportExportParameters.mActiveConfig.CheckGeometryDubles)
             {
-                for (int faceCounter = 0; faceCounter < Faces.Count; faceCounter++)
+                for (int faceCounter = 0; faceCounter < mFaces.Count; faceCounter++)
                 {
-                    int[] faceVertices = Faces[faceCounter];
+                    int[] faceVertices = mFaces[faceCounter];
                     if (faceVertices.SequenceEqual(v123)) return faceCounter;
                 }
             }
-            Faces.Add(Faces.Count(), v123);
-            return Faces.Count;
+            mFaces.Add(mFaces.Count, v123);
+            return mFaces.Count - 1;
         }
 
         public void AddFace(float[] point1, float[] point2, float[] point3)
@@ -116,25 +123,25 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
         public int[] GetFaceVertices(int faceIndex)
         {
-            if (faceIndex <= this.Faces.Count) return this.Faces[faceIndex];
+            if (faceIndex <= this.mFaces.Count) return this.mFaces[faceIndex];
             return null;
         }
 
         public float[] GetPointCoords(int pointIndex)
         {
-            if (pointIndex <= this.Points.Count) return this.Points[pointIndex];
+            if (pointIndex <= this.mPoints.Count) return this.mPoints[pointIndex];
             return null;
         }
 
         public void AssignMaterialToFace(int FaceIndex, int MaterialIndex)
         {
-            this.Faces2Materials[FaceIndex] = MaterialIndex;
+            this.mFaces2Materials[FaceIndex] = MaterialIndex;
         }
 
         public int GetMaterialIndexByFaceIndex(int FaceIndex)
         {
             int outputMaterialIndex = 0;
-            this.Faces2Materials.TryGetValue(FaceIndex, out outputMaterialIndex);
+            this.mFaces2Materials.TryGetValue(FaceIndex, out outputMaterialIndex);
             return outputMaterialIndex;
         }
          
@@ -143,61 +150,43 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         //Округление координат для сравнения точек
         private int mAccuracy = 5;
 
-        [XmlIgnore]
-        public Dictionary<int, float[]> Points { get; set; }
-
-        // Helper property for XML serialization
-        [XmlArray("Points")]
-        [XmlArrayItem("Points")]
-        public List<KeyValuePair_Point> PointsList
-        {
-            get => Points.Select(kv => new KeyValuePair_Point { Key = kv.Key, Value = kv.Value }).ToList();
-            set => Points = value.ToDictionary(item => item.Key, item => item.Value);
-        }
 
         [XmlIgnore]
-        public Dictionary<int, int[]> Faces { get; set; }
+        public Dictionary<int, float[]> mPoints { get; set; }
 
-        // Helper property for XML serialization
-        [XmlArray("Faces")]
-        [XmlArrayItem("Faces")]
-        public List<KeyValuePair_Face> FacesList
-        {
-            get => Faces.Select(kv => new KeyValuePair_Face { Key = kv.Key, Value = kv.Value }).ToList();
-            set => Faces = value.ToDictionary(item => item.Key, item => item.Value);
-        }
+        public List<PointInfo> Points { get; set; }
 
         [XmlIgnore]
-        public Dictionary<int, int> Faces2Materials { get; set; }
+        public Dictionary<int, int[]> mFaces { get; set; }
 
-        // Helper property for XML serialization
-        [XmlArray("Faces2Materials")]
-        [XmlArrayItem("Faces2Materials")]
-        public List<KeyValuePair_FacesMaterial> Faces2MaterialsList
-        {
-            get => Faces2Materials.Select(kv => new KeyValuePair_FacesMaterial { Key = kv.Key, Value = kv.Value }).ToList();
-            set => Faces2Materials = value.ToDictionary(item => item.Key, item => item.Value);
-        }
+        public List<FaceInfo> Faces { get; set; }
+
+        [XmlIgnore]
+        public Dictionary<int, int> mFaces2Materials { get; set; }
+
+        public List<Face2MaterialInfo> Faces2Materials { get; set; }
+
     }
 
-    public class KeyValuePair_Point
+    public class PointInfo
     {
-        public int Key { get; set; }
+        public int Id { get; set; }
 
-        public float[] Value { get; set; }
+        public float[] XYZ { get; set; }
     }
 
-    public class KeyValuePair_Face
+    public class FaceInfo
     {
-        public int Key { get; set; }
+        public int Id { get; set; }
 
-        public int[] Value { get; set; }
+        public int[] Indices { get; set; }
     }
 
-    public class KeyValuePair_FacesMaterial
+    public class Face2MaterialInfo
     {
-        public int Key { get; set; }
+        public int FaceId { get; set; }
 
-        public int Value { get; set; }
+        public int MaterialId { get; set; }
     }
+
 }

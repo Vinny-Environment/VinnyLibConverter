@@ -17,6 +17,8 @@ namespace VinnyLibConverterCommon
             CheckMaterialsDubles = true;
             CheckParameterDefsDubles = true;
             ReprojectOnlyPosition = true;
+            InverseXYCoordinates = false;
+            TryCombineSameMeshGeometries = false;
             TransformationInfo = new List<ICoordinatesTransformation>();
         }
 
@@ -82,6 +84,16 @@ namespace VinnyLibConverterCommon
         /// Если true, то при наличии в TransformationInfo параметров для Аффинного преобразования или геодезического будут пересчитаны только координаты точки вставки mesh'а, а координаты самой базовой геометрии останутся неизменными. Если false то все mesh'ы будут пересчитаны в соответствующие им VinnyLibDataStructureGeometryPlacementInfo и все VinnyLibDataStructureGeometryPlacementInfo "обнулены"
         /// </summary>
         public bool ReprojectOnlyPosition { get; set; }
+
+        /// <summary>
+        /// Только для экспорта. Если true, объекты имеющие типовую геометрию будут иметь один mesh с разными VinnyLibDataStructureGeometryPlacementInfo. Экспериментальная опция, может работать не корректно
+        /// </summary>
+        public bool TryCombineSameMeshGeometries { get; set; }
+
+        /// <summary>
+        /// Флаг, надо ли менять координаты XY при чтении\записи данных
+        /// </summary>
+        public bool InverseXYCoordinates { get; set; }
 
         /// <summary>
         /// Набор последовательных преобразований координат

@@ -70,7 +70,7 @@ namespace VinnyLibConverter_SMDX
                     SMDX_Geometry_j3d_Part smdxGeometryPartInfoDef = smdxGeometryPartInfoRaw.Value;
                     //наименование части пропускаем -- это какая-то неважная (точно?) информация
                     int vinnyGeometryInfoDefId = vinnyFileDef.GeometrtyManager.CreateGeometry(VinnyLibDataStructureGeometryType.Mesh);
-                    VinnyLibDataStructureGeometryMesh vinnyGeometryInfoMeshDef = VinnyLibDataStructureGeometryMesh.asType(vinnyFileDef.GeometrtyManager.GetGeometryById(vinnyGeometryInfoDefId));
+                    VinnyLibDataStructureGeometryMesh vinnyGeometryInfoMeshDef = VinnyLibDataStructureGeometryMesh.asType(vinnyFileDef.GeometrtyManager.GetMeshGeometryById(vinnyGeometryInfoDefId));
 
                     //сохраняем точки
                     for (int smdxVertexCounter = 0; smdxVertexCounter < smdxGeometryPartInfoDef.positions.Count - 2; smdxVertexCounter += 3)
@@ -112,7 +112,7 @@ namespace VinnyLibConverter_SMDX
                         }
                     }
 
-                    vinnyFileDef.GeometrtyManager.SetGeometry(vinnyGeometryInfoDefId, vinnyGeometryInfoMeshDef);
+                    vinnyFileDef.GeometrtyManager.SetMeshGeometry(vinnyGeometryInfoDefId, vinnyGeometryInfoMeshDef);
                     smdxGeometry2VinnyGeometry[smdxGeomertyCounter].Add(vinnyGeometryInfoDefId);
                 }
                 smdxGeomertyCounter++;
@@ -195,7 +195,7 @@ namespace VinnyLibConverter_SMDX
                         }
                         smdxGroupObjects[smdxInsertionInfo.group].Add(geomPI.Id);
 
-                        vinnyFileDef.GeometrtyManager.SetGeometryPlacementInfo(geomPI.Id, geomPI);
+                        vinnyFileDef.GeometrtyManager.SetMeshGeometryPlacementInfo(geomPI.Id, geomPI);
                     }
                 }
                 
@@ -304,7 +304,7 @@ namespace VinnyLibConverter_SMDX
             Dictionary<int, string> materialId2smdxJmtlNames = new Dictionary<int, string>();
             foreach (int materialIndex in vinnyData.MaterialsManager.mMaterials.Keys)
             {
-                VinnyLibDataStructureMaterial materialDef = vinnyData.MaterialsManager.mMaterials[materialIndex];
+                VinnyLibDataStructureMaterial materialDef = vinnyData.MaterialsManager.Materials[materialIndex];
                 string materialName = $"material_{materialIndex}.jmtl";
                 SMDX_Material_BlinnPhong smdxMaterial = SMDX_Material_BlinnPhong.CreateFromRGB(materialDef.GetRGB());
                 smdxProject.CreateMaterial(smdxMaterial, materialName);
@@ -314,7 +314,7 @@ namespace VinnyLibConverter_SMDX
             //заносим геометрию (мэши)
             Dictionary<int, int> vinnyGeometryId2smdxIds = new Dictionary<int, int>();
             int smdxGeometryCounter = 0;
-            foreach (var vinnyGeometryInfo in vinnyData.GeometrtyManager.mGeometries)
+            foreach (var vinnyGeometryInfo in vinnyData.GeometrtyManager.mMeshGeometries)
             {
                 VinnyLibDataStructureGeometry vinnyGeometryDef = vinnyGeometryInfo.Value;
                 if (vinnyGeometryDef.GetGeometryType() == VinnyLibDataStructureGeometryType.Mesh)
@@ -324,7 +324,7 @@ namespace VinnyLibConverter_SMDX
                     SMDX_Geometry_j3d smdxMeshGeometry = new SMDX_Geometry_j3d();
                     SMDX_Geometry_j3d_Part smdxMeshGeometryPart = new SMDX_Geometry_j3d_Part();
 
-                    foreach (var vinnyMeshPointInfo in vinnyGeometryMeshDef.Points)
+                    foreach (var vinnyMeshPointInfo in vinnyGeometryMeshDef.mPoints)
                     {
                         float[] vinnyMeshPointCoordsInfo = vinnyMeshPointInfo.Value;
                         smdxMeshGeometryPart.positions.Add(vinnyMeshPointCoordsInfo[0]);
@@ -339,13 +339,13 @@ namespace VinnyLibConverter_SMDX
                     Dictionary<int, List<int>> materialsOfFacesCollection = new Dictionary<int, List<int>>();
                     if (vinnyGeometryMeshDef.Faces2Materials.Count == vinnyGeometryMeshDef.Faces.Count)
                     {
-                        foreach (var faceMaterial in vinnyGeometryMeshDef.Faces2Materials)
+                        foreach (var faceMaterial in vinnyGeometryMeshDef.mFaces2Materials)
                         {
                             if (!materialsOfFacesCollection.ContainsKey(faceMaterial.Value)) materialsOfFacesCollection.Add(faceMaterial.Value, new List<int>());
                             materialsOfFacesCollection[faceMaterial.Value].Add(faceMaterial.Key);
                         }
                     }
-                    else materialsOfFacesCollection.Add(vinnyGeometryMeshDef.MaterialId, vinnyGeometryMeshDef.Faces.Keys.Cast<int>().ToList());
+                    else materialsOfFacesCollection.Add(vinnyGeometryMeshDef.MaterialId, vinnyGeometryMeshDef.mFaces.Keys.Cast<int>().ToList());
 
                     //заполняем groups у j3d-файла
                     int prevoiusFacesCount = 0;
@@ -359,7 +359,7 @@ namespace VinnyLibConverter_SMDX
                         
                         foreach (int faceIndex in materialOfFacesCollection.Value)
                         {
-                            int[] faceDef = vinnyGeometryMeshDef.Faces[faceIndex];
+                            int[] faceDef = vinnyGeometryMeshDef.mFaces[faceIndex];
                             int v1;
                             if (faceCounter == 0) 
                             {
@@ -410,7 +410,7 @@ namespace VinnyLibConverter_SMDX
 
             //Сопоставление id-категорий параметров с созданными ТИПАМИ smdx (в types)
             Dictionary<int, int> vinnyCategory2smdxTypeId = new Dictionary<int, int>();
-            foreach (var vinnyObjectInfo in vinnyData.ObjectsManager.Objects)
+            foreach (var vinnyObjectInfo in vinnyData.ObjectsManager.mObjects)
             {
                 VinnyLibDataStructureObject vinnyObjectDef = vinnyObjectInfo.Value;
                 foreach (int geomPIid in vinnyObjectDef.GeometryPlacementInfoIds)
@@ -495,7 +495,7 @@ namespace VinnyLibConverter_SMDX
 
 
             //заполняем insertions
-            foreach (var vinnyGeometryPI_Info in vinnyData.GeometrtyManager.mGeometriesPlacementInfo)
+            foreach (var vinnyGeometryPI_Info in vinnyData.GeometrtyManager.mMeshGeometriesPlacementInfo)
             {
                 VinnyLibDataStructureGeometryPlacementInfo vinnyGeometryPI = vinnyGeometryPI_Info.Value;
 

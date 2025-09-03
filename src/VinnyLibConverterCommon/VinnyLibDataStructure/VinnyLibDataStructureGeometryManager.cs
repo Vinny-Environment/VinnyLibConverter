@@ -16,55 +16,54 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
     {
         public VinnyLibDataStructureGeometryManager()
         {
-            mGeometriesPlacementInfo = new Dictionary<int, VinnyLibDataStructureGeometryPlacementInfo>();
-            mGeometries = new Dictionary<int, VinnyLibDataStructureGeometry>();
+            mMeshGeometriesPlacementInfo = new Dictionary<int, VinnyLibDataStructureGeometryPlacementInfo>();
+            mMeshGeometries = new Dictionary<int, VinnyLibDataStructureGeometryMesh>();
             mGeometryCounter = 0;
             mGeometryPlacementInfoCounter = 0;
         }
 
-        public int CreateGeometry(VinnyLibDataStructureGeometryType geomType, int geometryId = -1)
+        public int CreateGeometry(VinnyLibDataStructureGeometryType geomType)
         {
-            int geometryIdUsed = geometryId;
-            if (geometryId == -1) geometryIdUsed = mGeometryCounter;
-
-            VinnyLibDataStructureGeometry createdGeometry = new VinnyLibDataStructureGeometryUnknown();
+            //VinnyLibDataStructureGeometry createdGeometry = new VinnyLibDataStructureGeometryUnknown();
             switch (geomType)
             {
                 case VinnyLibDataStructureGeometryType.Mesh:
-                    createdGeometry = new VinnyLibDataStructureGeometryMesh(geometryIdUsed);
-                    break;
-            }
-
-            if (createdGeometry.GetGeometryType() != VinnyLibDataStructureGeometryType._Unknown)
-            {
-                mGeometries.Add(geometryIdUsed, createdGeometry);
-                if (geometryId == -1) mGeometryCounter++;
-                return geometryIdUsed;
+                    var createdGeometry = new VinnyLibDataStructureGeometryMesh(mGeometryCounter);
+                    mMeshGeometries.Add(mGeometryCounter, createdGeometry);
+                    mGeometryCounter++;
+                    return mGeometryCounter - 1;
             }
             return -1;
         }
 
+        
         public int CreateGeometry(VinnyLibDataStructureGeometry otherGeometry)
         {
             otherGeometry.Id = mGeometryCounter;
-            mGeometries.Add(mGeometryCounter, otherGeometry);
-            return otherGeometry.Id;
+            if (otherGeometry.GetGeometryType() == VinnyLibDataStructureGeometryType.Mesh) 
+            {
+                mMeshGeometries.Add(mGeometryCounter, (VinnyLibDataStructureGeometryMesh)otherGeometry);
+                mGeometryCounter++;
+                return otherGeometry.Id;
+            }
+            return -1;
         }
+        
 
         /// <summary>
         /// Вспомогательный метод, используется для обновления информации о геометрии
         /// </summary>
         /// <param name="id"></param>
         /// <param name="geometry"></param>
-        public void SetGeometry(int id, VinnyLibDataStructureGeometry geometry)
+        public void SetMeshGeometry(int id, VinnyLibDataStructureGeometryMesh geometry)
         {
-            this.mGeometries[id] = geometry;
+            this.mMeshGeometries[id] = geometry;
         }
 
-        public VinnyLibDataStructureGeometry GetGeometryById(int id)
+        public VinnyLibDataStructureGeometryMesh GetMeshGeometryById(int id)
         {
-            VinnyLibDataStructureGeometry outputGeometry = new VinnyLibDataStructureGeometryUnknown();
-            mGeometries.TryGetValue(id, out outputGeometry);
+            VinnyLibDataStructureGeometryMesh outputGeometry = new VinnyLibDataStructureGeometryMesh();
+            mMeshGeometries.TryGetValue(id, out outputGeometry);
             return outputGeometry;
         }
 
@@ -72,21 +71,21 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         {
             VinnyLibDataStructureGeometryPlacementInfo placementInfo = new VinnyLibDataStructureGeometryPlacementInfo(mGeometryPlacementInfoCounter, geometryId);
             //placementInfo.Id = mGeometryPlacementInfoCounter;
-            this.mGeometriesPlacementInfo[mGeometryPlacementInfoCounter] = placementInfo;
+            this.mMeshGeometriesPlacementInfo[mGeometryPlacementInfoCounter] = placementInfo;
             mGeometryPlacementInfoCounter++;
             return mGeometryPlacementInfoCounter-1;
         }
 
-        public void SetGeometryPlacementInfo(int id, VinnyLibDataStructureGeometryPlacementInfo placementInfo)
+        public void SetMeshGeometryPlacementInfo(int id, VinnyLibDataStructureGeometryPlacementInfo placementInfo)
         {
             placementInfo.InitMatrix();
-            this.mGeometriesPlacementInfo[id] = placementInfo;
+            this.mMeshGeometriesPlacementInfo[id] = placementInfo;
         }
 
         public VinnyLibDataStructureGeometryPlacementInfo GetGeometryPlacementInfoById(int id)
         {
             VinnyLibDataStructureGeometryPlacementInfo outputPlacementInfo = new VinnyLibDataStructureGeometryPlacementInfo();
-            if (mGeometriesPlacementInfo.TryGetValue(id, out outputPlacementInfo)) return outputPlacementInfo;
+            if (mMeshGeometriesPlacementInfo.TryGetValue(id, out outputPlacementInfo)) return outputPlacementInfo;
             return null;
         }
 
@@ -103,25 +102,25 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                 geometryPlacementInfo.TransformationMatrixInfo
             }.Concat(transformations).ToList();
 
-            VinnyLibDataStructureGeometry targetGeometry = mGeometries[geometryPlacementInfo.IdGeometry];
+            VinnyLibDataStructureGeometry targetGeometry = mMeshGeometries[geometryPlacementInfo.IdGeometry];
 
             foreach (ICoordinatesTransformation transformation in transformations)
             {
-                //Для каждого transformation необходимо заново инициализировать mGeometries и mGeometriesPlacementInfo (?)
+                //Для каждого transformation необходимо заново инициализировать MeshGeometries и MeshGeometriesPlacementInfo (?)
                 if (targetGeometry.GetGeometryType() == VinnyLibDataStructureGeometryType.Mesh)
                 {
                     VinnyLibDataStructureGeometryMesh targetGeometry_Mesh = VinnyLibDataStructureGeometryMesh.asType(targetGeometry);
-                    foreach (int PointKey in targetGeometry_Mesh.Points.Keys)
+                    foreach (int PointKey in targetGeometry_Mesh.mPoints.Keys)
                     {
-                        float[] XYZ_Converted = transformation.TransformPoint3d(targetGeometry_Mesh.Points[PointKey]);
-                        targetGeometry_Mesh.Points[PointKey] = XYZ_Converted;
+                        float[] XYZ_Converted = transformation.TransformPoint3d(targetGeometry_Mesh.mPoints[PointKey]);
+                        targetGeometry_Mesh.mPoints[PointKey] = XYZ_Converted;
                     }
                 }
             }
             return targetGeometry;
         }
 
-        public float[] ComputeBoundsForGeometries(VinnyLibDataStructureGeometryPlacementInfo[] geoms)
+        public float[] ComputeBoundsForMeshGeometries(VinnyLibDataStructureGeometryPlacementInfo[] geoms)
         {
             float[] x = new float[geoms.Length * 2];
             float[] y = new float[geoms.Length * 2];
@@ -130,7 +129,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             int counter = 0;
             foreach (VinnyLibDataStructureGeometryPlacementInfo geom in geoms)
             {
-                var bounds = this.GetGeometryById(geom.IdGeometry).ComputeBounds();
+                var bounds = this.GetMeshGeometryById(geom.IdGeometry).ComputeBounds();
                 x[counter * 2] = bounds[0];
                 x[counter * 2 + 1] = bounds[3];
                 y[counter * 2] = bounds[1];
@@ -142,52 +141,18 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             return new float[] { x.Min(), y.Min(), z.Min(), x.Max(), y.Max(), z.Max() };
         }
 
+        [XmlIgnore]
+        public Dictionary<int, VinnyLibDataStructureGeometryMesh> mMeshGeometries { get; set; }
+
+        public List<VinnyLibDataStructureGeometryMesh> MeshGeometries { get; set; }
+
 
         [XmlIgnore]
-        public Dictionary<int, VinnyLibDataStructureGeometryPlacementInfo> mGeometriesPlacementInfo { get; set; }
+        public Dictionary<int, VinnyLibDataStructureGeometryPlacementInfo> mMeshGeometriesPlacementInfo { get; set; }
 
-        // Helper property for XML serialization
-        [XmlArray("mGeometriesPlacementInfo")]
-        [XmlArrayItem("mGeometriesPlacementInfo")]
-        public List<KeyValuePair_GeometryPlacementInfo> GeometriesPlacementInfoList
-        {
-            get => mGeometriesPlacementInfo.Select(kv => new KeyValuePair_GeometryPlacementInfo { Key = kv.Key, Value = kv.Value }).ToList();
-            set => mGeometriesPlacementInfo = value.ToDictionary(item => item.Key, item => item.Value);
-        }
+        public List<VinnyLibDataStructureGeometryPlacementInfo> MeshGeometriesPlacementInfo { get; set; }
 
-        [XmlIgnore]
-        public Dictionary<int, VinnyLibDataStructureGeometry> mGeometries { get; set; }
-
-        // Helper property for XML serialization
-        [XmlArray("mGeometries")]
-        [XmlArrayItem("mGeometries")]
-        public List<KeyValuePair_Geometry> GeometriesList
-        {
-            get => mGeometries.Select(kv => new KeyValuePair_Geometry { Key = kv.Key, Value = kv.Value }).ToList();
-            set => mGeometries = value.ToDictionary(item => item.Key, item => item.Value);
-        }
-
-        private int mGeometryCounter;
-        private int mGeometryPlacementInfoCounter;
+        internal int mGeometryCounter;
+        internal int mGeometryPlacementInfoCounter;
     }
-
-    // Helper class for mGeometriesPlacementInfo serrialization
-    public class KeyValuePair_GeometryPlacementInfo
-    {
-        public int Key { get; set; }
-
-        public VinnyLibDataStructureGeometryPlacementInfo Value { get; set; }
-    }
-
-    // Helper class for Geometries serrialization
-    public class KeyValuePair_Geometry
-    {
-        public int Key { get; set; }
-
-        public VinnyLibDataStructureGeometry Value { get; set; }
-    }
-
-
-
-
 }
