@@ -5,7 +5,7 @@ set VSVER=[17.0^,18.0^)
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
 
 ::Build VinnyLibConverter
-devenv VinnyLibConverter.sln /Build "Release|x64"
+devenv VinnyLibConverter.sln /Build "Release|Any CPU"
 
 ::Build nwc2swig
 devenv ..\nwc2swig\nwcreateWrapper.sln /Build "Release|x64"
