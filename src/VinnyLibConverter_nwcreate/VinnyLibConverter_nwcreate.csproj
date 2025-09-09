@@ -11,14 +11,16 @@
             <Private>False</Private>
             <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
         </ProjectReference>
-        <ProjectReference Include="..\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj" />
+        <ProjectReference Include="..\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj">
+            <ExcludeAssets>runtime</ExcludeAssets>
+            <Private>False</Private>
+        </ProjectReference>
     </ItemGroup>
 
   <ItemGroup>
         <Reference Include="nwcreateNET">
           <HintPath>$(SolutionDir)..\VinnyLibBin\$(Configuration)\dependencies\nwcreate\nwcreateNET.dll</HintPath>
           <Private>False</Private>
-          <EmbedInteropTypes>False</EmbedInteropTypes>
         </Reference>
    </ItemGroup>
 

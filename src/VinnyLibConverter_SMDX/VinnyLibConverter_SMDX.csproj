@@ -25,7 +25,10 @@
             <Private>False</Private>
             <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
         </ProjectReference>
-        <ProjectReference Include="..\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj" />
+        <ProjectReference Include="..\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj">
+            <ExcludeAssets>runtime</ExcludeAssets>
+            <Private>False</Private>
+        </ProjectReference>
     </ItemGroup>
 
 </Project>

@@ -9,12 +9,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">
-      <Private></Private>
-      <CopyLocalSatelliteAssemblies></CopyLocalSatelliteAssemblies>
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
     </ProjectReference>
-    <ProjectReference Include="..\VinnyLibConverterKernel\VinnyLibConverterKernel.csproj" />
+    <ProjectReference Include="..\VinnyLibConverterKernel\VinnyLibConverterKernel.csproj">
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\VinnyLibConverterUI\VinnyLibConverterUI.csproj">
       <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
     </ProjectReference>
   </ItemGroup>
 

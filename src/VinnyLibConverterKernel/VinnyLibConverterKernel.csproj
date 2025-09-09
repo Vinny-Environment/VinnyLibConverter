@@ -11,17 +11,28 @@
       <Private>False</Private>
       <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
     </ProjectReference>
-    <ProjectReference Include="..\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj" />
+    <ProjectReference Include="..\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
     <ProjectReference Include="..\VinnyLibConverter_DotBIM\VinnyLibConverter_DotBIM.csproj">
       <Private>False</Private>
       <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
     </ProjectReference>
-    <ProjectReference Include="..\VinnyLibConverter_nwcreate\VinnyLibConverter_nwcreate.csproj" />
-    <ProjectReference Include="..\VinnyLibConverter_SMDX\VinnyLibConverter_SMDX.csproj" />
+    <ProjectReference Include="..\VinnyLibConverter_nwcreate\VinnyLibConverter_nwcreate.csproj">
+      <Private>False</Private>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\VinnyLibConverter_SMDX\VinnyLibConverter_SMDX.csproj">
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="del $(TargetDir)VinnyLibConverter_DotBIM.*" />
-    </Target>
+  <ItemGroup>
+    <None Update="DelAssemblies.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>
