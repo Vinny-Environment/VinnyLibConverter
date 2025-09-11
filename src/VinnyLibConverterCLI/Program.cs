@@ -12,22 +12,15 @@ namespace VinnyLibConverterCLI
 {
     internal class Program
     {
-        [STAThread]
-        static void Main(string[] args)
+        private static void CLI(string[] args)
         {
-            //TODO: реализовать параметры командной строки с комментариями для ввода значений (и инициализация ImportExportParameters из консоли)
-            string executingAssemblyFile = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
-            string executionDirectoryPath = Path.GetDirectoryName(executingAssemblyFile);
-#if DEBUG
-            args = new string[] {"-showForImport"};
-#endif
             if (args.Length > 0)
             {
                 string argFirst = args[0];
                 if (argFirst == "-showForImport" || argFirst == "-showForExport")
                 {
                     bool isImport = argFirst == "showForImport";
-                    string uiLib = Path.Combine(executionDirectoryPath, "ui", "net6.0-windows", "VinnyLibConverterUI.dll");
+                    string uiLib = Path.Combine(pExecutionDirectoryPath, "ui", "net6.0-windows", "VinnyLibConverterUI.dll");
                     Assembly.LoadFrom(uiLib);
 
                     ShowSettingsWindow(isImport);
@@ -55,34 +48,44 @@ namespace VinnyLibConverterCLI
                         ImportExportParameters outputParams = ImportExportParameters.LoadFromFile(outputParamsPath);
 
 
-                        VinnyLibConverter Converter = VinnyLibConverter.CreateInstance(executionDirectoryPath);
+                        VinnyLibConverter Converter = VinnyLibConverter.CreateInstance(pExecutionDirectoryPath);
                         Converter.Convert(inputParams, outputParams);
                         return;
 
                     }
                 }
             }
-#if RELEASE
+        }
+        [STAThread]
+        static void Main(string[] args)
+        {
+            string executingAssemblyFile = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase).LocalPath;
+            pExecutionDirectoryPath = Path.GetDirectoryName(executingAssemblyFile);
+
+            Assembly.LoadFrom(Path.Combine(pExecutionDirectoryPath, "VinnyLibConverterKernel.dll"));
+#if DEBUG
+            //args = new string[] {"-showForImport"};
 #endif
+#if RELEASE
+            CLI(args);
+#endif
+
+
+
 #if DEBUG
 
-            return;
-            VinnyTests tests = new VinnyTests(executionDirectoryPath, @"E:\DataTest\VinnyLibConverterSamples");
+            VinnyTests tests = new VinnyTests(@"E:\DataTest\VinnyLibConverterSamples");
             tests.cde_nwc_3();
             //tests.cde_smdx_1();
             //tests.cde_smdx_2();
             //tests.cde_dotbim_2();
             //tests.cde_smdx_3();
 
-            VinnyLibDataStructureGeometryPlacementInfo gi = new VinnyLibDataStructureGeometryPlacementInfo(-1, -1);
-            gi.Position = new float[3] { 100, 50, 0 };
-            gi.InitMatrix();
-
-            var p = gi.TransformationMatrixInfo.TransformPoint3d(new float[] { 0, 0, 0 });
+           
 
 #endif
             Console.WriteLine("\nEnd!");
-            Console.ReadKey();
+            Console.Read();
 
         }
 
@@ -95,15 +98,17 @@ namespace VinnyLibConverterCLI
             }
         }
 
+        internal static string pExecutionDirectoryPath;
+
     }
 #if DEBUG
     class VinnyTests
     {
-        public VinnyTests(string ExecDir, string samplesPath)
+        public VinnyTests(string samplesPath)
         {
-            this.pExecDir = ExecDir;
+            this.pExecDir = Program.pExecutionDirectoryPath;
             this.pSamplesDirPath = samplesPath;
-            mConverter = VinnyLibConverter.CreateInstance(ExecDir);
+            mConverter = VinnyLibConverter.CreateInstance2();
         }
 
         #region DOTBIM
