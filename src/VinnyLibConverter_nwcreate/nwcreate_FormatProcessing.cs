@@ -97,7 +97,7 @@ namespace VinnyLibConverter_nwcreate
                             nwcGeomStreamDef.Begin(0);
                             //Сопоставление индексов точек в mesh с результатом nwcGeomStreamDef.IndexedVertex
                             Dictionary<int, int> vinnyPoint2nwcVertex = new Dictionary<int, int>();
-                            foreach (var facesInfo in vinnyGeometryMeshInfo.mFaces)
+                            foreach (var facesInfo in vinnyGeometryMeshInfo.Faces)
                             {
                                 var faceVertex1 = vinnyGeometryPlacementInfo.TransformationMatrixInfo.TransformPoint3d(
                                     vinnyGeometryMeshInfo.GetPointCoords(facesInfo.Value[0]));

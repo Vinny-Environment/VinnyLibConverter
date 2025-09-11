@@ -16,10 +16,10 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public VinnyLibDataStructureParametersManager()
         {
             mParamDefCounter = 0;
-            mParameters = new Dictionary<int, VinnyLibDataStructureParameterDefinition>();
+            Parameters = new Dictionary<int, VinnyLibDataStructureParameterDefinition>();
 
             mCategoriesCounter = 0;
-            mCategories = new Dictionary<int, string>();
+            Categories = new Dictionary<int, string>();
             CreateCategory(CategoryDefaultName);
         }
 
@@ -28,32 +28,32 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             VinnyLibDataStructureParameterDefinition paramDef = new VinnyLibDataStructureParameterDefinition(mParamDefCounter, paramName, paramType);
             if (ImportExportParameters.mActiveConfig.CheckParameterDefsDubles)
             {
-                foreach (var paramDefInfo in mParameters)
+                foreach (var paramDefInfo in Parameters)
                 {
                     if (paramDefInfo.Value.Equals(paramDef)) return paramDefInfo.Key;
                 }
             }
-            mParameters.Add(mParamDefCounter, paramDef);
+            Parameters.Add(mParamDefCounter, paramDef);
             mParamDefCounter++;
             return mParamDefCounter - 1;
         }
 
         public void SetParameterDef(int id, VinnyLibDataStructureParameterDefinition paramDef)
         {
-            mParameters[id] = paramDef;
+            Parameters[id] = paramDef;
         }
 
         public VinnyLibDataStructureParameterDefinition GetParamDefById(int id)
         {
             VinnyLibDataStructureParameterDefinition outputParamDef = new VinnyLibDataStructureParameterDefinition(0, "");
-            if (mParameters.TryGetValue(id, out outputParamDef)) return outputParamDef;
+            if (Parameters.TryGetValue(id, out outputParamDef)) return outputParamDef;
             return null;
         }
 
         public int CreateCategory(string categoryName)
         {
-            if (mCategories.ContainsValue(categoryName)) return mCategories.Where(a => a.Value == categoryName).First().Key;
-            mCategories.Add(mCategoriesCounter, categoryName);
+            if (Categories.ContainsValue(categoryName)) return Categories.Where(a => a.Value == categoryName).First().Key;
+            Categories.Add(mCategoriesCounter, categoryName);
             mCategoriesCounter++;
             return mCategoriesCounter - 1;
         }
@@ -61,7 +61,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public string GetCategoryNameById(int idCategory)
         {
             string catName = "";
-            if (mCategories.TryGetValue(idCategory, out catName)) return catName;
+            if (Categories.TryGetValue(idCategory, out catName)) return catName;
             return null;
         }
 
@@ -104,15 +104,18 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         }
 
         [XmlIgnore]
-        public Dictionary<int, VinnyLibDataStructureParameterDefinition> mParameters { get; set; }
+        public Dictionary<int, VinnyLibDataStructureParameterDefinition> Parameters { get; set; }
 
-        public List<VinnyLibDataStructureParameterDefinition> Parameters { get; set; }
+        [XmlArray("Parameters")]
+        public List<VinnyLibDataStructureParameterDefinition> ParametersForXML { get; set; }
 
         private int mParamDefCounter = 0;
 
         [XmlIgnore]
-        public Dictionary<int, string> mCategories { get; set; }
-        public List<CategoryInfo> Categories { get; set; }
+        public Dictionary<int, string> Categories { get; set; }
+
+        [XmlArray("Categories")]
+        public List<CategoryInfo> CategoriesForXML { get; set; }
 
         public int mCategoriesCounter = 0;
 

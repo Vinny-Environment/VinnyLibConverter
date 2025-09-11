@@ -34,21 +34,21 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         #region Различные действия
         
         /// <summary>
-        /// Пересчитывает все MeshGeometries и MeshGeometriesPlacementInfo для заданных transformations
+        /// Пересчитывает все MeshGeometriesForXML и MeshGeometriesPlacementInfoForXML для заданных transformations
         /// </summary>
         /// <param name="transformations"></param>
         public void SetCoordinatesTransformation(List<ICoordinatesTransformation> transformations)
         {
             if (!transformations.Any()) return;
-            //Если среди transformations только matrix4x4, то можно только обновить MeshGeometriesPlacementInfo
+            //Если среди transformations только matrix4x4, то можно только обновить MeshGeometriesPlacementInfoForXML
             //В противном случае придется пересчитывать каждую VinnyLibDataStructureGeometry, формируя для него новый VinnyLibDataStructureGeometryPlacementInfo и обновляя об этом информацию у VinnyLibDataStructureObject
             bool isOnlyMatrix4x4 = !transformations.Where(t => t.GetTransformationType() == CoordinatesTransformationVariant.Affine || t.GetTransformationType() == CoordinatesTransformationVariant.Geodetic).Any();
 
             if (isOnlyMatrix4x4)
             {
-                foreach (int geometryPlInfoId in GeometrtyManager.mMeshGeometriesPlacementInfo.Keys)
+                foreach (int geometryPlInfoId in GeometrtyManager.MeshGeometriesPlacementInfo.Keys)
                 {
-                    VinnyLibDataStructureGeometryPlacementInfo onePlInfo = GeometrtyManager.mMeshGeometriesPlacementInfo[geometryPlInfoId];
+                    VinnyLibDataStructureGeometryPlacementInfo onePlInfo = GeometrtyManager.MeshGeometriesPlacementInfo[geometryPlInfoId];
                     foreach (TransformationMatrix4x4 transformation in transformations)
                     {
                         onePlInfo.TransformationMatrixInfo.Matrix = MatrixImpl.Multiply(onePlInfo.TransformationMatrixInfo.Matrix, transformation.Matrix);
@@ -57,9 +57,9 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             }
             else if (ImportExportParameters.mActiveConfig.ReprojectOnlyPosition == true)
             {
-                foreach (int geometryPlInfoId in GeometrtyManager.mMeshGeometriesPlacementInfo.Keys)
+                foreach (int geometryPlInfoId in GeometrtyManager.MeshGeometriesPlacementInfo.Keys)
                 {
-                    VinnyLibDataStructureGeometryPlacementInfo onePlInfo = GeometrtyManager.mMeshGeometriesPlacementInfo[geometryPlInfoId];
+                    VinnyLibDataStructureGeometryPlacementInfo onePlInfo = GeometrtyManager.MeshGeometriesPlacementInfo[geometryPlInfoId];
                     foreach (ICoordinatesTransformation transformation in transformations)
                     {
                         onePlInfo.Position = transformation.TransformPoint3d(onePlInfo.Position);
@@ -69,19 +69,19 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             }
             else
             {
-                var oldGeometryKeys = GeometrtyManager.mMeshGeometries.Keys;
-                var oldMeshGeometriesPlacementInfoKeys = GeometrtyManager.mMeshGeometriesPlacementInfo.Keys;
+                var oldGeometryKeys = GeometrtyManager.MeshGeometries.Keys;
+                var oldMeshGeometriesPlacementInfoKeys = GeometrtyManager.MeshGeometriesPlacementInfo.Keys;
 
                 //После окончания редактирования старые данные надо будет удалить
 
-                //1. Идёт по всем MeshGeometriesPlacementInfo, пересчитываем геометрию и формируем новые записи
-                int geomCounter = GeometrtyManager.mMeshGeometries.Count;
+                //1. Идёт по всем MeshGeometriesPlacementInfoForXML, пересчитываем геометрию и формируем новые записи
+                int geomCounter = GeometrtyManager.MeshGeometries.Count;
 
                 Dictionary<int, int> geomPlacementInfo_old2new = new Dictionary<int, int>();
 
-                foreach (int geometryPlInfoId in GeometrtyManager.mMeshGeometriesPlacementInfo.Keys)
+                foreach (int geometryPlInfoId in GeometrtyManager.MeshGeometriesPlacementInfo.Keys)
                 {
-                    VinnyLibDataStructureGeometryPlacementInfo onePlInfo = GeometrtyManager.mMeshGeometriesPlacementInfo[geometryPlInfoId];
+                    VinnyLibDataStructureGeometryPlacementInfo onePlInfo = GeometrtyManager.MeshGeometriesPlacementInfo[geometryPlInfoId];
                     VinnyLibDataStructureGeometry transformedGeometry = GeometrtyManager.TransformGeometry(transformations, onePlInfo);
                     int transformedGeometryId = GeometrtyManager.CreateGeometry(transformedGeometry);
 
@@ -92,12 +92,12 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                 //2. Удаляем старые записи
                 foreach (int oldKey_geom in oldGeometryKeys)
                 {
-                    GeometrtyManager.mMeshGeometries.Remove(oldKey_geom);
+                    GeometrtyManager.MeshGeometries.Remove(oldKey_geom);
                 }
 
                 foreach (int oldKey_geomPI in oldMeshGeometriesPlacementInfoKeys)
                 {
-                    GeometrtyManager.mMeshGeometriesPlacementInfo.Remove(oldKey_geomPI);
+                    GeometrtyManager.MeshGeometriesPlacementInfo.Remove(oldKey_geomPI);
                 }
 
                 //3. Меняем у VinnyLibDataStructureObject идентификаторы VinnyLibDataStructureGeometryPlacementInfo
@@ -122,124 +122,124 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         internal void SaveDataToDictAnalogues()
         {
             //geometry manager and meshes
-            GeometrtyManager.MeshGeometries = new List<VinnyLibDataStructureGeometryMesh>();
-            foreach (var g in GeometrtyManager.mMeshGeometries)
+            GeometrtyManager.MeshGeometriesForXML = new List<VinnyLibDataStructureGeometryMesh>();
+            foreach (var g in GeometrtyManager.MeshGeometries)
             {
-                g.Value.Points = new List<PointInfo>();
-                foreach (var p in g.Value.mPoints)
+                g.Value.PointsForXML = new List<PointInfo>();
+                foreach (var p in g.Value.Points)
                 {
-                    g.Value.Points.Add(new PointInfo() { Id = p.Key, XYZ = p.Value});
+                    g.Value.PointsForXML.Add(new PointInfo() { Id = p.Key, XYZ = p.Value});
                 }
 
-                g.Value.Faces = new List<FaceInfo>();
-                foreach (var f in g.Value.mFaces)
+                g.Value.FacesForXML = new List<FaceInfo>();
+                foreach (var f in g.Value.Faces)
                 {
-                    g.Value.Faces.Add(new FaceInfo() { Id = f.Key, Indices = f.Value });
+                    g.Value.FacesForXML.Add(new FaceInfo() { Id = f.Key, Indices = f.Value });
                 }
 
-                g.Value.Faces2Materials = new List<Face2MaterialInfo>();
-                foreach (var f in g.Value.mFaces2Materials)
+                g.Value.Faces2MaterialsForXML = new List<Face2MaterialInfo>();
+                foreach (var f in g.Value.Faces2Materials)
                 {
-                    g.Value.Faces2Materials.Add(new Face2MaterialInfo() { FaceId = f.Key, MaterialId = f.Value });
+                    g.Value.Faces2MaterialsForXML.Add(new Face2MaterialInfo() { FaceId = f.Key, MaterialId = f.Value });
                 }
 
-                GeometrtyManager.MeshGeometries.Add(g.Value);
+                GeometrtyManager.MeshGeometriesForXML.Add(g.Value);
             }
 
-            GeometrtyManager.MeshGeometriesPlacementInfo = new List<VinnyLibDataStructureGeometryPlacementInfo>();
-            foreach (var g in GeometrtyManager.mMeshGeometriesPlacementInfo)
+            GeometrtyManager.MeshGeometriesPlacementInfoForXML = new List<VinnyLibDataStructureGeometryPlacementInfo>();
+            foreach (var g in GeometrtyManager.MeshGeometriesPlacementInfo)
             {
-                GeometrtyManager.MeshGeometriesPlacementInfo.Add(g.Value);
+                GeometrtyManager.MeshGeometriesPlacementInfoForXML.Add(g.Value);
             }
 
             //materials
-            MaterialsManager.Materials = new List<VinnyLibDataStructureMaterial>();
-            foreach (var m in MaterialsManager.mMaterials)
+            MaterialsManager.MaterialsForXML = new List<VinnyLibDataStructureMaterial>();
+            foreach (var m in MaterialsManager.Materials)
             {
-                MaterialsManager.Materials.Add(m.Value);
+                MaterialsManager.MaterialsForXML.Add(m.Value);
             }
 
             //objects
-            ObjectsManager.Objects = new List<VinnyLibDataStructureObject>();
+            ObjectsManager.ObjectsForXML = new List<VinnyLibDataStructureObject>();
             foreach (var o in ObjectsManager.mObjects)
             {
-                ObjectsManager.Objects.Add(o.Value);
+                ObjectsManager.ObjectsForXML.Add(o.Value);
             }
 
             //parameters
-            ParametersManager.Parameters = new List<VinnyLibDataStructureParameterDefinition>();
-            foreach (var p in ParametersManager.mParameters)
+            ParametersManager.ParametersForXML = new List<VinnyLibDataStructureParameterDefinition>();
+            foreach (var p in ParametersManager.Parameters)
             {
-                ParametersManager.Parameters.Add(p.Value);
+                ParametersManager.ParametersForXML.Add(p.Value);
             }
 
-            ParametersManager.Categories = new List<CategoryInfo>();
-            foreach (var c in ParametersManager.mCategories)
+            ParametersManager.CategoriesForXML = new List<CategoryInfo>();
+            foreach (var c in ParametersManager.Categories)
             {
-                ParametersManager.Categories.Add(new CategoryInfo() { Id = c.Key, Name = c.Value });
+                ParametersManager.CategoriesForXML.Add(new CategoryInfo() { Id = c.Key, Name = c.Value });
             }
         }
 
         internal void InitDataFromDictAnalogues()
         {
-            GeometrtyManager.mMeshGeometries = new Dictionary<int, VinnyLibDataStructureGeometryMesh>();
-            foreach (var g in GeometrtyManager.MeshGeometries)
+            GeometrtyManager.MeshGeometries = new Dictionary<int, VinnyLibDataStructureGeometryMesh>();
+            foreach (var g in GeometrtyManager.MeshGeometriesForXML)
             {
-                g.mPoints = new Dictionary<int, float[]>();
-                foreach (var p in g.Points)
+                g.Points = new Dictionary<int, float[]>();
+                foreach (var p in g.PointsForXML)
                 {
-                    g.mPoints.Add(p.Id, p.XYZ);
+                    g.Points.Add(p.Id, p.XYZ);
                 }
 
-                g.mFaces = new Dictionary<int, int[]>();
-                foreach (var f in g.Faces)
+                g.Faces = new Dictionary<int, int[]>();
+                foreach (var f in g.FacesForXML)
                 {
-                    g.mFaces.Add(f.Id, f.Indices);
+                    g.Faces.Add(f.Id, f.Indices);
                 }
 
-                g.mFaces2Materials = new Dictionary<int, int>();
-                foreach (var f in g.Faces2Materials)
+                g.Faces2Materials = new Dictionary<int, int>();
+                foreach (var f in g.Faces2MaterialsForXML)
                 {
-                    g.mFaces2Materials.Add(f.FaceId, f.MaterialId);
+                    g.Faces2Materials.Add(f.FaceId, f.MaterialId);
                 }
 
-                GeometrtyManager.mMeshGeometries.Add(g.Id, g);
+                GeometrtyManager.MeshGeometries.Add(g.Id, g);
             }
-            GeometrtyManager.mGeometryCounter = GeometrtyManager.mMeshGeometries.Keys.Max() + 1;
+            GeometrtyManager.mGeometryCounter = GeometrtyManager.MeshGeometries.Keys.Max() + 1;
             
 
-            GeometrtyManager.mMeshGeometriesPlacementInfo = new Dictionary<int, VinnyLibDataStructureGeometryPlacementInfo>();
-            foreach (var g in GeometrtyManager.MeshGeometriesPlacementInfo)
+            GeometrtyManager.MeshGeometriesPlacementInfo = new Dictionary<int, VinnyLibDataStructureGeometryPlacementInfo>();
+            foreach (var g in GeometrtyManager.MeshGeometriesPlacementInfoForXML)
             {
-                GeometrtyManager.mMeshGeometriesPlacementInfo.Add(g.Id, g);
+                GeometrtyManager.MeshGeometriesPlacementInfo.Add(g.Id, g);
             }
-            GeometrtyManager.mGeometryPlacementInfoCounter = GeometrtyManager.mMeshGeometriesPlacementInfo.Keys.Max() + 1;
+            GeometrtyManager.mGeometryPlacementInfoCounter = GeometrtyManager.MeshGeometriesPlacementInfo.Keys.Max() + 1;
 
             //materials
-            MaterialsManager.mMaterials = new Dictionary<int, VinnyLibDataStructureMaterial>();
-            foreach (var m in MaterialsManager.Materials)
+            MaterialsManager.Materials = new Dictionary<int, VinnyLibDataStructureMaterial>();
+            foreach (var m in MaterialsManager.MaterialsForXML)
             {
-                MaterialsManager.mMaterials.Add(m.Id, m);
+                MaterialsManager.Materials.Add(m.Id, m);
             }
 
             //objects
             ObjectsManager.mObjects = new Dictionary<int, VinnyLibDataStructureObject>();
-            foreach (var o in ObjectsManager.Objects)
+            foreach (var o in ObjectsManager.ObjectsForXML)
             {
                 ObjectsManager.mObjects.Add(o.Id, o);
             }
 
             //parameters
-            ParametersManager.mParameters = new Dictionary<int, VinnyLibDataStructureParameterDefinition>();
-            foreach (var p in ParametersManager.Parameters)
+            ParametersManager.Parameters = new Dictionary<int, VinnyLibDataStructureParameterDefinition>();
+            foreach (var p in ParametersManager.ParametersForXML)
             {
-                ParametersManager.mParameters.Add(p.Id, p);
+                ParametersManager.Parameters.Add(p.Id, p);
             }
 
-            ParametersManager.mCategories = new Dictionary<int, string>();
-            foreach (var c in ParametersManager.Categories)
+            ParametersManager.Categories = new Dictionary<int, string>();
+            foreach (var c in ParametersManager.CategoriesForXML)
             {
-                ParametersManager.mCategories.Add(c.Id, c.Name);
+                ParametersManager.Categories.Add(c.Id, c.Name);
             }
         }
 

@@ -18,9 +18,9 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
         public override float[] ComputeBounds()
         {
-            var x = this.mPoints.Values.Select(c => c[0]);
-            var y = this.mPoints.Values.Select(c => c[1]);
-            var z = this.mPoints.Values.Select(c => c[2]);
+            var x = this.Points.Values.Select(c => c[0]);
+            var y = this.Points.Values.Select(c => c[1]);
+            var z = this.Points.Values.Select(c => c[2]);
 
             return new float[] {x.Min(), y.Min(), z.Min(), x.Max(), y.Max(), z.Max()};
         }
@@ -33,9 +33,9 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
         private void InitFields()
         {
-            mPoints = new Dictionary<int, float[]>();
-            mFaces = new Dictionary<int, int[]>();
-            mFaces2Materials = new Dictionary<int, int>();
+            Points = new Dictionary<int, float[]>();
+            Faces = new Dictionary<int, int[]>();
+            Faces2Materials = new Dictionary<int, int>();
         }
 
         internal VinnyLibDataStructureGeometryMesh(int id)
@@ -62,8 +62,8 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
             if (!ImportExportParameters.mActiveConfig.CheckGeometryDubles) 
             {
-                mPoints.Add(mPoints.Count, xyz);
-                return mPoints.Count - 1;
+                Points.Add(Points.Count, xyz);
+                return Points.Count - 1;
             }
             else
             {
@@ -71,13 +71,13 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                 float yNew = Convert.ToSingle(Math.Round(xyz[1], ImportExportParameters.mActiveConfig.VertexAccuracy));
                 float zNew = Convert.ToSingle(Math.Round(xyz[2], ImportExportParameters.mActiveConfig.VertexAccuracy));
 
-                for (int vertexCounter = 0; vertexCounter < mPoints.Count; vertexCounter++)
+                for (int vertexCounter = 0; vertexCounter < Points.Count; vertexCounter++)
                 {
-                    float[] pointCoords = mPoints[vertexCounter];
+                    float[] pointCoords = Points[vertexCounter];
                     if (pointCoords[0] == xNew && pointCoords[1] == yNew && pointCoords[2] == zNew) return vertexCounter;
                 }
-                mPoints.Add(mPoints.Count, new float[3] { xNew, yNew, zNew });
-                return mPoints.Count -  1;
+                Points.Add(Points.Count, new float[3] { xNew, yNew, zNew });
+                return Points.Count -  1;
             }
         }
 
@@ -102,14 +102,14 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
             if (ImportExportParameters.mActiveConfig.CheckGeometryDubles)
             {
-                for (int faceCounter = 0; faceCounter < mFaces.Count; faceCounter++)
+                for (int faceCounter = 0; faceCounter < Faces.Count; faceCounter++)
                 {
-                    int[] faceVertices = mFaces[faceCounter];
+                    int[] faceVertices = Faces[faceCounter];
                     if (faceVertices.SequenceEqual(v123)) return faceCounter;
                 }
             }
-            mFaces.Add(mFaces.Count, v123);
-            return mFaces.Count - 1;
+            Faces.Add(Faces.Count, v123);
+            return Faces.Count - 1;
         }
 
         public void AddFace(float[] point1, float[] point2, float[] point3)
@@ -123,25 +123,25 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
         public int[] GetFaceVertices(int faceIndex)
         {
-            if (faceIndex <= this.mFaces.Count) return this.mFaces[faceIndex];
+            if (faceIndex <= this.Faces.Count) return this.Faces[faceIndex];
             return null;
         }
 
         public float[] GetPointCoords(int pointIndex)
         {
-            if (pointIndex <= this.mPoints.Count) return this.mPoints[pointIndex];
+            if (pointIndex <= this.Points.Count) return this.Points[pointIndex];
             return null;
         }
 
         public void AssignMaterialToFace(int FaceIndex, int MaterialIndex)
         {
-            this.mFaces2Materials[FaceIndex] = MaterialIndex;
+            this.Faces2Materials[FaceIndex] = MaterialIndex;
         }
 
         public int GetMaterialIndexByFaceIndex(int FaceIndex)
         {
             int outputMaterialIndex = 0;
-            this.mFaces2Materials.TryGetValue(FaceIndex, out outputMaterialIndex);
+            this.Faces2Materials.TryGetValue(FaceIndex, out outputMaterialIndex);
             return outputMaterialIndex;
         }
          
@@ -152,19 +152,22 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
 
         [XmlIgnore]
-        public Dictionary<int, float[]> mPoints { get; set; }
+        public Dictionary<int, float[]> Points { get; set; }
 
-        public List<PointInfo> Points { get; set; }
-
-        [XmlIgnore]
-        public Dictionary<int, int[]> mFaces { get; set; }
-
-        public List<FaceInfo> Faces { get; set; }
+        [XmlArray("Points")]
+        public List<PointInfo> PointsForXML { get; set; }
 
         [XmlIgnore]
-        public Dictionary<int, int> mFaces2Materials { get; set; }
+        public Dictionary<int, int[]> Faces { get; set; }
 
-        public List<Face2MaterialInfo> Faces2Materials { get; set; }
+        [XmlArray("Faces")]
+        public List<FaceInfo> FacesForXML { get; set; }
+
+        [XmlIgnore]
+        public Dictionary<int, int> Faces2Materials { get; set; }
+
+        [XmlArray("Faces2Materials")]
+        public List<Face2MaterialInfo> Faces2MaterialsForXML { get; set; }
 
     }
 

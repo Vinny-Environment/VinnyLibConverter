@@ -1,16 +1,14 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Linq;
+using System.Collections.Generic;
 
 using VinnyLibConverterCommon;
 using VinnyLibConverterCommon.VinnyLibDataStructure;
-
-using System.Linq;
-using System.Collections.Generic;
 using VinnyLibConverterCommon.Transformation;
-using VinnyLibConverter_SMDX.SMDX;
-using System.Text.RegularExpressions;
 using VinnyLibConverter_SMDX.SMDX.Materials;
+using VinnyLibConverter_SMDX.SMDX;
 using VinnyLibConverterUtils;
 using VinnyLibConverterCommon.Interfaces;
 
@@ -302,9 +300,9 @@ namespace VinnyLibConverter_SMDX
             //заносим материалы (только сохраняем как файлы)
             //Сопоставление id' материала и имени файла jmtl ресурсов SMDX
             Dictionary<int, string> materialId2smdxJmtlNames = new Dictionary<int, string>();
-            foreach (int materialIndex in vinnyData.MaterialsManager.mMaterials.Keys)
+            foreach (int materialIndex in vinnyData.MaterialsManager.Materials.Keys)
             {
-                VinnyLibDataStructureMaterial materialDef = vinnyData.MaterialsManager.Materials[materialIndex];
+                VinnyLibDataStructureMaterial materialDef = vinnyData.MaterialsManager.MaterialsForXML[materialIndex];
                 string materialName = $"material_{materialIndex}.jmtl";
                 SMDX_Material_BlinnPhong smdxMaterial = SMDX_Material_BlinnPhong.CreateFromRGB(materialDef.GetRGB());
                 smdxProject.CreateMaterial(smdxMaterial, materialName);
@@ -314,7 +312,7 @@ namespace VinnyLibConverter_SMDX
             //заносим геометрию (мэши)
             Dictionary<int, int> vinnyGeometryId2smdxIds = new Dictionary<int, int>();
             int smdxGeometryCounter = 0;
-            foreach (var vinnyGeometryInfo in vinnyData.GeometrtyManager.mMeshGeometries)
+            foreach (var vinnyGeometryInfo in vinnyData.GeometrtyManager.MeshGeometries)
             {
                 VinnyLibDataStructureGeometry vinnyGeometryDef = vinnyGeometryInfo.Value;
                 if (vinnyGeometryDef.GetGeometryType() == VinnyLibDataStructureGeometryType.Mesh)
@@ -324,7 +322,7 @@ namespace VinnyLibConverter_SMDX
                     SMDX_Geometry_j3d smdxMeshGeometry = new SMDX_Geometry_j3d();
                     SMDX_Geometry_j3d_Part smdxMeshGeometryPart = new SMDX_Geometry_j3d_Part();
 
-                    foreach (var vinnyMeshPointInfo in vinnyGeometryMeshDef.mPoints)
+                    foreach (var vinnyMeshPointInfo in vinnyGeometryMeshDef.Points)
                     {
                         float[] vinnyMeshPointCoordsInfo = vinnyMeshPointInfo.Value;
                         smdxMeshGeometryPart.positions.Add(vinnyMeshPointCoordsInfo[0]);
@@ -332,20 +330,20 @@ namespace VinnyLibConverter_SMDX
                         smdxMeshGeometryPart.positions.Add(vinnyMeshPointCoordsInfo[2]);
                     }
 
-                    //задаем информацию о цвете. Из-за "особенности" j3d-файла, грани надо отсортировать по отдельным цветам -- то есть сперва перебираем vinnyGeometryMeshDef.Faces2Materials, затем перетасовываем vinnyGeometryMeshDef.Faces и сохраняем их в j3d
-                    //Если количество Faces2Materials и Faces не согласованное, то цветом будет значение vinnyGeometryMeshDef.MaterialId
+                    //задаем информацию о цвете. Из-за "особенности" j3d-файла, грани надо отсортировать по отдельным цветам -- то есть сперва перебираем vinnyGeometryMeshDef.Faces2MaterialsForXML, затем перетасовываем vinnyGeometryMeshDef.FacesForXML и сохраняем их в j3d
+                    //Если количество Faces2MaterialsForXML и FacesForXML не согласованное, то цветом будет значение vinnyGeometryMeshDef.MaterialId
 
                     //Ключ: VinnyLibDataStructureMaterial.Id; Значение: список номеров граней с данным материалом
                     Dictionary<int, List<int>> materialsOfFacesCollection = new Dictionary<int, List<int>>();
-                    if (vinnyGeometryMeshDef.Faces2Materials.Count == vinnyGeometryMeshDef.Faces.Count)
+                    if (vinnyGeometryMeshDef.Faces2MaterialsForXML.Count == vinnyGeometryMeshDef.FacesForXML.Count)
                     {
-                        foreach (var faceMaterial in vinnyGeometryMeshDef.mFaces2Materials)
+                        foreach (var faceMaterial in vinnyGeometryMeshDef.Faces2Materials)
                         {
                             if (!materialsOfFacesCollection.ContainsKey(faceMaterial.Value)) materialsOfFacesCollection.Add(faceMaterial.Value, new List<int>());
                             materialsOfFacesCollection[faceMaterial.Value].Add(faceMaterial.Key);
                         }
                     }
-                    else materialsOfFacesCollection.Add(vinnyGeometryMeshDef.MaterialId, vinnyGeometryMeshDef.mFaces.Keys.Cast<int>().ToList());
+                    else materialsOfFacesCollection.Add(vinnyGeometryMeshDef.MaterialId, vinnyGeometryMeshDef.Faces.Keys.Cast<int>().ToList());
 
                     //заполняем groups у j3d-файла
                     int prevoiusFacesCount = 0;
@@ -359,7 +357,7 @@ namespace VinnyLibConverter_SMDX
                         
                         foreach (int faceIndex in materialOfFacesCollection.Value)
                         {
-                            int[] faceDef = vinnyGeometryMeshDef.mFaces[faceIndex];
+                            int[] faceDef = vinnyGeometryMeshDef.Faces[faceIndex];
                             int v1;
                             if (faceCounter == 0) 
                             {
@@ -495,7 +493,7 @@ namespace VinnyLibConverter_SMDX
 
 
             //заполняем insertions
-            foreach (var vinnyGeometryPI_Info in vinnyData.GeometrtyManager.mMeshGeometriesPlacementInfo)
+            foreach (var vinnyGeometryPI_Info in vinnyData.GeometrtyManager.MeshGeometriesPlacementInfo)
             {
                 VinnyLibDataStructureGeometryPlacementInfo vinnyGeometryPI = vinnyGeometryPI_Info.Value;
 

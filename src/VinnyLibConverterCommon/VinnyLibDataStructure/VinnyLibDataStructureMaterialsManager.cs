@@ -14,7 +14,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public VinnyLibDataStructureMaterialsManager()
         {
             pMaterialCounter = 0;
-            mMaterials = new Dictionary<int, VinnyLibDataStructureMaterial>();
+            Materials = new Dictionary<int, VinnyLibDataStructureMaterial>();
             //CreateMaterial(new int[] { 0, 0, 0 }, "Default");
         }
 
@@ -29,13 +29,13 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
             if (ImportExportParameters.mActiveConfig.CheckMaterialsDubles)
             {
-                foreach (var materialInfo in mMaterials)
+                foreach (var materialInfo in Materials)
                 {
                     if (materialInfo.Value.Equals(materialNew)) return materialInfo.Key;
                 }
             }
 
-            mMaterials.Add(pMaterialCounter, materialNew);
+            Materials.Add(pMaterialCounter, materialNew);
             pMaterialCounter++;
             return pMaterialCounter - 1;
         }
@@ -43,15 +43,16 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public VinnyLibDataStructureMaterial GetMaterialById(int id)
         {
             VinnyLibDataStructureMaterial outputMaterial = new VinnyLibDataStructureMaterial();
-            mMaterials.TryGetValue(id, out outputMaterial);
-            //if (Materials.TryGetValue(id, out outputMaterial)) //return outputMaterial;
+            Materials.TryGetValue(id, out outputMaterial);
+            //if (MaterialsForXML.TryGetValue(id, out outputMaterial)) //return outputMaterial;
             return outputMaterial;
         }
 
         [XmlIgnore]
-        public Dictionary<int, VinnyLibDataStructureMaterial> mMaterials { get; set; }
+        public Dictionary<int, VinnyLibDataStructureMaterial> Materials { get; set; }
 
-        public List<VinnyLibDataStructureMaterial> Materials { get; set; }
+        [XmlArray("Materials")]
+        public List<VinnyLibDataStructureMaterial> MaterialsForXML { get; set; }
         private int pMaterialCounter = 0;
     }
 }

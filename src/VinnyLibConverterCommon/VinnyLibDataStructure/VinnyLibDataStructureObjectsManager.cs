@@ -116,7 +116,8 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         [XmlIgnore]
         public Dictionary<int, VinnyLibDataStructureObject> mObjects { get; set; }
 
-        public List<VinnyLibDataStructureObject> Objects { get; set; }
+        [XmlArray("Objects")]
+        public List<VinnyLibDataStructureObject> ObjectsForXML { get; set; }
 
         private int mObjectIdCounter;
     }

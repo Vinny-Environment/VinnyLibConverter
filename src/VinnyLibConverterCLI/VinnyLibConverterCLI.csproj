@@ -1,29 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <OutDir>$(SolutionDir)..\VinnyLibBin\$(Configuration)</OutDir>
     <TargetFramework>net6.0-windows</TargetFramework>
     <CopyLocalLockFileAssemblies>False</CopyLocalLockFileAssemblies>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">
       <Private>False</Private>
       <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+      <EmbedInteropTypes></EmbedInteropTypes>
     </ProjectReference>
     <ProjectReference Include="..\VinnyLibConverterKernel\VinnyLibConverterKernel.csproj">
       <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
       <Private>False</Private>
+      <EmbedInteropTypes></EmbedInteropTypes>
+      <ReferenceOutputAssembly></ReferenceOutputAssembly>
+      <ExcludeAssets>Runtime</ExcludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\VinnyLibConverterUI\VinnyLibConverterUI.csproj">
       <Private>False</Private>
       <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly></ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="del $(TargetDir)VinnyLibConverter_DotBIM.*" />
-    </Target>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="del $(TargetDir)VinnyLibConverter_DotBIM*&#xD;&#xA;del $(TargetDir)VinnyLibConverter_SMDX*&#xA;del $(TargetDir)VinnyLibConverter_nwcreate*" />
+  </Target>
+    
 
 </Project>

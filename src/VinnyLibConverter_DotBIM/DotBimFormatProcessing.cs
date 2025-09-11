@@ -86,7 +86,7 @@ namespace VinnyLibConverter_DotBIM
             }
 
             //elements
-            int defaulParamsCateroryId = dotbimFileDef.ParametersManager.CreateCategory("Parameters");
+            int defaulParamsCateroryId = dotbimFileDef.ParametersManager.CreateCategory("ParametersForXML");
             int paramDefTypeId = dotbimFileDef.ParametersManager.CreateParameterDefinition("Type", VinnyLibDataStructureParameterDefinitionType.ParamString);
 
             foreach (var elem in dotbimFile.Elements)
@@ -222,7 +222,7 @@ namespace VinnyLibConverter_DotBIM
                 dotbimMesh.Coordinates = new List<double>();
                 dotbimMesh.Indices = new List<int>();
 
-                foreach (var coordInfo in geometryMeshDef.mPoints)
+                foreach (var coordInfo in geometryMeshDef.Points)
                 {
                     float[] coord = coordInfo.Value;
 
@@ -231,7 +231,7 @@ namespace VinnyLibConverter_DotBIM
                     dotbimMesh.Coordinates.Add(coord[2]);
                 }
 
-                foreach (var faceInfo in geometryMeshDef.mFaces)
+                foreach (var faceInfo in geometryMeshDef.Faces)
                 {
                     int[] face = faceInfo.Value;
                     dotbimMesh.Indices.Add(face[0]);
@@ -241,7 +241,7 @@ namespace VinnyLibConverter_DotBIM
                 dotbimFile.Meshes.Add(dotbimMesh);
 
                 dotbimElement.FaceColors = new List<int>();
-                foreach(var materialFaceInfo in geometryMeshDef.mFaces2Materials)
+                foreach(var materialFaceInfo in geometryMeshDef.Faces2Materials)
                 {
                     var materialInfo = vinnyData.MaterialsManager.GetMaterialById(materialFaceInfo.Value);
                     dotbimElement.FaceColors.Add(materialInfo.ColorR);

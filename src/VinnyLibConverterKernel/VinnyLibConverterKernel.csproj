@@ -4,6 +4,8 @@
     <OutDir>$(SolutionDir)..\VinnyLibBin\$(Configuration)</OutDir>
     <TargetFramework>netstandard20</TargetFramework>
     <LangVersion>8.0</LangVersion>
+    <CopyLocalLockFileAssemblies>False</CopyLocalLockFileAssemblies>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,21 +20,18 @@
     <ProjectReference Include="..\VinnyLibConverter_DotBIM\VinnyLibConverter_DotBIM.csproj">
       <Private>False</Private>
       <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
     <ProjectReference Include="..\VinnyLibConverter_nwcreate\VinnyLibConverter_nwcreate.csproj">
       <Private>False</Private>
       <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
     <ProjectReference Include="..\VinnyLibConverter_SMDX\VinnyLibConverter_SMDX.csproj">
       <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
       <Private>False</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="DelAssemblies.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
