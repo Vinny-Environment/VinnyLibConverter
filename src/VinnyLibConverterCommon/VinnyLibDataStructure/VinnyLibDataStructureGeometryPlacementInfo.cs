@@ -44,15 +44,24 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public float VectorOY_Rad { get; set; }
         public float VectorOZ_Rad { get; set; }
 
+        public float[] TransformatiomMatrix { get; set; }
+
         /// <summary>
         /// Вспомогательный метод, вызывается для инициализации внутренней матрицы пересчета TransformationMatrixInfo для заданных значений Position, Scale, VectorOX_Rad, VectorOY_Rad, VectorOZ_Rad
         /// </summary>
         public void InitMatrix()
         {
             TransformationMatrixInfo = TransformationMatrix4x4.CreateEmptyTransformationMatrix();
-            TransformationMatrixInfo.SetPosition(Position[0], Position[1], Position[2]);
-            TransformationMatrixInfo.SetRotationFromAngles(VectorOX_Rad, VectorOY_Rad, VectorOZ_Rad);
-            TransformationMatrixInfo.SetScale(Scale[0], Scale[1], Scale[2]);
+            if (TransformatiomMatrix != null && TransformatiomMatrix.Length == 16)
+            {
+                TransformationMatrixInfo.SetFromOtherMatrix(TransformatiomMatrix);
+            }
+            else
+            {
+                TransformationMatrixInfo.SetPosition(Position[0], Position[1], Position[2]);
+                TransformationMatrixInfo.SetRotationFromAngles(VectorOX_Rad, VectorOY_Rad, VectorOZ_Rad);
+                TransformationMatrixInfo.SetScale(Scale[0], Scale[1], Scale[2]);
+            }
         }
 
         public TransformationMatrix4x4 TransformationMatrixInfo { get; set; }

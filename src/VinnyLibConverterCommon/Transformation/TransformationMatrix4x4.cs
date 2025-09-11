@@ -138,6 +138,11 @@ namespace VinnyLibConverterCommon.Transformation
             return new float[] { x, y, z };
         }
 
+        public void SetFromOtherMatrix(float[] matrix)
+        {
+            Matrix = new MatrixImpl(matrix, 4, 4);
+        }
+
         public MatrixImpl Matrix { get; set; }
 
         private void MultiplyMatrix(MatrixImpl OtherMatrix)

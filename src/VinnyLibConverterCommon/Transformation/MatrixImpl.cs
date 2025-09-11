@@ -229,6 +229,17 @@ namespace VinnyLibConverterCommon.Transformation
         /// </summary>
         public float[] Matrix { get; set; }
 
+        public double[] GetMatrixDouble()
+        {
+            double[] m = new double[Matrix.Length];
+            for (int i = 0; i < m.Length; i++)
+            {
+                m[i] = Matrix[i];
+            }
+            return m;
+
+        }
+
         public float this[int row, int col]
         {
             get => Matrix[row * Rows + col];
