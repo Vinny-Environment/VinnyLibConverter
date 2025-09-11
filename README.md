@@ -2,6 +2,8 @@
 
 Библиотека для преобразования информационных моделей (чтение\запись).
 
+https://github.com/Vinny-Environment/VinnyLibConverter
+
 ## Основные компоненты
 
 * `VinnyLibConverterCommon`: описывает структуру информационной модели (VinnyLibDataStructureModel), CDE-нейтральное представление. Содержит вспомогательные опредеелния классов;
