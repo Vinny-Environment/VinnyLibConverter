@@ -20,6 +20,9 @@ devenv ..\VinnyNavisworksAdapter\VinnyNavisworksAdapter.sln /Build "R_N21|x64"
 ::Build VinnyRengaAdapter
 devenv ..\VinnyRengaPlugin\VinnyRenga.sln /Build "Release|x64"
 
+::Build VinnyCADLibAdapter
+devenv ..\VinnyCADLibAdapter\VinnyCADLibAdapter.sln /Build "Release|x64"
+
 ::ZIP release
 
 "C:\Program Files\7-Zip\7z" a -tzip "VinnyLibConverter.zip" "..\VinnyLibBin\Release"
