@@ -14,17 +14,17 @@ namespace VinnyLibConverter_SMDX.SMDX.Textures
         /// <summary>
         /// 4x4 ... матрица трансформации?
         /// </summary>
-        public float[] world { get; set; }
+        public double[] world { get; set; }
 
         /// <summary>
         /// 4x4 ...тоже матрица ???
         /// </summary>
-        public float[] view { get; set; }
+        public double[] view { get; set; }
 
         /// <summary>
         /// 4x4 ...тоже матрица ???. Для сечения?
         /// </summary>
-        public float[] projection { get; set; }
+        public double[] projection { get; set; }
 
         /// <summary>
         /// Наименование файла геометрии, к которому относится текстура

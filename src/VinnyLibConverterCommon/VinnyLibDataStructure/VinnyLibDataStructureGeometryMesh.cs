@@ -16,13 +16,13 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             return VinnyLibDataStructureGeometryType.Mesh;
         }
 
-        public override float[] ComputeBounds()
+        public override double[] ComputeBounds()
         {
             var x = this.Points.Values.Select(c => c[0]);
             var y = this.Points.Values.Select(c => c[1]);
             var z = this.Points.Values.Select(c => c[2]);
 
-            return new float[] {x.Min(), y.Min(), z.Min(), x.Max(), y.Max(), z.Max()};
+            return new double[] {x.Min(), y.Min(), z.Min(), x.Max(), y.Max(), z.Max()};
         }
 
         public static VinnyLibDataStructureGeometryMesh asType (VinnyLibDataStructureGeometry geometry)
@@ -33,7 +33,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
         private void InitFields()
         {
-            Points = new Dictionary<int, float[]>();
+            Points = new Dictionary<int, double[]>();
             Faces = new Dictionary<int, int[]>();
             Faces2Materials = new Dictionary<int, int>();
         }
@@ -48,11 +48,11 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             InitFields();
         }
 
-        public int AddVertex(float x, float y, float z)
+        public int AddVertex(double x, double y, double z)
         {
-            return AddVertex(new float[3] { x, y, z });
+            return AddVertex(new double[3] { x, y, z });
         }
-        public int AddVertex(float[] xyz)
+        public int AddVertex(double[] xyz)
         {
             if (xyz.Length != 3)
             {
@@ -67,16 +67,16 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             }
             else
             {
-                float xNew = Convert.ToSingle(Math.Round(xyz[0], ImportExportParameters.mActiveConfig.VertexAccuracy));
-                float yNew = Convert.ToSingle(Math.Round(xyz[1], ImportExportParameters.mActiveConfig.VertexAccuracy));
-                float zNew = Convert.ToSingle(Math.Round(xyz[2], ImportExportParameters.mActiveConfig.VertexAccuracy));
+                double xNew = Convert.ToDouble(Math.Round(xyz[0], ImportExportParameters.mActiveConfig.VertexAccuracy));
+                double yNew = Convert.ToDouble(Math.Round(xyz[1], ImportExportParameters.mActiveConfig.VertexAccuracy));
+                double zNew = Convert.ToDouble(Math.Round(xyz[2], ImportExportParameters.mActiveConfig.VertexAccuracy));
 
                 for (int vertexCounter = 0; vertexCounter < Points.Count; vertexCounter++)
                 {
-                    float[] pointCoords = Points[vertexCounter];
+                    double[] pointCoords = Points[vertexCounter];
                     if (pointCoords[0] == xNew && pointCoords[1] == yNew && pointCoords[2] == zNew) return vertexCounter;
                 }
-                Points.Add(Points.Count, new float[3] { xNew, yNew, zNew });
+                Points.Add(Points.Count, new double[3] { xNew, yNew, zNew });
                 return Points.Count -  1;
             }
         }
@@ -112,7 +112,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             return Faces.Count - 1;
         }
 
-        public void AddFace(float[] point1, float[] point2, float[] point3)
+        public void AddFace(double[] point1, double[] point2, double[] point3)
         {
             int p1 = AddVertex(point1);
             int p2 = AddVertex(point2);
@@ -127,7 +127,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             return null;
         }
 
-        public float[] GetPointCoords(int pointIndex)
+        public double[] GetPointCoords(int pointIndex)
         {
             if (pointIndex <= this.Points.Count) return this.Points[pointIndex];
             return null;
@@ -152,7 +152,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
 
 
         [XmlIgnore]
-        public Dictionary<int, float[]> Points { get; set; }
+        public Dictionary<int, double[]> Points { get; set; }
 
         [XmlArray("Points")]
         public List<PointInfo> PointsForXML { get; set; }
@@ -175,7 +175,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
     {
         public int Id { get; set; }
 
-        public float[] XYZ { get; set; }
+        public double[] XYZ { get; set; }
     }
 
     public class FaceInfo

@@ -112,7 +112,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                     VinnyLibDataStructureGeometryMesh targetGeometry_Mesh = VinnyLibDataStructureGeometryMesh.asType(targetGeometry);
                     foreach (int PointKey in targetGeometry_Mesh.Points.Keys)
                     {
-                        float[] XYZ_Converted = transformation.TransformPoint3d(targetGeometry_Mesh.Points[PointKey]);
+                        double[] XYZ_Converted = transformation.TransformPoint3d(targetGeometry_Mesh.Points[PointKey]);
                         targetGeometry_Mesh.Points[PointKey] = XYZ_Converted;
                     }
                 }
@@ -120,11 +120,11 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             return targetGeometry;
         }
 
-        public float[] ComputeBoundsForMeshGeometries(VinnyLibDataStructureGeometryPlacementInfo[] geoms)
+        public double[] ComputeBoundsForMeshGeometries(VinnyLibDataStructureGeometryPlacementInfo[] geoms)
         {
-            float[] x = new float[geoms.Length * 2];
-            float[] y = new float[geoms.Length * 2];
-            float[] z = new float[geoms.Length * 2];
+            double[] x = new double[geoms.Length * 2];
+            double[] y = new double[geoms.Length * 2];
+            double[] z = new double[geoms.Length * 2];
 
             int counter = 0;
             foreach (VinnyLibDataStructureGeometryPlacementInfo geom in geoms)
@@ -138,7 +138,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
                 z[counter * 2 + 1] = bounds[5];
                 counter++;
             }
-            return new float[] { x.Min(), y.Min(), z.Min(), x.Max(), y.Max(), z.Max() };
+            return new double[] { x.Min(), y.Min(), z.Min(), x.Max(), y.Max(), z.Max() };
         }
 
         [XmlIgnore]

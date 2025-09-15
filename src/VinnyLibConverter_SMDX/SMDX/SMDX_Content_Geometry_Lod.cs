@@ -11,7 +11,7 @@ namespace VinnyLibConverter_SMDX.SMDX
         /// <summary>
         ///  Расстояния до точки обзора в окне просмотра от объекта
         /// </summary>
-        public float? distance { get; set; }
+        public double? distance { get; set; }
 
         /// <summary>
         /// ???

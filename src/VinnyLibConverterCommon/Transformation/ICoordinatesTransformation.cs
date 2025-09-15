@@ -20,10 +20,8 @@ namespace VinnyLibConverterCommon.Transformation
     [XmlInclude(typeof(TransformationAffine))]
     public abstract class ICoordinatesTransformation
     {
-        public virtual float[] TransformPoint3d(float[] xyz)
-        {
-            return new float[] { };
-        }
+        public abstract double[] TransformPoint3d(double[] xyz);
+        public abstract double[][] TransformPoints3d(double[][] xyz_array);
 
         public virtual CoordinatesTransformationVariant GetTransformationType()
         {

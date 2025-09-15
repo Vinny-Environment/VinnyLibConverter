@@ -73,7 +73,7 @@ namespace VinnyLibConverter_SMDX
                     //сохраняем точки
                     for (int smdxVertexCounter = 0; smdxVertexCounter < smdxGeometryPartInfoDef.positions.Count - 2; smdxVertexCounter += 3)
                     {
-                        float x, y, z;
+                        double x, y, z;
                         x = smdxGeometryPartInfoDef.positions[smdxVertexCounter];
                         y = smdxGeometryPartInfoDef.positions[smdxVertexCounter + 1];
                         z = smdxGeometryPartInfoDef.positions[smdxVertexCounter + 2];
@@ -131,7 +131,7 @@ namespace VinnyLibConverter_SMDX
                     {
                         //Сперва проверяем тип insertion. Если position или normal выражен какой-то фигней с "interpolation": "linear" то вообще такое пропускаем
 
-                        float[] posTmp = smdxFileInfo.Content.wcs;
+                        double[] posTmp = smdxFileInfo.Content.wcs;
 
                         string jsonStr = System.Text.Json.JsonSerializer.Serialize(smdxInsertionInfo.position, InternalUtils.GetWriteOpts());
                         
@@ -143,7 +143,7 @@ namespace VinnyLibConverter_SMDX
                             }
                             else
                             {
-                                float[] posRaw = System.Text.Json.JsonSerializer.Deserialize<float[]>(jsonStr); //((Array)smdxInsertionInfo.position).Cast<float>().ToArray();
+                                double[] posRaw = System.Text.Json.JsonSerializer.Deserialize<double[]>(jsonStr); //((Array)smdxInsertionInfo.position).Cast<double>().ToArray();
                                 //<Dictionary<string, SMDX_Geometry_j3d_Part>
                                 posTmp[0] += posRaw[0];
                                 posTmp[1] += posRaw[1];
@@ -168,11 +168,11 @@ namespace VinnyLibConverter_SMDX
                         {
                             if (smdxInsertionInfo.scale.GetType() == typeof(Array))
                             {
-                                geomPI.Scale = ((Array)smdxInsertionInfo.scale).Cast<float>().ToArray();
+                                geomPI.Scale = ((Array)smdxInsertionInfo.scale).Cast<double>().ToArray();
                             }
-                            else if (smdxInsertionInfo.scale.GetType() == typeof(float))
+                            else if (smdxInsertionInfo.scale.GetType() == typeof(double))
                             {
-                                geomPI.Scale = new float[3] { (float)smdxInsertionInfo.scale, (float)smdxInsertionInfo.scale, (float)smdxInsertionInfo.scale };
+                                geomPI.Scale = new double[3] { (double)smdxInsertionInfo.scale, (double)smdxInsertionInfo.scale, (double)smdxInsertionInfo.scale };
                             }
                         }
 
@@ -181,7 +181,7 @@ namespace VinnyLibConverter_SMDX
                         if (smdxInsertionInfo.normal != null)
                         {
                             jsonStr = System.Text.Json.JsonSerializer.Serialize(smdxInsertionInfo.normal, InternalUtils.GetWriteOpts());
-                            float[] normalRaw = System.Text.Json.JsonSerializer.Deserialize<float[]>(jsonStr);
+                            double[] normalRaw = System.Text.Json.JsonSerializer.Deserialize<double[]>(jsonStr);
                             if (normalRaw.Length == 3)
                             {
                                 QuaternionInfo normal = QuaternionInfo.NormalToQuaternion(new Vector3(normalRaw[0], normalRaw[1], normalRaw[2]));
@@ -252,7 +252,7 @@ namespace VinnyLibConverter_SMDX
                         case "int":
                             propType = VinnyLibDataStructureParameterDefinitionType.ParamInteger;
                             break;
-                        case "float":
+                        case "double":
                             propType = VinnyLibDataStructureParameterDefinitionType.ParamReal;
                             break;
                     }
@@ -324,7 +324,7 @@ namespace VinnyLibConverter_SMDX
 
                     foreach (var vinnyMeshPointInfo in vinnyGeometryMeshDef.Points)
                     {
-                        float[] vinnyMeshPointCoordsInfo = vinnyMeshPointInfo.Value;
+                        double[] vinnyMeshPointCoordsInfo = vinnyMeshPointInfo.Value;
                         smdxMeshGeometryPart.positions.Add(vinnyMeshPointCoordsInfo[0]);
                         smdxMeshGeometryPart.positions.Add(vinnyMeshPointCoordsInfo[1]);
                         smdxMeshGeometryPart.positions.Add(vinnyMeshPointCoordsInfo[2]);
@@ -506,7 +506,7 @@ namespace VinnyLibConverter_SMDX
                 //проверить корректность
                 QuaternionInfo q = vinnyGeometryPI.TransformationMatrixInfo.GetRotationInfo();
                 var v = q * Vector3.Forward;
-                smdxInsertionDef.normal = new float[] {v.X,  v.Y, v.Z};
+                smdxInsertionDef.normal = new double[] {v.X,  v.Y, v.Z};
 
                 smdxProject.Content.insertions.Add(smdxInsertionDef);
             }

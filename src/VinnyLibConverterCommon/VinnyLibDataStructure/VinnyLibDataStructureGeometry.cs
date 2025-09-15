@@ -27,9 +27,9 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         /// Xmin, Ymin, Zmin, Xmax, Ymax, Zmax
         /// </summary>
         /// <returns></returns>
-        public virtual float[] ComputeBounds()
+        public virtual double[] ComputeBounds()
         {
-            return new float[6];
+            return new double[6];
         }
 
         /// <summary>

@@ -99,14 +99,14 @@ namespace VinnyLibConverterCommon
             return CdeVariant._Unkwnown;
         }
 
-        public static float DegreeToRadians(float degree)
+        public static double DegreeToRadians(double degree)
         {
-            return degree / 180.0f * (float)Math.PI;
+            return degree / 180.0f * (double)Math.PI;
         }
 
-        public static float RadiansToDegree(float radians)
+        public static double RadiansToDegree(double radians)
         {
-            return radians / (float)Math.PI * 180.0f;
+            return radians / (double)Math.PI * 180.0f;
         }
 
 

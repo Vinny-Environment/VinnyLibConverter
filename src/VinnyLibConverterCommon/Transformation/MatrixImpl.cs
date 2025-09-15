@@ -18,7 +18,7 @@ namespace VinnyLibConverterCommon.Transformation
         {
             Rows = rows;
             Columns = columns;
-            Matrix = new float[rows * columns];
+            Matrix = new double[rows * columns];
 
             for (int i = 0; i < rows; i++)
             {
@@ -31,7 +31,7 @@ namespace VinnyLibConverterCommon.Transformation
             }
         }
 
-        public MatrixImpl(float[] matrix, int rows, int columns)
+        public MatrixImpl(double[] matrix, int rows, int columns)
         {
             Rows = rows;
             Columns = columns;
@@ -76,7 +76,7 @@ namespace VinnyLibConverterCommon.Transformation
             {
                 for (int j = 0; j < b.Columns; j++)
                 {
-                    float sum = 0;
+                    double sum = 0;
                     for (int k = 0; k < a.Columns; k++)
                     {
                         sum += a[i, k] * b[k, j];
@@ -87,7 +87,7 @@ namespace VinnyLibConverterCommon.Transformation
             return result;
         }
 
-        public static MatrixImpl ScalarMultiply(MatrixImpl matrix, float scalar)
+        public static MatrixImpl ScalarMultiply(MatrixImpl matrix, double scalar)
         {
             var result = new MatrixImpl(matrix.Rows, matrix.Columns);
             for (int i = 0; i < matrix.Rows; i++)
@@ -135,17 +135,17 @@ namespace VinnyLibConverterCommon.Transformation
             q.Normalize();
 
             // Calculate the rotation matrix elements
-            float xx = q.X * q.X;
-            float xy = q.X * q.Y;
-            float xz = q.X * q.Z;
-            float xw = q.X * q.W;
+            double xx = q.X * q.X;
+            double xy = q.X * q.Y;
+            double xz = q.X * q.Z;
+            double xw = q.X * q.W;
 
-            float yy = q.Y * q.Y;
-            float yz = q.Y * q.Z;
-            float yw = q.Y * q.W;
+            double yy = q.Y * q.Y;
+            double yz = q.Y * q.Z;
+            double yw = q.Y * q.W;
 
-            float zz = q.Z * q.Z;
-            float zw = q.Z * q.W;
+            double zz = q.Z * q.Z;
+            double zw = q.Z * q.W;
 
             var matrix = new MatrixImpl(4, 4);
 
@@ -178,12 +178,12 @@ namespace VinnyLibConverterCommon.Transformation
 
         public QuaternionInfo ExtractRotationQuaternion()
         {
-            float trace = this[0, 0] + this[1, 1] + this[2, 2];
+            double trace = this[0, 0] + this[1, 1] + this[2, 2];
             QuaternionInfo q = new QuaternionInfo();
 
             if (trace > 0)
             {
-                float s = 0.5f / Convert.ToSingle(Math.Sqrt(trace + 1.0));
+                double s = 0.5f / Convert.ToDouble(Math.Sqrt(trace + 1.0));
                 q.W = 0.25f / s;
                 q.X = (this[2, 1] - this[1, 2]) * s;
                 q.Y = (this[0, 2] - this[2, 0]) * s;
@@ -193,7 +193,7 @@ namespace VinnyLibConverterCommon.Transformation
             {
                 if (this[0, 0] > this[1, 1] && this[0, 0] > this[2, 2])
                 {
-                    float s = 2.0f * Convert.ToSingle(Math.Sqrt(1.0 + this[0, 0] - this[1, 1] - this[2, 2]));
+                    double s = 2.0f * Convert.ToDouble(Math.Sqrt(1.0 + this[0, 0] - this[1, 1] - this[2, 2]));
                     q.W = (this[2, 1] - this[1, 2]) / s;
                     q.X = 0.25f * s;
                     q.Y = (this[0, 1] + this[1, 0]) / s;
@@ -201,7 +201,7 @@ namespace VinnyLibConverterCommon.Transformation
                 }
                 else if (this[1, 1] > this[2, 2])
                 {
-                    float s = 2.0f * Convert.ToSingle(Math.Sqrt(1.0 + this[1, 1] - this[0, 0] - this[2, 2]));
+                    double s = 2.0f * Convert.ToDouble(Math.Sqrt(1.0 + this[1, 1] - this[0, 0] - this[2, 2]));
                     q.W = (this[0, 2] - this[2, 0]) / s;
                     q.X = (this[0, 1] + this[1, 0]) / s;
                     q.Y = 0.25f * s;
@@ -209,7 +209,7 @@ namespace VinnyLibConverterCommon.Transformation
                 }
                 else
                 {
-                    float s = 2.0f * Convert.ToSingle(Math.Sqrt(1.0 + this[2, 2] - this[0, 0] - this[1, 1]));
+                    double s = 2.0f * Convert.ToDouble(Math.Sqrt(1.0 + this[2, 2] - this[0, 0] - this[1, 1]));
                     q.W = (this[1, 0] - this[0, 1]) / s;
                     q.X = (this[0, 2] + this[2, 0]) / s;
                     q.Y = (this[1, 2] + this[2, 1]) / s;
@@ -227,7 +227,7 @@ namespace VinnyLibConverterCommon.Transformation
         /// 4x4 transformation matrix
         /// https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D1%82%D1%80%D0%B8%D1%86%D0%B0_%D0%BF%D0%B5%D1%80%D0%B5%D1%85%D0%BE%D0%B4%D0%B0
         /// </summary>
-        public float[] Matrix { get; set; }
+        public double[] Matrix { get; set; }
 
         public double[] GetMatrixDouble()
         {
@@ -240,7 +240,7 @@ namespace VinnyLibConverterCommon.Transformation
 
         }
 
-        public float this[int row, int col]
+        public double this[int row, int col]
         {
             get => Matrix[row * Rows + col];
             set => Matrix[row * Rows + col] = value;

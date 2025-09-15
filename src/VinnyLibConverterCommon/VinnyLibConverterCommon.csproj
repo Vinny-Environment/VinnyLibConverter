@@ -6,4 +6,11 @@
         <LangVersion>8.0</LangVersion>
 	</PropertyGroup>
 
+      <ItemGroup>
+        <Reference Include="VinnyProjNET">
+          <HintPath>$(SolutionDir)..\VinnyLibBin\$(Configuration)\dependencies\proj\VinnyProjNET.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+   </ItemGroup>
+
 </Project>

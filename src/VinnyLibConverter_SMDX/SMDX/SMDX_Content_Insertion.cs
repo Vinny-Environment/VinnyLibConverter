@@ -34,7 +34,7 @@ namespace VinnyLibConverter_SMDX.SMDX
         /// <summary>
         /// Угол поворота элемента относительно нормали в радианах. По умолчанию = 0
         /// </summary>
-        public float angle { get; set; } = 0.0f;
+        public double angle { get; set; } = 0.0f;
 
         /// <summary>
         /// Массив координат XYZ вектора к плоскости, в которой расположен элемент. По умолчанию 0 0 1 ИЛИ какая-то херь с frames

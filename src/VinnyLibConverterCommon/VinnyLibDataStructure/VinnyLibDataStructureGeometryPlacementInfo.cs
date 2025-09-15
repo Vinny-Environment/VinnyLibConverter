@@ -28,8 +28,8 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         {
             TransformationMatrixInfo = TransformationMatrix4x4.CreateEmptyTransformationMatrix();
 
-            Position = new float[] { 0, 0, 0 };
-            Scale = new float[] { 1, 1, 1 };
+            Position = new double[] { 0, 0, 0 };
+            Scale = new double[] { 1, 1, 1 };
             VectorOX_Rad = 0;
             VectorOY_Rad = 0;
             VectorOZ_Rad = 0;
@@ -38,13 +38,13 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
         public int Id { get; set; }
         public int IdGeometry { get; set; }
 
-        public float[] Position { get; set; }
-        public float[] Scale { get; set; }
-        public float VectorOX_Rad { get; set; }
-        public float VectorOY_Rad { get; set; }
-        public float VectorOZ_Rad { get; set; }
+        public double[] Position { get; set; }
+        public double[] Scale { get; set; }
+        public double VectorOX_Rad { get; set; }
+        public double VectorOY_Rad { get; set; }
+        public double VectorOZ_Rad { get; set; }
 
-        public float[] TransformatiomMatrix { get; set; }
+        public double[] TransformatiomMatrix { get; set; }
 
         /// <summary>
         /// Вспомогательный метод, вызывается для инициализации внутренней матрицы пересчета TransformationMatrixInfo для заданных значений Position, Scale, VectorOX_Rad, VectorOY_Rad, VectorOZ_Rad

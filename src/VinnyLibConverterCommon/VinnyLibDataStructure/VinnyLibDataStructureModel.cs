@@ -185,7 +185,7 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             GeometrtyManager.MeshGeometries = new Dictionary<int, VinnyLibDataStructureGeometryMesh>();
             foreach (var g in GeometrtyManager.MeshGeometriesForXML)
             {
-                g.Points = new Dictionary<int, float[]>();
+                g.Points = new Dictionary<int, double[]>();
                 foreach (var p in g.PointsForXML)
                 {
                     g.Points.Add(p.Id, p.XYZ);

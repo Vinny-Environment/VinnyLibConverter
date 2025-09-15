@@ -31,7 +31,7 @@ namespace VinnyLibConverterCommon.Transformation
             return transformMatrix;
         }
 
-        public void SetScale(float x, float y, float z)
+        public void SetScale(double x, double y, double z)
         {
             MatrixImpl ScaleMatrix = new MatrixImpl(4, 4);
             ScaleMatrix[0, 0] = x;
@@ -40,7 +40,7 @@ namespace VinnyLibConverterCommon.Transformation
             MultiplyMatrix(ScaleMatrix);
         }
 
-        public void SetPosition(float x, float y, float z)
+        public void SetPosition(double x, double y, double z)
         {
             MatrixImpl ScaleMatrix = new MatrixImpl(4, 4);
             ScaleMatrix[0, 3] = x;
@@ -51,36 +51,36 @@ namespace VinnyLibConverterCommon.Transformation
         }
 
         /*
-        public void SetRotation_OX(float angle)
+        public void SetRotation_OX(double angle)
         {
-            float[,] ScaleMatrix = new float[,]
+            double[,] ScaleMatrix = new double[,]
             {
                  { 1, 0, 0, 0},
-                 { 0, Convert.ToSingle(Math.Cos(angle)), -Convert.ToSingle(Math.Sin(angle)), 0 },
-                 { 1, Convert.ToSingle(Math.Sin(angle)), Convert.ToSingle(Math.Cos(angle)), 0 },
+                 { 0, Convert.ToDouble(Math.Cos(angle)), -Convert.ToDouble(Math.Sin(angle)), 0 },
+                 { 1, Convert.ToDouble(Math.Sin(angle)), Convert.ToDouble(Math.Cos(angle)), 0 },
                  { 0, 0, 0, 1 }
             };
             MultiplyMatrix(ScaleMatrix);
         }
 
-        public void SetRotation_OY(float angle)
+        public void SetRotation_OY(double angle)
         {
-            float[,] ScaleMatrix = new float[,]
+            double[,] ScaleMatrix = new double[,]
             {
-                 { Convert.ToSingle(Math.Cos(angle)), 1, Convert.ToSingle(Math.Sin(angle)), 0 },
+                 { Convert.ToDouble(Math.Cos(angle)), 1, Convert.ToDouble(Math.Sin(angle)), 0 },
                  { 0, 1, 0, 0 },
-                 { -Convert.ToSingle(Math.Sin(angle)), 0, Convert.ToSingle(Math.Cos(angle)), 0 },
+                 { -Convert.ToDouble(Math.Sin(angle)), 0, Convert.ToDouble(Math.Cos(angle)), 0 },
                  { 0, 0, 0, 1 }
             };
             MultiplyMatrix(ScaleMatrix);
         }
 
-        public void SetRotation_OZ(float angle)
+        public void SetRotation_OZ(double angle)
         {
-            float[,] ScaleMatrix = new float[,]
+            double[,] ScaleMatrix = new double[,]
             {
-                 { Convert.ToSingle(Math.Cos(angle)), -Convert.ToSingle(Math.Sin(angle)), 0, 0 },
-                 { Convert.ToSingle(Math.Sin(angle)), Convert.ToSingle(Math.Cos(angle)), 0, 0 },
+                 { Convert.ToDouble(Math.Cos(angle)), -Convert.ToDouble(Math.Sin(angle)), 0, 0 },
+                 { Convert.ToDouble(Math.Sin(angle)), Convert.ToDouble(Math.Cos(angle)), 0, 0 },
                  { 0, 0, 1, 0 },
                  { 0, 0, 0, 1 }
             };
@@ -94,7 +94,7 @@ namespace VinnyLibConverterCommon.Transformation
             Matrix = MatrixImpl.Multiply(this.Matrix, matrix);
         }
 
-        public void SetRotationFromAngles(float x, float y, float z)
+        public void SetRotationFromAngles(double x, double y, double z)
         {
             QuaternionInfo q = new QuaternionInfo(x, y, z);
             SetRotationFromQuaternion(q);
@@ -111,7 +111,7 @@ namespace VinnyLibConverterCommon.Transformation
         /// </summary>
         /// <param name="xyz"></param>
         /// <returns></returns>
-        public override float[] TransformPoint3d(float[] xyz)
+        public override double[] TransformPoint3d(double[] xyz)
         {
             /*
             MatrixImpl xyzMatrix = new MatrixImpl(3, 1);
@@ -120,12 +120,12 @@ namespace VinnyLibConverterCommon.Transformation
             xyzMatrix[2, 0] = xyz[2];
 
             var productResult = MatrixImpl.Multiply(xyzMatrix, this.Matrix).Matrix;
-            return new float[3] { productResult[0, 0], productResult[1, 0], productResult[2, 0] };
+            return new double[3] { productResult[0, 0], productResult[1, 0], productResult[2, 0] };
             */
-            float x = xyz[0] * Matrix[0, 0] + xyz[1] * Matrix[0, 1] + xyz[2] * Matrix[0, 2] + Matrix[0, 3];
-            float y = xyz[0] * Matrix[1, 0] + xyz[1] * Matrix[1, 1] + xyz[2] * Matrix[1, 2] + Matrix[1, 3];
-            float z = xyz[0] * Matrix[2, 0] + xyz[1] * Matrix[2, 1] + xyz[2] * Matrix[2, 2] + Matrix[2, 3];
-            float w = xyz[0] * Matrix[3, 0] + xyz[1] * Matrix[3, 1] + xyz[2] * Matrix[3, 2] + Matrix[3, 3];
+            double x = xyz[0] * Matrix[0, 0] + xyz[1] * Matrix[0, 1] + xyz[2] * Matrix[0, 2] + Matrix[0, 3];
+            double y = xyz[0] * Matrix[1, 0] + xyz[1] * Matrix[1, 1] + xyz[2] * Matrix[1, 2] + Matrix[1, 3];
+            double z = xyz[0] * Matrix[2, 0] + xyz[1] * Matrix[2, 1] + xyz[2] * Matrix[2, 2] + Matrix[2, 3];
+            double w = xyz[0] * Matrix[3, 0] + xyz[1] * Matrix[3, 1] + xyz[2] * Matrix[3, 2] + Matrix[3, 3];
 
             //Perspective division if w != 1
             if (w != 1 && w != 0)
@@ -135,10 +135,20 @@ namespace VinnyLibConverterCommon.Transformation
                     z /= w;
                 }
 
-            return new float[] { x, y, z };
+            return new double[] { x, y, z };
         }
 
-        public void SetFromOtherMatrix(float[] matrix)
+        public override double[][] TransformPoints3d(double[][] xyz_array)
+        {
+            double[][] ret = new double[xyz_array.Length][];
+            for (int pCounter = 0; pCounter < xyz_array.Length; pCounter++)
+            {
+                ret[pCounter] = TransformPoint3d(xyz_array[pCounter]);
+            }
+            return ret;
+        }
+
+        public void SetFromOtherMatrix(double[] matrix)
         {
             Matrix = new MatrixImpl(matrix, 4, 4);
         }

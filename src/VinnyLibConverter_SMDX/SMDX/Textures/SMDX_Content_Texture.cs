@@ -19,12 +19,12 @@ namespace VinnyLibConverter_SMDX.SMDX.Textures
         /// <summary>
         /// Ширина текстуры
         /// </summary>
-        public float? width { get; set; }
+        public double? width { get; set; }
 
         /// <summary>
         /// Высота текстуры
         /// </summary>
-        public float? height { get; set; }
+        public double? height { get; set; }
 
         /// <summary>
         /// перечисление, указывающее на используемые каналы. 0 –альфа канал, 1 – сплошной цвет + альфа канал, 2 – оттенки серого, 3 – сплошной цвет

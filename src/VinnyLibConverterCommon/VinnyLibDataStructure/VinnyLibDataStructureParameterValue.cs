@@ -112,12 +112,12 @@ namespace VinnyLibConverterCommon.VinnyLibDataStructure
             return double.TryParse(mValue.ToString(), out value);
         }
 
-        public bool GetFloatValue(out float value)
+        public bool GetFloatValue(out double value)
         {
-            value = float.NaN;
+            value = double.NaN;
             if (isValueNull) return false;
 
-            return float.TryParse(mValue.ToString(), out value);
+            return double.TryParse(mValue.ToString(), out value);
         }
 
         public bool GetStringValue(out string value)

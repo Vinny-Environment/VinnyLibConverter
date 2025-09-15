@@ -18,9 +18,9 @@ namespace VinnyLibConverter_SMDX.SMDX.Materials
         {
             SMDX_Material_BlinnPhong material = new SMDX_Material_BlinnPhong();
             material.type = SMDX_MaterialBase.type_BlinnPhong;
-            material.ambient = new float[] { 0,0,0 };
-            material.diffuse = new float[] { rgb[0] / 255.0f, rgb[1] / 255.0f, rgb[2] / 255.0f };
-            material.specular = new float[] { 1, 1, 1 };
+            material.ambient = new double[] { 0,0,0 };
+            material.diffuse = new double[] { rgb[0] / 255.0f, rgb[1] / 255.0f, rgb[2] / 255.0f };
+            material.specular = new double[] { 1, 1, 1 };
             material.level = 0.4f;
             material.shininess = 0.2f;
             material.blur = 0;
@@ -35,42 +35,42 @@ namespace VinnyLibConverter_SMDX.SMDX.Materials
         /// <summary>
         /// фоновое освещение
         /// </summary>
-        public float[]? ambient { get; set; }
+        public double[]? ambient { get; set; }
 
         /// <summary>
         /// рассеянный свет
         /// </summary>
-        public float[]? diffuse { get; set; }
+        public double[]? diffuse { get; set; }
 
         /// <summary>
         /// бликовая составляющая
         /// </summary>
-        public float[]? specular { get; set; }
+        public double[]? specular { get; set; }
 
         /// <summary>
         /// уровень яркости
         /// </summary>
-        public float? level { get; set; }
+        public double? level { get; set; }
 
         /// <summary>
         /// резкость зеркальных бликов
         /// </summary>
-        public float? shininess { get; set; }
+        public double? shininess { get; set; }
 
         /// <summary>
         /// степень размытия
         /// </summary>
-        public float? blur { get; set; }
+        public double? blur { get; set; }
 
         /// <summary>
         ///  степень прозрачности
         /// </summary>
-        public float? transparency { get; set; }
+        public double? transparency { get; set; }
 
         /// <summary>
         ///  сила свечения
         /// </summary>
-        public float? illumination { get; set; }
+        public double? illumination { get; set; }
 
         /// <summary>
         /// тип затенения

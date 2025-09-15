@@ -13,6 +13,12 @@ rmdir /s /q "..\VinnyLibBin\Release"
 devenv ..\nwc2swig\nwcreateWrapper.sln /Build "Release|x64"
 xcopy ..\nwc2swig\README.md "..\VinnyLibBin\Release\dependencies\nwcreate" /Y /I
 
+::Build VinnyProjTransformation
+::Перед запуском скрипта надо вручную собрать проект VinnyProjWrapperLib в составе VinnyProjTransformation (cs файлы не включаются в репозиторий, т.к. это генерируемые данные)
+
+devenv ..\VinnyProjTransformation\VinnyProjTransformation.sln /Build "Release|x64"
+xcopy ..\VinnyProjTransformation\README.md "..\VinnyLibBin\Release\dependencies\proj" /Y /I
+
 ::Build VinnyLibConverter
 devenv VinnyLibConverter.sln /Build "Release|Any CPU"
 xcopy .\README.md "..\VinnyLibBin\Release\" /Y /I

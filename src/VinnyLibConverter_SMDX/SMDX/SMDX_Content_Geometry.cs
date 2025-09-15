@@ -23,7 +23,7 @@ namespace VinnyLibConverter_SMDX.SMDX
         /// <summary>
         /// массив координат XYZ описывающих границы трёхмерного объекта
         /// </summary>
-        public float[] bounds { get; set; }
+        public double[] bounds { get; set; }
 
         /// <summary>
         /// Детализация отображения графики в зависимости от расстояния до точки обзора в окне просмотра

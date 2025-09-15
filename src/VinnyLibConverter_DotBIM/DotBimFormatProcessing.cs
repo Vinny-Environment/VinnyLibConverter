@@ -53,10 +53,10 @@ namespace VinnyLibConverter_DotBIM
                 {
                     for (int dotbimMeshVertexCounter = 0; dotbimMeshVertexCounter < mesh.Coordinates.Count - 2; dotbimMeshVertexCounter += 3)
                     {
-                        float x, y, z;
-                        x = (float)mesh.Coordinates[dotbimMeshVertexCounter];
-                        y = (float)mesh.Coordinates[dotbimMeshVertexCounter + 1];
-                        z = (float)mesh.Coordinates[dotbimMeshVertexCounter + 2];
+                        double x, y, z;
+                        x = (double)mesh.Coordinates[dotbimMeshVertexCounter];
+                        y = (double)mesh.Coordinates[dotbimMeshVertexCounter + 1];
+                        z = (double)mesh.Coordinates[dotbimMeshVertexCounter + 2];
 
                         meshGeom.AddVertex(x, y, z);
                     }
@@ -69,9 +69,9 @@ namespace VinnyLibConverter_DotBIM
                         meshGeom.AddFace(VertexId1, VertexId2, VertexId3);
 
                         /*
-                        float[] Vertex1 = GetVertexCoords(VertexId1);
-                        float[] Vertex2 = GetVertexCoords(VertexId2);
-                        float[] Vertex3 = GetVertexCoords(VertexId3);
+                        double[] Vertex1 = GetVertexCoords(VertexId1);
+                        double[] Vertex2 = GetVertexCoords(VertexId2);
+                        double[] Vertex3 = GetVertexCoords(VertexId3);
 
                         meshGeom.AddFace(Vertex1, Vertex2, Vertex3);
                         */
@@ -79,9 +79,9 @@ namespace VinnyLibConverter_DotBIM
 
                     dotbimFileDef.GeometrtyManager.SetMeshGeometry(geomId, meshGeom);
                 }
-                float[] GetVertexCoords(int VertexId)
+                double[] GetVertexCoords(int VertexId)
                 {
-                    return new float[] { (float)mesh.Coordinates[VertexId * 3], (float)mesh.Coordinates[VertexId * 3 + 1], (float)mesh.Coordinates[VertexId * 3 + 2] };
+                    return new double[] { (double)mesh.Coordinates[VertexId * 3], (double)mesh.Coordinates[VertexId * 3 + 1], (double)mesh.Coordinates[VertexId * 3 + 2] };
                 }
             }
 
@@ -135,15 +135,15 @@ namespace VinnyLibConverter_DotBIM
                 //задаем информацию о положении геометрии
                 int geomPlacementInfoId = dotbimFileDef.GeometrtyManager.CreateGeometryPlacementInfo(dotbimGeometry2VinnyGeometry[elem.MeshId]);
                 VinnyLibDataStructureGeometryPlacementInfo placementInfo = dotbimFileDef.GeometrtyManager.GetGeometryPlacementInfoById(geomPlacementInfoId);
-                placementInfo.Position = new float[] { (float)elem.Vector.X, (float)elem.Vector.Y, (float)elem.Vector.Z };
+                placementInfo.Position = new double[] { (double)elem.Vector.X, (double)elem.Vector.Y, (double)elem.Vector.Z };
                 QuaternionInfo q = new QuaternionInfo()
                 {
-                    X = (float)elem.Rotation.Qx,
-                    Y = (float)elem.Rotation.Qy,
-                    Z = (float)elem.Rotation.Qz,
-                    W = (float)elem.Rotation.Qw
+                    X = (double)elem.Rotation.Qx,
+                    Y = (double)elem.Rotation.Qy,
+                    Z = (double)elem.Rotation.Qz,
+                    W = (double)elem.Rotation.Qw
                 };
-                float[] XYZ_Euler = q.GetEulerAnglesRadians();
+                double[] XYZ_Euler = q.GetEulerAnglesRadians();
                 placementInfo.VectorOX_Rad = XYZ_Euler[0];
                 placementInfo.VectorOY_Rad = XYZ_Euler[1];
                 placementInfo.VectorOZ_Rad = XYZ_Euler[2];
@@ -224,7 +224,7 @@ namespace VinnyLibConverter_DotBIM
 
                 foreach (var coordInfo in geometryMeshDef.Points)
                 {
-                    float[] coord = coordInfo.Value;
+                    double[] coord = coordInfo.Value;
 
                     dotbimMesh.Coordinates.Add(coord[0]);
                     dotbimMesh.Coordinates.Add(coord[1]);

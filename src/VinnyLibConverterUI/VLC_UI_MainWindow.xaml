@@ -154,11 +154,22 @@
 							<StackPanel Orientation="Vertical">
 								<Label x:Name="LabelGeodetic_Info" Content="Настройки для геодезического преобразования координат"></Label>
 								<Separator Margin="10,0,10,0"></Separator>
-								<Label x:Name="LabelGeodetic_StartCS" Content="WKT-код исходной системы координат:"></Label>
-								<TextBox x:Name="TextBoxGeodetic_StartCsWKT" Margin="0,5,0,0" Height="100"></TextBox>
-								<Label x:Name="LabelGeodetic_TargetCS" Margin="0,5,0,0" Content="WKT-код целевой системы координат:"></Label>
-								<TextBox x:Name="TextBoxGeodetic_TargetCsWKT" Margin="0,5,0,0" Height="100"></TextBox>
-							</StackPanel>
+                                <GroupBox x:Name="GroupBoxStartCS" Header="Данные исходной системы координат">
+                                    <StackPanel Orientation="Vertical" >
+                                        <TextBox x:Name="TextBoxGeodetic_StartCsDef" Margin="0,5,0,0" Height="100"></TextBox>
+                                        <RadioButton x:Name="RadioButton_StartCS_NameOrCode" Margin="0,5,0,0" Content="Имя или код" IsChecked="True"></RadioButton>
+                                        <RadioButton x:Name="RadioButton_StartCS_WKT" Margin="0,5,0,0" Content="WKT код"></RadioButton>
+                                    </StackPanel>
+                                </GroupBox>
+                                <GroupBox x:Name="GroupBoxDestCS" Margin="0,5,0,0" Header="Данные целевой системы координат">
+                                    <StackPanel Orientation="Vertical" >
+                                        <TextBox x:Name="TextBoxGeodetic_DestCsDef" Margin="0,5,0,0" Height="100"></TextBox>
+                                        <RadioButton x:Name="RadioButton_DestCS_NameOrCode" Margin="0,5,0,0" Content="Имя или код" IsChecked="True"></RadioButton>
+                                        <RadioButton x:Name="RadioButton_DestCS_WKT" Margin="0,5,0,0" Content="WKT код"></RadioButton>
+                                    </StackPanel>
+                                </GroupBox>
+                                <Button x:Name="ButtonCheckGeodeticData"  Margin="0,5,0,0" Content="Проверить корректность данных" Click="ButtonCheckGeodeticData_Click"></Button>
+                            </StackPanel>
 						</Grid>
 					</TabItem>
 				</TabControl>

@@ -23,7 +23,7 @@ namespace VinnyLibConverterCommon.Transformation
         /// Xt = X * ScaleX + Y * RotationY + TranslationX
         /// Yt = X * ScaleY + Y * RotationX + TranslationY
         /// </summary>
-        public TransformationAffine(float scaleX, float scaleY, float rotationX, float rotationY, float translationX, float translationY)
+        public TransformationAffine(double scaleX, double scaleY, double rotationX, double rotationY, double translationX, double translationY)
         {
             this.ScaleX = scaleX;
             this.ScaleY = scaleY;
@@ -33,11 +33,21 @@ namespace VinnyLibConverterCommon.Transformation
             this.TranslationY = translationY;
         }
 
-        public override float[] TransformPoint3d(float[] xyz)
+        public override double[] TransformPoint3d(double[] xyz)
         {
-            float x_new = xyz[0] * ScaleX + xyz[1] * RotationY + TranslationX;
-            float y_new = xyz[0] * ScaleY + xyz[1] * RotationX + TranslationY;
-            return new float[] { x_new, y_new, xyz[2] };
+            double x_new = xyz[0] * ScaleX + xyz[1] * RotationY + TranslationX;
+            double y_new = xyz[0] * ScaleY + xyz[1] * RotationX + TranslationY;
+            return new double[] { x_new, y_new, xyz[2] };
+        }
+
+        public override double[][] TransformPoints3d(double[][] xyz_array)
+        {
+            double[][] ret = new double[xyz_array.Length][];
+            for (int pCounter = 0; pCounter < xyz_array.Length; pCounter++)
+            {
+                ret[pCounter] = TransformPoint3d(xyz_array[pCounter]);
+            }
+            return ret;
         }
 
         public override string ToString()
@@ -46,11 +56,11 @@ namespace VinnyLibConverterCommon.Transformation
         }
 
 
-        public float ScaleX { get; set; } = 1;
-        public float RotationX { get; set; } = 1;
-        public float RotationY { get; set; } = 1;
-        public float ScaleY { get; set; } = 1;
-        public float TranslationX { get; set; } = 0;
-        public float TranslationY { get; set; } = 0;
+        public double ScaleX { get; set; } = 1;
+        public double RotationX { get; set; } = 1;
+        public double RotationY { get; set; } = 1;
+        public double ScaleY { get; set; } = 1;
+        public double TranslationX { get; set; } = 0;
+        public double TranslationY { get; set; } = 0;
     }
 }

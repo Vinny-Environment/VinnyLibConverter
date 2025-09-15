@@ -15,9 +15,9 @@ namespace VinnyLibConverter_SMDX.SMDX
     {
         public SMDX_Geometry_j3d_Part()
         {
-            positions = new List<float>();
+            positions = new List<double>();
             triangles = new List<int>();
-            //textures = new List<float>();
+            //textures = new List<double>();
             groups = new Dictionary<string, int[]>();
             //smoothing = new List<int>();
             //triangles_flags = new List<int>();
@@ -25,7 +25,7 @@ namespace VinnyLibConverter_SMDX.SMDX
         /// <summary>
         /// Массив с относительными отметками вершин (x, y, z)
         /// </summary>
-        public List<float> positions { get; set; }
+        public List<double> positions { get; set; }
 
         /// <summary>
         /// Массив с информацией по граням (индекс точки = предыдущему значению + данное)
@@ -35,7 +35,7 @@ namespace VinnyLibConverter_SMDX.SMDX
         /// <summary>
         ///  Массив текстурных координат XY описывающих область текстуры, используемую треугольником.Количество элементов массива соответствует количеству элементов массива positions;
         /// </summary>
-        public List<float>? textures { get; set; }
+        public List<double>? textures { get; set; }
 
         /// <summary>
         /// Информация, какой материал характерен для какого диапазона граней triangles. Ключ: имя файла в .\materials, value: диапазон граней

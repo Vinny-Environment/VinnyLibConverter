@@ -14,22 +14,22 @@ namespace VinnyLibConverter_SMDX.SMDX.Textures
         /// <summary>
         /// Ширина текстуры
         /// </summary>
-        public float? width { get; set; }
+        public double? width { get; set; }
 
         /// <summary>
         /// Высота текстуры
         /// </summary>
-        public float? height { get; set; }
+        public double? height { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public float? x { get; set; }
+        public double? x { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public float? y { get; set; }
+        public double? y { get; set; }
 
         /// <summary>
         /// Области использования

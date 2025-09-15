@@ -16,7 +16,7 @@ namespace VinnyLibConverter_SMDX.SMDX
         public const string ContentFileName = "content.json";
         public SMDX_Content()
         {
-            wcs = new float[] { 0, 0, 0 };
+            wcs = new double[] { 0, 0, 0 };
             insertions = new List<SMDX_Content_Insertion>();
             geometry = new List<SMDX_Content_Geometry>();
             types = new List<SMDX_Content_Type>();
@@ -27,7 +27,7 @@ namespace VinnyLibConverter_SMDX.SMDX
         /// <summary>
         ///  Массив координат X, Y, Z базовой точки модели относительно которой будут располагаться все элементы цифровой модели.
         /// </summary>
-        public float[] wcs { get; set; }
+        public double[] wcs { get; set; }
 
         /// <summary>
         /// Информация об элементах в пространстве модели

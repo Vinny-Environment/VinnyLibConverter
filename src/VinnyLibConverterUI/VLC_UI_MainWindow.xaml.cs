@@ -16,6 +16,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 
 namespace VinnyLibConverterUI
@@ -88,23 +89,39 @@ namespace VinnyLibConverterUI
             this.VinnyParametets.ModelType = VinnyLibConverterCommon.CommomUtils.GetCdeVariantFromExtension(System.IO.Path.GetExtension(this.VinnyParametets.Path));
         }
 
+        private VinnyLibConverterCommon.Transformation.TransformationGeodetic CreateGeodeticFromData()
+        {
+            VinnyLibConverterCommon.Transformation.TransformationGeodetic geodeticTr =
+                new VinnyLibConverterCommon.Transformation.TransformationGeodetic();
+
+            geodeticTr.SourceCs = this.TextBoxGeodetic_StartCsDef.Text;
+            geodeticTr.SourceCsType = VinnyLibConverterCommon.Transformation.CsDefVariant.NameOrCode;
+            if (this.RadioButton_StartCS_WKT.IsChecked == true) geodeticTr.SourceCsType = VinnyLibConverterCommon.Transformation.CsDefVariant.WKT;
+
+            geodeticTr.DestCs = this.TextBoxGeodetic_DestCsDef.Text;
+            geodeticTr.DestCsType = VinnyLibConverterCommon.Transformation.CsDefVariant.NameOrCode;
+            if (this.RadioButton_DestCS_WKT.IsChecked == true) geodeticTr.DestCsType = VinnyLibConverterCommon.Transformation.CsDefVariant.WKT;
+
+            return geodeticTr;
+        }
+
         private VinnyLibConverterCommon.Transformation.TransformationMatrix4x4 CreateMatrix4x4FromData()
         {
             VinnyLibConverterCommon.Transformation.TransformationMatrix4x4 matrix = VinnyLibConverterCommon.Transformation.TransformationMatrix4x4.CreateEmptyTransformationMatrix();
             //translation
             matrix.SetPosition(
-                float.Parse(this.TextBox_TranslationX.Text),
-                float.Parse(this.TextBox_TranslationY.Text),
-                float.Parse(this.TextBox_TranslationZ.Text));
+                double.Parse(this.TextBox_TranslationX.Text),
+                double.Parse(this.TextBox_TranslationY.Text),
+                double.Parse(this.TextBox_TranslationZ.Text));
             //rotation
-            float rotX = float.Parse(this.TextBox_RotAxisAnglesX.Text);
-            float rotY = float.Parse(this.TextBox_RotAxisAnglesY.Text);
-            float rotZ = float.Parse(this.TextBox_RotAxisAnglesZ.Text);
+            double rotX = double.Parse(this.TextBox_RotAxisAnglesX.Text);
+            double rotY = double.Parse(this.TextBox_RotAxisAnglesY.Text);
+            double rotZ = double.Parse(this.TextBox_RotAxisAnglesZ.Text);
 
-            float rotQx = float.Parse(this.TextBox_RotQuaternionX.Text);
-            float rotQy = float.Parse(this.TextBox_RotQuaternionY.Text);
-            float rotQz = float.Parse(this.TextBox_RotQuaternionZ.Text);
-            float rotQw = float.Parse(this.TextBox_RotQuaternionW.Text);
+            double rotQx = double.Parse(this.TextBox_RotQuaternionX.Text);
+            double rotQy = double.Parse(this.TextBox_RotQuaternionY.Text);
+            double rotQz = double.Parse(this.TextBox_RotQuaternionZ.Text);
+            double rotQw = double.Parse(this.TextBox_RotQuaternionW.Text);
 
             if (this.RadioButton_IsDegree.IsChecked == true)
             {
@@ -129,9 +146,9 @@ namespace VinnyLibConverterUI
 
             //scale
             matrix.SetScale(
-                (float)double.Parse(this.TextBox_ScaleX.Text),
-                (float)double.Parse(this.TextBox_ScaleY.Text),
-                (float)double.Parse(this.TextBox_ScaleY.Text));
+                (double)double.Parse(this.TextBox_ScaleX.Text),
+                (double)double.Parse(this.TextBox_ScaleY.Text),
+                (double)double.Parse(this.TextBox_ScaleY.Text));
 
             return matrix;
         }
@@ -225,12 +242,12 @@ namespace VinnyLibConverterUI
             {
                 VinnyLibConverterCommon.Transformation.TransformationAffine transformAffine =
                     new VinnyLibConverterCommon.Transformation.TransformationAffine(
-                        float.Parse(this.TextBox_ScaleX.Text),
-                        float.Parse(this.TextBox_ScaleY.Text),
-                        float.Parse(this.TextBoxAffineT_RotationX.Text),
-                        float.Parse(this.TextBoxAffineT_RotationY.Text),
-                        float.Parse(this.TextBoxAffineT_TranslationX.Text),
-                        float.Parse(this.TextBoxAffineT_TranslationY.Text)
+                        double.Parse(this.TextBox_ScaleX.Text),
+                        double.Parse(this.TextBox_ScaleY.Text),
+                        double.Parse(this.TextBoxAffineT_RotationX.Text),
+                        double.Parse(this.TextBoxAffineT_RotationY.Text),
+                        double.Parse(this.TextBoxAffineT_TranslationX.Text),
+                        double.Parse(this.TextBoxAffineT_TranslationY.Text)
                     );
                 this.VinnyParametets.TransformationInfo.Add(transformAffine);
                 this.ListBoxTransformationInfo.Items.Add(transformAffine.ToString());
@@ -238,13 +255,14 @@ namespace VinnyLibConverterUI
             }
             else if (tabName == "Geodetic")
             {
-                VinnyLibConverterCommon.Transformation.TransformationGeodetic transfromGeodetic =
-                    new VinnyLibConverterCommon.Transformation.TransformationGeodetic(
-                        this.TextBoxGeodetic_StartCsWKT.Text,
-                        this.TextBoxGeodetic_TargetCsWKT.Text
-                    );
-                this.VinnyParametets.TransformationInfo.Add(transfromGeodetic);
-                this.ListBoxTransformationInfo.Items.Add("Geodetic");
+                var geod = CreateGeodeticFromData();
+                string sourceCS;
+                string destCS;
+                if (geod.InitData(out sourceCS, out destCS))
+                {
+                    this.VinnyParametets.TransformationInfo.Add(geod);
+                    this.ListBoxTransformationInfo.Items.Add(geod.ToString());
+                }
             }
         }
 
@@ -279,6 +297,26 @@ namespace VinnyLibConverterUI
         {
             VinnyLibConverterCommon.Transformation.TransformationMatrix4x4 matrix = CreateMatrix4x4FromData();
             this.TextBoxResultMatrix.Text = matrix.Matrix.ToString();
+        }
+
+        private void ButtonCheckGeodeticData_Click(object sender, RoutedEventArgs e)
+        {
+            var geod = CreateGeodeticFromData();
+            string sourceCS;
+            string destCS;
+            if (!geod.InitData(out sourceCS, out destCS))
+            {
+                this.TextBoxGeodetic_StartCsDef.Text = sourceCS;
+                this.TextBoxGeodetic_DestCsDef.Text = destCS;
+
+                this.VinnyParametets.TransformationInfo.Add(geod);
+                this.ListBoxTransformationInfo.Items.Add(geod.ToString());
+            }
+            else
+            {
+                this.TextBoxGeodetic_StartCsDef.Text = sourceCS;
+                this.TextBoxGeodetic_DestCsDef.Text = destCS;
+            }
         }
 
         private void ButtonStart_Click(object sender, RoutedEventArgs e)
