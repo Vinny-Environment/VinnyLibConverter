@@ -39,4 +39,8 @@
     </ProjectReference>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="del $(TargetDir)VinnyLibConverter_DotBIM*&#xD;&#xA;del $(TargetDir)VinnyLibConverter_SMDX*&#xA;del $(TargetDir)VinnyLibConverter_nwcreate*&#xD;&#xA;del $(TargetDir)VinnyLibConverter_IFC*" />
+  </Target>
+
 </Project>

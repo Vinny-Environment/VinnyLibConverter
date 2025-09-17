@@ -10,12 +10,10 @@ using VinnyLibConverterCommon.GeometryUtils;
 using VinnyLibConverterCommon.Transformation;
 using VinnyLibConverterUtils;
 using VinnyLibConverterCommon.Interfaces;
-using System.Runtime.InteropServices.ComTypes;
-
 
 using GeometryGym.Ifc;
 using GeometryGym.STEP;
-using System.Diagnostics;
+//using System.Diagnostics;
 using static VinnyLibConverterCommon.VinnyLibDataStructure.VinnyLibDataStructureObjectsManager;
 
 
@@ -102,7 +100,7 @@ namespace VinnyLibConverter_IFC
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine($"Error: {ex.Message}");
+                            //Debug.WriteLine($"Error: {ex.Message}");
                         }
                     }
                 }
@@ -329,24 +327,94 @@ namespace VinnyLibConverter_IFC
             mIfcFile = new DatabaseIfc(ModelView.Ifc4DesignTransfer);
             IfcBuilding building = new IfcBuilding(mIfcFile, "IfcBuilding") { };
             IfcProject project = new IfcProject(building, "IfcProject", IfcUnitAssignment.Length.Metre) { };
+            //IfcSite site = new IfcSite(mIfcFile, "IfcSite");
 
-            //TODO: Реализовать сохранение геометри через IfcMappedItem
+            //TODO: Реализовать сохранение геометрии через IfcMappedItem
 
             VinnyLibDataStructureObjectsManager.StructureInfo[] vinnyModelStructureInfo = vinnyData.ObjectsManager.GetAllStructure();
             foreach (VinnyLibDataStructureObjectsManager.StructureInfo vinnyModelStructureGroupInfo in vinnyModelStructureInfo)
             {
-                ProcessExportObject(vinnyModelStructureGroupInfo, ref nwcStructure);
+                ProcessExportObject(vinnyModelStructureGroupInfo, project);
             }
-
-
-
 
             mIfcFile.WriteFile(outputParameters.Path);
         }
 
-        void ProcessExportObject(StructureInfo obj, ref LcNwcGroupWrapper parentObject)
+        void ProcessExportObject(StructureInfo obj, IfcObjectDefinition parentObject)
         {
             VinnyLibDataStructureObject vinnyObj = mVinnyModelDef.ObjectsManager.GetObjectById(obj.Id);
+
+            List<IfcShapeRepresentation> ifcMeshes = new List<IfcShapeRepresentation>();
+            if (vinnyObj.GeometryPlacementInfoIds.Any())
+            {
+                foreach (int vinnyGPIid in vinnyObj.GeometryPlacementInfoIds)
+                {
+                    VinnyLibDataStructureGeometryPlacementInfo vinnyGPI = mVinnyModelDef.GeometrtyManager.GetGeometryPlacementInfoById(vinnyGPIid);
+                    VinnyLibDataStructureGeometryMesh vinnyMesh = mVinnyModelDef.GeometrtyManager.GetMeshGeometryById(vinnyGPI.IdGeometry);
+
+                    List<IfcFace> ifcMeshFaces = new List<IfcFace>();
+                    foreach (var trInfo in vinnyMesh.Faces)
+                    {
+                        IfcCartesianPoint[] points = new IfcCartesianPoint[3];
+                        points[0] = GetPoint(trInfo.Value[0]);
+                        points[1] = GetPoint(trInfo.Value[1]);
+                        points[2] = GetPoint(trInfo.Value[2]);
+
+                        IfcPolyLoop ifcLoop = new IfcPolyLoop(points);
+                        IfcFaceOuterBound ifcBound = new IfcFaceOuterBound(ifcLoop, true);
+                        ifcMeshFaces.Add(new IfcFace(ifcBound));
+                    }
+
+                    IfcFacetedBrep ifcSurfaceModel = new IfcFacetedBrep(new IfcClosedShell(ifcMeshFaces));
+                    IfcShapeRepresentation ifcShape = new IfcShapeRepresentation(ifcSurfaceModel);
+
+                    //style
+                    VinnyLibDataStructureMaterial vinnyMaterial = mVinnyModelDef.MaterialsManager.GetMaterialById(vinnyMesh.MaterialId);
+
+                    IfcColourRgb ifcColorDef = new IfcColourRgb(mIfcFile,
+                        vinnyMaterial.ColorR / 255.0,
+                        vinnyMaterial.ColorG / 255.0,
+                        vinnyMaterial.ColorB / 255.0);
+
+                    IfcSurfaceStyleShading ifcStyle = new IfcSurfaceStyleShading(ifcColorDef);
+                    IfcSurfaceStyle ifcStyle2 = new IfcSurfaceStyle(ifcStyle);
+                    IfcPresentationStyleAssignment style_assignm = new IfcPresentationStyleAssignment(ifcStyle2);
+                    IfcStyledItem object_style = new IfcStyledItem(ifcSurfaceModel, style_assignm);
+
+                    ifcMeshes.Add(ifcShape);
+
+                    IfcCartesianPoint GetPoint(int index)
+                    {
+                        double[] pCoords = vinnyMesh.Points[index];
+                        pCoords = vinnyGPI.TransformationMatrixInfo.TransformPoint3d(pCoords);
+
+                        return new IfcCartesianPoint(mIfcFile, pCoords[0], pCoords[1], pCoords[2]);
+                    }
+                }
+            }
+
+            IfcProductDefinitionShape shapeResult = new IfcProductDefinitionShape(ifcMeshes);
+            IfcBuildingElementProxy ifcObject = new IfcBuildingElementProxy(
+                parentObject,
+                new IfcLocalPlacement(new IfcAxis2Placement3D(new IfcCartesianPoint(mIfcFile, 0, 0, 0))),
+                shapeResult);
+
+            foreach (var param2cat in mVinnyModelDef.ParametersManager.SortParamsByCategories(vinnyObj.Parameters))
+            {
+                List<IfcPropertySingleValue> props = new List<IfcPropertySingleValue>();
+                foreach (var propValue in param2cat.Value)
+                {
+                    VinnyLibDataStructureParameterDefinition vinnyParamDef = mVinnyModelDef.ParametersManager.GetParamDefById(propValue.ParamDefId);
+                    IfcPropertySingleValue ifcProp = new IfcPropertySingleValue(mIfcFile, vinnyParamDef.Name, propValue.ToString());
+                    props.Add(ifcProp);
+                }
+                IfcPropertySet new_set = new IfcPropertySet(ifcObject, param2cat.Key, props);
+            }
+
+            foreach (var subObject in obj.Childs)
+            {
+                ProcessExportObject(subObject, ifcObject);
+            }
         }
 
         private VinnyLibDataStructureModel mVinnyModelDef;

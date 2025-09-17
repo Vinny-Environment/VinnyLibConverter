@@ -35,6 +35,8 @@ namespace VinnyLibConverter_DotBIM
             ImportExportParameters.mActiveConfig = openParameters;
             //ImportExportParameters.mActiveConfig.CheckGeometryDubles = false;//потому что читаем формат
 
+            var pathVar = Environment.GetEnvironmentVariable("PATH");
+
             dotbim.File dotbimFile = dotbim.File.Read(openParameters.Path);
             //header
             foreach (var metadata in dotbimFile.Info)

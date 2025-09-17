@@ -75,13 +75,14 @@ namespace VinnyLibConverterCLI
 #if DEBUG
 
             VinnyTests tests = new VinnyTests(@"E:\DataTest\VinnyLibConverterSamples");
-            tests.ifc2nwc_1();
-            //tests.cde_smdx_1();
+            //tests.ifc2nwc_1();
+            //tests.dotbim2ifc_1();
+            tests.cde_smdx_1();
             //tests.cde_smdx_2();
             //tests.cde_dotbim_2();
             //tests.cde_smdx_3();
 
-           
+
 
 #endif
             Console.WriteLine("\nEnd!");
@@ -206,6 +207,16 @@ namespace VinnyLibConverterCLI
             mConverter.Convert(
                 new ImportExportParameters() { Path = path1, ModelType = CdeVariant.IFC },
                 new ImportExportParameters() { Path = path2, ModelType = CdeVariant.NWC });
+        }
+
+        public void dotbim2ifc_1()
+        {
+            string path1 = Path.Combine(pSamplesDirPath, "dotbim", "Pyramid.bim");
+            string path2 = "E:\\Temp\\Vinny\\Pyramid.ifc";
+
+            mConverter.Convert(
+                new ImportExportParameters() { Path = path1, ModelType = CdeVariant.DotBIM },
+                new ImportExportParameters() { Path = path2, ModelType = CdeVariant.IFC });
         }
 
         private VinnyLibConverter mConverter;

@@ -17,27 +17,33 @@ namespace VinnyLibConverterKernel
         private VinnyLibConverter(string VinnyLibDirectoryPath)
         {
             //TODO: Load assemblies
-            pLibsLoadingStatus = new Dictionary<CdeVariant, bool>();
+            //pLibsLoadingStatus = new Dictionary<CdeVariant, bool>();
             pVinnyLibDirectory = VinnyLibDirectoryPath;
             string VinnyLibConverterCommonPath = Path.Combine(pVinnyLibDirectory, "VinnyLibConverterCommon.dll");
+            AddEnv(pVinnyLibDirectory);
             var ass = Assembly.LoadFrom(VinnyLibConverterCommonPath);
 
             //Add to PATH env nwcreate-dir
             string nwcreateDir = Path.Combine(VinnyLibDirectoryPath, pDepsDirName, "nwcreate");
-            string newEnwPathValue = Environment.GetEnvironmentVariable("PATH");
-            if (newEnwPathValue.EndsWith(";")) newEnwPathValue += nwcreateDir + ";";
-            else newEnwPathValue += ";" + nwcreateDir + ";";
+            AddEnv(nwcreateDir);
 
-            Environment.SetEnvironmentVariable("PATH", newEnwPathValue);
+            List<string> loadedAss = new List<string>();
 
             foreach (string depsDir in Directory.GetDirectories(Path.Combine(VinnyLibDirectoryPath, pDepsDirName), "*.*", SearchOption.TopDirectoryOnly))
             {
-                
+                //AddEnv(depsDir);
                 foreach (string DepsAssPath in Directory.GetFiles(depsDir, "*.dll", SearchOption.TopDirectoryOnly))
                 {
+                    string depsName = Path.GetFileName(DepsAssPath);
+                    
                     try
                     {
-                        Assembly.LoadFrom(DepsAssPath);
+                        //if (depsName.Contains("Vinny")) Assembly.LoadFrom(DepsAssPath);
+                        if (!loadedAss.Contains(depsName))  
+                        {
+                            Assembly.LoadFrom(DepsAssPath);
+                            loadedAss.Add(depsName);
+                        }
                     }
                     catch (Exception ex) { VinnyLibConverterLogger.InitLogger().WriteLog(ex.Message); }
                 }
@@ -47,6 +53,15 @@ namespace VinnyLibConverterKernel
             //string VinnyLibDepsNwcreate_nwcreateWrapperLib = Path.Combine(pVinnyLibDirectory, pDepsDirName, "nwcreate", "nwcreateWrapperLib.dll");
             //ass = Assembly.LoadFrom(VinnyLibDepsNwcreate_nwcreateWrapperLib);
 
+        }
+
+        private void AddEnv(string path)
+        {
+            string newEnwPathValue = Environment.GetEnvironmentVariable("PATH");
+            if (newEnwPathValue.EndsWith(";")) newEnwPathValue += path + ";";
+            else newEnwPathValue += ";" + path + ";";
+
+            Environment.SetEnvironmentVariable("PATH", newEnwPathValue);
         }
 
         /*
