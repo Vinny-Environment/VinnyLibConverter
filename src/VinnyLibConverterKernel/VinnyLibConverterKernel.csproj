@@ -22,6 +22,11 @@
       <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
+    <ProjectReference Include="..\VinnyLibConverter_IFC\VinnyLibConverter_IFC.csproj">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\VinnyLibConverter_nwcreate\VinnyLibConverter_nwcreate.csproj">
       <Private>False</Private>
       <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>

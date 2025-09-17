@@ -100,6 +100,7 @@ namespace VinnyLibConverterKernel
                 case CdeVariant.DotBIM: return new VinnyLibConverter_DotBIM.DotBimFormatProcessing().Import(openParameters);
                 case CdeVariant.SMDX: return new VinnyLibConverter_SMDX.SMDX_FormatProcessing().Import(openParameters);
                 case CdeVariant.NWC: return new VinnyLibConverter_nwcreate.nwcreate_FormatProcessing().Import(openParameters);
+                case CdeVariant.IFC: return new VinnyLibConverter_IFC.IFC_FormatProcessing().Import(openParameters);
 
             }
             return null;
@@ -119,6 +120,9 @@ namespace VinnyLibConverterKernel
                     break;
                 case CdeVariant.NWC:
                     new VinnyLibConverter_nwcreate.nwcreate_FormatProcessing().Export(ModelData, outputParameters);
+                    break;
+                case CdeVariant.IFC:
+                    new VinnyLibConverter_IFC.IFC_FormatProcessing().Export(ModelData, outputParameters);
                     break;
                 case CdeVariant.VinnyLibConverterCache:
                     {

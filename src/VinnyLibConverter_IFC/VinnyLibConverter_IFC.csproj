@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutDir>$(SolutionDir)..\VinnyLibBin\$(Configuration)\dependencies\ifc</OutDir>
+        <TargetFramework>netstandard20</TargetFramework>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <LangVersion>8.0</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="GeometryGymIFC_Core" Version="25.7.30" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\VinnyLibConverterCommon\VinnyLibConverterCommon.csproj">
+            <Private>False</Private>
+            <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+        </ProjectReference>
+        <ProjectReference Include="..\VinnyLibConverterLogger\VinnyLibConverterLogger.csproj">
+            <ExcludeAssets>runtime</ExcludeAssets>
+            <Private>False</Private>
+        </ProjectReference>
+    </ItemGroup>
+
+</Project>

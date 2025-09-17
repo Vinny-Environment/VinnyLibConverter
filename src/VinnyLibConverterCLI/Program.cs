@@ -75,7 +75,7 @@ namespace VinnyLibConverterCLI
 #if DEBUG
 
             VinnyTests tests = new VinnyTests(@"E:\DataTest\VinnyLibConverterSamples");
-            tests.cde_nwc_3();
+            tests.ifc2nwc_1();
             //tests.cde_smdx_1();
             //tests.cde_smdx_2();
             //tests.cde_dotbim_2();
@@ -140,7 +140,7 @@ namespace VinnyLibConverterCLI
 
         public void cde_nwc_3()
         {
-            string path1 = "E:\\Temp\\Vinny\\gatehouse.vlcxmlzip";
+            string path1 = "E:\\Temp\\Vinny\\gatehouse.vlcxml";
             string path2 = "E:\\Temp\\Vinny\\gatehouse.nwc";
 
             var data = mConverter.ImportModel(new ImportExportParameters() { Path = path1, ModelType = CdeVariant.VinnyLibConverterCacheCompressed});
@@ -197,6 +197,16 @@ namespace VinnyLibConverterCLI
 
        
         #endregion
+
+        public void ifc2nwc_1()
+        {
+            string path1 = Path.Combine(pSamplesDirPath, "ifc", "Эстакада.ifc");
+            string path2 = "E:\\Temp\\Vinny\\Эстакада.nwc";
+
+            mConverter.Convert(
+                new ImportExportParameters() { Path = path1, ModelType = CdeVariant.IFC },
+                new ImportExportParameters() { Path = path2, ModelType = CdeVariant.NWC });
+        }
 
         private VinnyLibConverter mConverter;
         private string pExecDir;

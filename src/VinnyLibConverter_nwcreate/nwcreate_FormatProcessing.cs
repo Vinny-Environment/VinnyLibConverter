@@ -99,12 +99,9 @@ namespace VinnyLibConverter_nwcreate
                             Dictionary<int, int> vinnyPoint2nwcVertex = new Dictionary<int, int>();
                             foreach (var facesInfo in vinnyGeometryMeshInfo.Faces)
                             {
-                                var faceVertex1 = vinnyGeometryPlacementInfo.TransformationMatrixInfo.TransformPoint3d(
-                                    vinnyGeometryMeshInfo.GetPointCoords(facesInfo.Value[0]));
-                                var faceVertex2 = vinnyGeometryPlacementInfo.TransformationMatrixInfo.TransformPoint3d(
-                                    vinnyGeometryMeshInfo.GetPointCoords(facesInfo.Value[1]));
-                                var faceVertex3 = vinnyGeometryPlacementInfo.TransformationMatrixInfo.TransformPoint3d(
-                                    vinnyGeometryMeshInfo.GetPointCoords(facesInfo.Value[2]));
+                                //var faceVertex1 = vinnyGeometryPlacementInfo.TransformationMatrixInfo.TransformPoint3d(vinnyGeometryMeshInfo.GetPointCoords(facesInfo.Value[0]));
+                                //var faceVertex2 = vinnyGeometryPlacementInfo.TransformationMatrixInfo.TransformPoint3d( vinnyGeometryMeshInfo.GetPointCoords(facesInfo.Value[1]));
+                                //var faceVertex3 = vinnyGeometryPlacementInfo.TransformationMatrixInfo.TransformPoint3d(vinnyGeometryMeshInfo.GetPointCoords(facesInfo.Value[2]));
 
                                 //faceVertex1 = vinnyGeometryMeshInfo.GetPointCoords(facesInfo.Value[0]);
                                 //faceVertex2 = vinnyGeometryMeshInfo.GetPointCoords(facesInfo.Value[1]);
